@@ -89,11 +89,16 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "rest_framework",
+#    "django_better_admin_arrayfield",
+    "django_jsonform",
+    "drf_spectacular"
 ]
 
 LOCAL_APPS = [
     "cvback.users",
-    "cvback.devices"
+    "cvback.devices",
+    "cvback.events"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -285,6 +290,14 @@ SOCIALACCOUNT_ADAPTER = "cvback.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSocialSignupForm"}
 
-
-# Your stuff...
-# ------------------------------------------------------------------------------
+REST_FRAMEWORK = {
+    # YOUR SETTINGS
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'CVBack API',
+    'DESCRIPTION': 'Computer vision back end',
+    'VERSION': '0.1.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}

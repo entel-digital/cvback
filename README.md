@@ -20,6 +20,17 @@ License: MIT
  - Devices app
    - Camera
      - last image
+ - Front
+   - scss
+   - event list
+   - camera list
+ - Authentication
+   - External Oauth?
+   - 
+## Some criteria
+
+ - [REST for devices and graphQL for events](https://www.baeldung.com/graphql-vs-rest)
+
 
 ## Settings
 
