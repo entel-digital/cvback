@@ -20,13 +20,15 @@ License: MIT
  - Devices app
    - Camera
      - last image
+     - [encrypt url](https://pypi.org/project/django-encrypted-field/)
  - Front
    - scss
    - event list
    - camera list
  - Authentication
    - External Oauth?
-   - 
+   - Oauth for rest (m2m)
+ - 
 ## Some criteria
 
  - [REST for devices and graphQL for events](https://www.baeldung.com/graphql-vs-rest)
