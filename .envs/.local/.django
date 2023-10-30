@@ -1,0 +1,5 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+ENV_DJANGO_ENCRYPTED_FIELD_KEY=b'f}\x8f\x1br\xa1\xa9\xf8M\xe7g\xc3\xe6#a8\xbcAM\xa9\xfb\xe5\xda\xa68if\x18~K\x15N'

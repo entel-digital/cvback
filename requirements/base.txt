@@ -25,3 +25,4 @@ drf-spectacular
 django_compressor==2.2
 django-libsass==0.7
 django-jsonform
+django-encrypted-field==1.0.5

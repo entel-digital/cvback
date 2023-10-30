@@ -2,6 +2,7 @@
 Base settings to build other settings files upon.
 """
 from pathlib import Path
+import os
 
 import environ
 
@@ -41,6 +42,11 @@ USE_I18N = True
 USE_TZ = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#locale-paths
 LOCALE_PATHS = [str(BASE_DIR / "locale")]
+
+# ENCRYPTION SETTINGS
+# ------------------------------------------------------------------------------
+DJANGO_ENCRYPTED_FIELD_KEY = os.environ.get('ENV_DJANGO_ENCRYPTED_FIELD_KEY')
+
 
 # DATABASES
 # ------------------------------------------------------------------------------
