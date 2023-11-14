@@ -1,7 +1,0 @@
-# PostgreSQL
-# ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
-POSTGRES_DB=cvback
-POSTGRES_USER=KPRBHGWRGFDVPyuQzcwrJOriQDdqouoN
-POSTGRES_PASSWORD=aNQEKcZ0otaJCXXPtnqivXAygyDAW0alNuczMgjjCyiyzJo8vw0FDnKyGK5iAl8G
