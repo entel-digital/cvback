@@ -45,9 +45,9 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-DJANGO_ENCRYPTED_FIELD_KEY = os.environ.get('ENV_DJANGO_ENCRYPTED_FIELD_KEY')
-
-
+DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ['DJANGO_ENCRYPTED_FIELD_KEY'], "utf-8")#.decode('unicode_escape')
+#DJANGO_ENCRYPTED_FIELD_KEY = b'12345678901234567890123456789012'
+#bytes(os.environ["FOO"], "utf-8").decode('unicode_escape')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases

@@ -1,7 +1,7 @@
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 from django.core.validators import URLValidator
-from encrypted_fields import EncryptedCharField
+from encrypted_field import EncryptedField
 
 
 class Camera(models.Model):
@@ -9,7 +9,7 @@ class Camera(models.Model):
     added_modified = models.DateTimeField("date modified", auto_now=True)
     enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
-    primary_stream = EncryptedCharField(max_length=1024, validators=[URLValidator(schemes=['http', 'https', 'rtsp'])])
+    primary_stream = EncryptedField(max_length=1024, validators=[URLValidator(schemes=['http', 'https', 'rtsp'])])
     #primary_stream = models.CharField(max_length=1024, validators=[URLValidator(schemes=['http', 'https', 'rtsp'])])
     location = models.PointField(default=Point(-70.60601882155144, -33.41260825941644, srid=4326))
 
