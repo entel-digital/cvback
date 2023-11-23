@@ -332,3 +332,5 @@ cvback/media/
 .env
 .envs/*
 !.envs/.local/
+.env
+.envs
