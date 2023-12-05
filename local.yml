@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 volumes:
   cvback_local_postgres_data: {}
@@ -20,7 +20,7 @@ services:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
     ports:
-      - '8000:8000'
+      - "8000:8000"
     command: /start
 
   postgres:
@@ -35,6 +35,8 @@ services:
       - cvback_local_postgres_data_backups:/backups
     env_file:
       - ./.envs/.local/.postgres
+    ports:
+      - "5432:5432"
 
   docs:
     platform: linux/amd64
@@ -50,5 +52,5 @@ services:
       - ./config:/app/config:z
       - ./cvback:/app/cvback:z
     ports:
-      - '9000:9000'
+      - "9000:9000"
     command: /start-docs
