@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 import django_jsonform.models.fields
-import events.models
+import cvback.events.models
 
 
 class Migration(migrations.Migration):
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name="geometry",
             field=django_jsonform.models.fields.ArrayField(
                 base_field=django_jsonform.models.fields.ArrayField(
-                    base_field=models.FloatField(validators=[events.models.validate_relative]), size=2
+                    base_field=models.FloatField(validators=[cvback.events.models.validate_relative]), size=2
                 ),
                 size=None,
             ),

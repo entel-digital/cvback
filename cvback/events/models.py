@@ -2,7 +2,7 @@ from django.db import models
 from django_jsonform.models.fields import ArrayField
 #from django.contrib.postgres.fields import ArrayField
 #from django_better_admin_arrayfield.models.fields import ArrayField
-from devices.models import Camera, InferenceComputer
+from cvback.devices.models import Camera, InferenceComputer
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
@@ -21,7 +21,7 @@ class AreaOfInterest(models.Model):
     name = models.CharField(max_length=255)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     geometry = ArrayField(ArrayField(models.FloatField(validators=[validate_relative]), size=2))
-    # TODO: color?
+    description = models.TextField(null=True, blank=True) ## validar TODO: color?
 
     def __str__(self):
         return f"{self.camera} > {self.name}"
@@ -32,18 +32,36 @@ class BoundingBox(models.Model):
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     type = models.CharField(max_length=255)
     confidence = models.FloatField(validators=[validate_relative])
+    #related_event = models.ForeignKey('Event', null=True, on_delete=models.CASCADE, related_name='bounding_boxes') ## Validar
+
 
 class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     bounding_boxes = models.ForeignKey(BoundingBox, on_delete=models.DO_NOTHING)
+    #related_event = models.ForeignKey('Event', null=True, on_delete=models.CASCADE, related_name='inferences') ## Validar
+
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     inference = models.ForeignKey(Inference, on_delete=models.DO_NOTHING)
+    #type = models.CharField(max_length=255) #Qué tipo de evento
+    #tag = models.CharField(max_length=50) # Etiquetar eventos??
 
-class TelegramAlert(models.Model):
+class Alert(models.Model): # Validar clase
+    ALERT_TYPES = (
+        ('telegram', 'Telegram'),
+        ('sms', 'SMS'),
+    )
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
+    recipient = models.CharField(max_length=255)
+    message = models.CharField(max_length=255)
+    related_event = models.ForeignKey(Event, on_delete=models.DO_NOTHING, related_name='alerts')
+
+
+"""class TelegramAlert(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     telegram_user = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
@@ -55,3 +73,4 @@ class SMSAlert(models.Model):
     message = models.CharField(max_length=255)
     events = models.ForeignKey(Event, on_delete=models.DO_NOTHING)
 
+"""

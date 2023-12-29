@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from .models import AreaOfInterest
-from .serializers import AreaOfInterestSerializer
+from cvback.events.models import AreaOfInterest
+from cvback.events.serializers import AreaOfInterestSerializer
 
 
 # Create your views here.
