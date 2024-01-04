@@ -88,7 +88,11 @@ NUM_BOUNDING_BOXES = 20
 NUM_INFERENCES = 10
 NUM_EVENTS = 10
 NUM_ALERTS = 10
+NUM_CAMERAS = 10
+NUM_INFERENCE_COMPUTER = 10
 
+create_cameras(NUM_CAMERAS)
+create_inference_computers(NUM_INFERENCE_COMPUTER)
 create_areas_of_interest(NUM_AREAS_OF_INTEREST)
 create_bounding_boxes(NUM_BOUNDING_BOXES)
 create_inferences(NUM_INFERENCES)
