@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import django
 import random
 from faker import Faker
-#from cvback.events.models import models
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
@@ -62,15 +61,15 @@ def create_bounding_boxes(n):
 def create_inferences(n):
     for _ in range(n):
         Inference.objects.create(
-            inference_computer=InferenceComputer.objects.order_by('?').first(),  # Selecciona un computador de inferencia aleatorio
-            bounding_boxes=BoundingBox.objects.order_by('?').first()  # Selecciona un bounding box aleatorio
+            inference_computer=InferenceComputer.objects.order_by('?').first(),
+            bounding_boxes=BoundingBox.objects.order_by('?').first()
         )
 
 def create_events(n):
     for _ in range(n):
         Event.objects.create(
-            camera=Camera.objects.order_by('?').first(),  # Selecciona una cámara aleatoria
-            inference=Inference.objects.order_by('?').first()  # Selecciona una inferencia aleatoria
+            camera=Camera.objects.order_by('?').first(),
+            inference=Inference.objects.order_by('?').first()
         )
 
 def create_alerts(n):
@@ -79,24 +78,32 @@ def create_alerts(n):
             alert_type=random.choice(['telegram', 'sms']),
             recipient=fake.phone_number(),
             message=fake.text(),
-            related_event=Event.objects.order_by('?').first()  # Selecciona un evento aleatorio
+            related_event=Event.objects.order_by('?').first()
         )
 
-# Número de instancias a crear
-NUM_AREAS_OF_INTEREST = 20
-NUM_BOUNDING_BOXES = 20
-NUM_INFERENCES = 10
-NUM_EVENTS = 10
-NUM_ALERTS = 10
-NUM_CAMERAS = 10
-NUM_INFERENCE_COMPUTER = 10
+def data_exists():
+    return Camera.objects.exists() or Event.objects.exists()
 
-create_cameras(NUM_CAMERAS)
-create_inference_computers(NUM_INFERENCE_COMPUTER)
-create_areas_of_interest(NUM_AREAS_OF_INTEREST)
-create_bounding_boxes(NUM_BOUNDING_BOXES)
-create_inferences(NUM_INFERENCES)
-create_events(NUM_EVENTS)
-create_alerts(NUM_ALERTS)
+if not data_exists():
+    print("No se encontraron datos, generando datos ficticios...")
+    
+    # Número de instancias a crear
+    NUM_AREAS_OF_INTEREST = 20
+    NUM_BOUNDING_BOXES = 20
+    NUM_INFERENCES = 10
+    NUM_EVENTS = 10
+    NUM_ALERTS = 10
+    NUM_CAMERAS = 10
+    NUM_INFERENCE_COMPUTER = 10
 
-print("Datos ficticios creados exitosamente.")
+    create_cameras(NUM_CAMERAS)
+    create_inference_computers(NUM_INFERENCE_COMPUTER)
+    create_areas_of_interest(NUM_AREAS_OF_INTEREST)
+    create_bounding_boxes(NUM_BOUNDING_BOXES)
+    create_inferences(NUM_INFERENCES)
+    create_events(NUM_EVENTS)
+    create_alerts(NUM_ALERTS)
+
+    print("Datos ficticios creados exitosamente.")
+else:
+    print("Ya existen datos ficticios.")
