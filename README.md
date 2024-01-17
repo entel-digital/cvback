@@ -49,24 +49,6 @@ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 http://localhost:8000/admin
 ```
 
-#### Encryption Key Generation
-
-- To secure sensitive data, it's crucial to generate a unique encryption key for your project. Follow these steps to generate one:
-
-1. Generate the Encryption Key: Navigate to the `tools` directory and run the following script with Python:
-
-```bash
-python generate_encryption_key.py
-```
-
-2. Check the Encryption Key: Open your '.django' file and verify that `DJANGO_ENCRYPTED_FIELD_KEY` has a generated key:
-
-```bash
-DJANGO_ENCRYPTED_FIELD_KEY = <YOUR_GENERATED_KEY>
-```
-
-3. Note: Ensure that your '.django' file is not tracked by git to mantain the security of your key.
-
 ### Setting Up Your Users
 
 - To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
