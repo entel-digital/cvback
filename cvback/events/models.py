@@ -36,10 +36,56 @@ class BoundingBox(models.Model):
 
 
 class Inference(models.Model):
+    class InferenceKind(models.TextChoices):
+        DETECTION_PLUS_CLASSIFICATION = 'dc', 'Detection + classification'
+        CLASSIFICATION = 'cl', 'Classification'
+
+    kind = models.CharField(
+           max_length=2,
+           choices=InferenceKind.choices
+    )
     added_date = models.DateTimeField("date created", auto_now_add=True)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
-    bounding_boxes = models.ForeignKey(BoundingBox, on_delete=models.DO_NOTHING)
     #related_event = models.ForeignKey('Event', null=True, on_delete=models.CASCADE, related_name='inferences') ## Validar
+
+    class Meta:
+        abstract = True
+    def __str__(self):
+        return f"{self.inference_computer} > {self.added_date}"
+
+class Label(models.Model):
+    model = models.CharField()
+    label = models.CharField()
+
+    def __str__(self):
+        return self.label
+
+
+class InferenceDetectionClassification(Inference):
+    def __init__(self):
+        super().__init__()
+
+    bounding_boxes = models.ManyToManyField(BoundingBox)
+    labels = models.ManyToManyField(Label)
+
+    # TODO: Paula va a poner un validador que los bounding boxes sean la misma cantidad que los labels
+
+    # Pseudo code (la Paula lo va a arreglar)
+    def __str__(self):
+        if len(self.labels) >= 1:
+            return f"{self.inference_computer} > {self.added_date} > {self.labels[0]}"
+        else:
+            return f"{self.inference_computer} > {self.added_date}"
+
+
+class InferenceClassification(Inference):
+    def __init__(self):
+        super().__init__()
+
+    label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
+
+    def __str__(self):
+        return f"{self.inference_computer} > {self.added_date} > {self.label}"
 
 
 class Event(models.Model):
@@ -49,10 +95,12 @@ class Event(models.Model):
     #type = models.CharField(max_length=255) #Qué tipo de evento
     #tag = models.CharField(max_length=50) # Etiquetar eventos??
 
+
 class Alert(models.Model): # Validar clase
     ALERT_TYPES = (
         ('telegram', 'Telegram'),
         ('sms', 'SMS'),
+        ('whatsapp_group', 'Whatsapp group'),
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
     alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
