@@ -1,4 +1,3 @@
-import graphene
 from graphene_django import DjangoObjectType
 from cvback.events.models import AreaOfInterest, BoundingBox, Inference, Event, Alert
 
