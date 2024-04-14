@@ -5,8 +5,15 @@
 # More information: https://docs.platform.sh/define-routes.html
 "https://{default}/":
   type: upstream
-  upstream: "app:http"
+  upstream: "django:http"
 
+"https://{default}/media/":
+  type: directory
+  root: "public/media"
+
+"https://{default}/static/":
+  type: directory
+  root: "public/static"
 # A basic redirect definition
 # More information: https://docs.platform.sh/define-routes.html#basic-redirect-definition
 "https://www.{default}/":
