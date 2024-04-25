@@ -37,3 +37,4 @@ pytest-django==4.5.2  # https://github.com/pytest-dev/pytest-django
 django-encrypted-field==1.0.5
 faker
 python-dotenv
+django-cors-headers

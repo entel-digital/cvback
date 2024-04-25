@@ -28,3 +28,4 @@ django-jsonform
 django-encrypted-field==1.0.5
 graphene-django
 djangorestframework
+django-graphql-jwt

@@ -35,7 +35,6 @@ class BoundingBox(models.Model):
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
-
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -103,5 +102,5 @@ class Alert(models.Model):
     alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
     recipient = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
-    related_event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alerts')
+    related_event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alerts') # Arreglar el loop weon
 

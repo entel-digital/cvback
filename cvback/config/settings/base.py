@@ -3,6 +3,7 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
+from datetime import timedelta
 
 import environ
 
@@ -49,11 +50,10 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
+#SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
+SECRET_KEY = env("SECRET_KEY")
 
-#DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ['DJANGO_ENCRYPTED_FIELD_KEY'], "utf-8")#.decode('unicode_escape')
-#DJANGO_ENCRYPTED_FIELD_KEY = b'12345678901234567890123456789012'
-#bytes(os.environ["FOO"], "utf-8").decode('unicode_escape')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -99,7 +99,8 @@ THIRD_PARTY_APPS = [
 #    "django_better_admin_arrayfield",
     "django_jsonform",
     "drf_spectacular",
-    "graphene_django"
+    "graphene_django",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
 ]
 
 LOCAL_APPS = [
@@ -311,3 +312,27 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+#============= Configuration JWT Authentication===
+GRAPHQL_JWT = {
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=10),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_ALGORITHM": "HS256",
+}
+
+GRAPHENE = {
+    "SCHEMA": "cvback.events.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+LOGIN_REDIRECT_URL = "/"
