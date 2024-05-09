@@ -9,18 +9,6 @@ License: MIT
 
 ## TODO
 
-- Projects app
-  - Zones
-- Events app
-  - https://django-storages.readthedocs.io/en/latest/
-  - https://www.djongomapper.com/get-started/
-  - On graphana?
-    - https://grafana.com/grafana/plugins/dalvany-image-panel/
-    - https://grafana.com/grafana/plugins/innius-video-panel/
-- Devices app
-  - Camera
-    - last image
-    - [encrypt url](https://pypi.org/project/django-encrypted-field/)
 - Front
   - scss
   - event list
@@ -46,6 +34,9 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 docker-compose -f local.yml build
 docker-compose -f local.yml up
 docker-compose -f local.yml run --rm django python manage.py createsuperuser
+#To create fake data in local
+docker-compose -f local.yml run --rm django python manage.py generate_fake_data
+
 http://localhost:8000/admin
 ```
 
