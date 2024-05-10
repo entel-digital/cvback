@@ -34,5 +34,6 @@ class InferenceComputer(models.Model):
     name = models.CharField(max_length=255)
     location = models.PointField(default=Point(-70.69441297829056, -33.358564373936446, srid=4326))
 
+
     def __str__(self):
         return self.name

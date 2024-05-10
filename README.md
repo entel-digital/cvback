@@ -13,9 +13,15 @@ License: MIT
   - scss
   - event list
   - camera list
-- Authentication
-  - External Oauth?
-  - Oauth for rest (m2m)
+- Authentication (native)
+- storage: what we want to do?
+- Alerts (app)
+  - Telegram
+  - Whatsapp
+- Inference computers: add what data?
+  - IP adress?
+  - Specs? (GPU, ram, etc)
+- 
 
 ## Some criteria
 

@@ -4,6 +4,7 @@ from cvback.devices.models import Camera, InferenceComputer
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.core.validators import URLValidator
 
 
 def validate_relative(value):
@@ -43,24 +44,34 @@ class Event(models.Model):
     def __str__(self):
         return f"Event at {self.added_date} from {self.camera}"
 
-class Inference(models.Model):
-    class InferenceKind(models.TextChoices):
-        DETECTION_PLUS_CLASSIFICATION = 'dc', 'Detection + classification'
-        CLASSIFICATION = 'cl', 'Classification'
+
+class Algorithm(models.Model):
+    class AlgorithmKind(models.TextChoices):
+        DETECTION_PLUS_CLASSIFICATION_MODEL = 'dc', 'Detection + classification model'
+        CLASSIFICATION_MODEL = 'cl', 'Classification model'
+        CLASSIFICATION_CLASSIC_CV = 'clccv', 'Classification classic computer vision'
 
     kind = models.CharField(
            max_length=2,
-           choices=InferenceKind.choices
+           choices=AlgorithmKind.choices
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
-    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
-    #model_name = models.CharField(max_length=255)
+    name = models.CharField(max_length=30)
+    version = models.CharField(max_length=30) # TODO: validate x.x.x format
+    repository = models.CharField(max_length=30, validators=[URLValidator])
 
+
+class Inference(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
+    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         abstract = True
+
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date}"
+
 
 class Label(models.Model):
     model = models.CharField(max_length=255)
@@ -75,8 +86,8 @@ class InferenceDetectionClassification(Inference):
 
     def __str__(self):
         return f"InferenceDetectionClassification ID: {self.id}"
-     
-    #Paula va a poner un validador que los bounding boxes sean la misma cantidad que los labels
+
+    # TODO: Paula va a poner un validador que los bounding boxes sean la misma cantidad que los labels
     def clean(self):
         #Validate only if both ManyToMany relationships have been established
         if self.pk:
@@ -92,7 +103,7 @@ class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date} > {self.label}"    
+        return f"{self.inference_computer} > {self.added_date} > {self.label}"
 
 
 class Alert(models.Model):
