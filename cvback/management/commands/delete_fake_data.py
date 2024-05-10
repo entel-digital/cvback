@@ -4,7 +4,7 @@ from cvback.events.models import AreaOfInterest, BoundingBox, Inference, \
     InferenceDetectionClassification, InferenceClassification, Label, Event, Alert
 
 class Command(BaseCommand):
-    help = 'Deletes fake data from the database'
+    help = 'Deletes dummy data from the database'
 
     def handle(self, *args, **options):
         Alert.objects.all().delete()
@@ -18,4 +18,4 @@ class Command(BaseCommand):
         Event.objects.all().delete()
 
 
-        self.stdout.write(self.style.SUCCESS('Successfully deleted fake data'))
+        self.stdout.write(self.style.SUCCESS('Successfully deleted dummy data'))

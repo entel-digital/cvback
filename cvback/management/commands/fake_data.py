@@ -41,7 +41,7 @@ def create_areas_of_interest(n):
         AreaOfInterest.objects.create(
             name=fake.word(),
             enabled=fake.boolean(),
-            camera=Camera.objects.order_by('?').first(),  # Selecciona una cámara aleatoria
+            camera=Camera.objects.order_by('?').first(),  # Select random camera
             geometry=[[random.uniform(0, 1), random.uniform(0, 1)], [random.uniform(0, 1), random.uniform(0, 1)]],
             description=fake.text()
         )
@@ -74,7 +74,7 @@ def create_inferences(n):
                     inference_computer=inference_computer_instance,
                     kind=kind_value
                 )
-                # Guarda la instancia para obtener un ID antes de añadir relaciones de muchos a muchos
+                # Save the instance to get an ID before adding many-to-many relationships
                 inference_instance.save()
 
                 bounding_box_instance = BoundingBox.objects.order_by('?').first()
@@ -93,7 +93,7 @@ def create_events(n):
     for _ in range(n):
         camera_instance = Camera.objects.order_by('?').first()
 
-        # Selecciona aleatoriamente entre InferenceDetectionClassification e InferenceClassification
+        # Randomly select between InferenceDetectionClassification and InferenceClassification
         if random.choice([True, False]):
             inference_instance = InferenceDetectionClassification.objects.order_by('?').first()
         else:
@@ -120,9 +120,9 @@ def data_exists():
 
 def main():
     if not data_exists():
-        print("No se encontraron datos, generando datos ficticios...")
+        print("No data found, generating dummy data...")
         
-        # Número de instancias a crear
+        # Number of instances to create
         NUM_AREAS_OF_INTEREST = 20
         NUM_BOUNDING_BOXES = 20
         NUM_INFERENCES = 10
@@ -141,6 +141,6 @@ def main():
         create_events(NUM_EVENTS)
         create_alerts(NUM_ALERTS)
 
-        print("Datos ficticios creados exitosamente.")
+        print("Dummy data successfully created.")
     else:
-        print("Ya existen datos ficticios.")
+        print("Dummy data already exists.")
