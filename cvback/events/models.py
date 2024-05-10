@@ -54,7 +54,7 @@ class Inference(models.Model):
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
-    model_name = models.CharField(max_length=255)
+    #model_name = models.CharField(max_length=255)
 
 
     class Meta:

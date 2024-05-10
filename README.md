@@ -31,6 +31,9 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 ### Development Setup
 
 ```bash
+# to create .envs directory and .django file with environment variables
+python generate_encryption_key.py
+
 docker-compose -f local.yml build
 docker-compose -f local.yml up
 docker-compose -f local.yml run --rm django python manage.py createsuperuser

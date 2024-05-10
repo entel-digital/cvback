@@ -44,7 +44,6 @@ RUN groupadd --gid 1000 dev-user \
   && echo dev-user ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/dev-user \
   && chmod 0440 /etc/sudoers.d/dev-user
 
-
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # psycopg2 dependencies
@@ -64,6 +63,7 @@ COPY --from=python-build-stage /usr/src/app/wheels  /wheels/
 # use wheels to install python dependencies
 RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
   && rm -rf /wheels/
+
 
 COPY ./compose/production/django/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint

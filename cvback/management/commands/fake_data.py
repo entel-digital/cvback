@@ -66,7 +66,7 @@ def create_inferences(n):
     for _ in range(n):
         label_instance = Label.objects.order_by('?').first()
         inference_computer_instance = InferenceComputer.objects.order_by('?').first()
-
+        
         if inference_computer_instance and label_instance:
             if random.choice([True, False]):
                 kind_value = 'dc'

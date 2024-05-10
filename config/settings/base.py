@@ -19,8 +19,15 @@ if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".envs/.local/.django"))
     env.read_env(str(BASE_DIR / ".envs/.local/.postgres"), override=True)
-database_config = env.db("DATABASE_URL")
 
+database_config = {
+         "ENGINE": "django.contrib.gis.db.backends.postgis",
+          "NAME": env("POSTGRES_DB"),
+          "USER": env("POSTGRES_USER"),
+          "PASSWORD": env("POSTGRES_PASSWORD"),
+          "HOST": env("POSTGRES_HOST"),
+          "PORT": env("POSTGRES_PORT")
+          }
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -52,16 +59,13 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 # ------------------------------------------------------------------------------
 #SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
-SECRET_KEY = env("SECRET_KEY")
-
+SECRET_KEY = env('SECRET_KEY')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 #DATABASES = {"default": env.db("DATABASE_URL")}
-database_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-DATABASES = {
-    'default': database_config
-}
+#database_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+DATABASES = {'default': database_config}
 
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
