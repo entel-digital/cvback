@@ -40,7 +40,7 @@ docker-compose -f local.yml up
 docker-compose -f local.yml exec django python manage.py createsuperuser
 
 #To create dummy data in local
-docker-compose -f local.yml run --rm django python manage.py generate_fake_data
+docker-compose -f local.yml exec django python manage.py generate_fake_data
 
 http://localhost:8000/admin
 ```
