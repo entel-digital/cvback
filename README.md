@@ -16,7 +16,6 @@ License: MIT
 - Authentication
   - External Oauth?
   - Oauth for rest (m2m)
--
 
 ## Some criteria
 
@@ -31,12 +30,13 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 ### Development Setup
 
 ```bash
-# to create .envs directory and .django file with environment variables
-python generate_encryption_key.py
+# To create .envs directory and .django file with environment variables
+python generate_env_var.py
 
 docker-compose -f local.yml build
 docker-compose -f local.yml up
 docker-compose -f local.yml run --rm django python manage.py createsuperuser
+
 #To create fake data in local
 docker-compose -f local.yml run --rm django python manage.py generate_fake_data
 
