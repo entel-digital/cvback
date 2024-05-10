@@ -36,6 +36,8 @@ python generate_env_var.py
 docker-compose -f local.yml build
 docker-compose -f local.yml up
 docker-compose -f local.yml run --rm django python manage.py createsuperuser
+# Better alternative? TODO: check it
+docker-compose -f local.yml exec django python manage.py createsuperuser 
 
 #To create fake data in local
 docker-compose -f local.yml run --rm django python manage.py generate_fake_data
