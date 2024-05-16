@@ -24,6 +24,8 @@ class Camera(models.Model):
     area = models.OneToOneField(Area, on_delete=models.DO_NOTHING, null=True)
     last_seen_online = models.DateTimeField("last seen online")
     need_cleaning = models.BooleanField(default=False)
+    need_physical_maintenance = models.BooleanField(default=False)
+    need_replacement = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
