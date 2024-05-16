@@ -22,6 +22,8 @@ class Camera(models.Model):
     primary_stream = EncryptedField(max_length=1024, validators=[URLValidator(schemes=['http', 'https', 'rtsp'])])
     location = models.PointField(default=Point(-70.60601882155144, -33.41260825941644, srid=4326))
     area = models.OneToOneField(Area, on_delete=models.DO_NOTHING, null=True)
+    last_seen_online = models.DateTimeField("last seen online")
+    need_cleaning = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

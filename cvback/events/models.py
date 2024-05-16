@@ -26,11 +26,22 @@ class AreaOfInterest(models.Model):
     def __str__(self):
         return f"{self.camera} > {self.name}"
 
-class BoundingBox(models.Model):
+class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
+    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"{self.inference_computer} > {self.added_date}"
+
+class BoundingBox(Inference):
+    # added_date = models.DateTimeField("date created", auto_now_add=True)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
-    type = models.CharField(max_length=255)
+    inference_class = models.CharField(max_length=255)
     confidence = models.FloatField(validators=[validate_relative])
     # TODO: colores
 
@@ -61,16 +72,6 @@ class Algorithm(models.Model):
     repository = models.CharField(max_length=30, validators=[URLValidator])
 
 
-class Inference(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
-    algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True, blank=True)
-
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return f"{self.inference_computer} > {self.added_date}"
 
 
 class Label(models.Model):
