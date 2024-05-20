@@ -111,7 +111,8 @@ LOCAL_APPS = [
     "cvback",
     "cvback.users",
     "cvback.devices",
-    "cvback.events"
+    "cvback.events",
+    "cvback.alerts"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

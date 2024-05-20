@@ -106,17 +106,3 @@ class InferenceClassification(Inference):
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date} > {self.label}"
 
-
-class Alert(models.Model):
-    ALERT_TYPES = (
-        ('telegram', 'Telegram'),
-        ('sms', 'SMS'),
-        ('whatsapp_group', 'Whatsapp group'),
-    )
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    alert_type = models.CharField(max_length=255, choices=ALERT_TYPES)
-    recipient = models.CharField(max_length=255)
-    message = models.CharField(max_length=255)
-    related_event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alerts')
-# Pasar alertas a aplicación aparte
-
