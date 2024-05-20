@@ -26,6 +26,7 @@ class Camera(models.Model):
     need_cleaning = models.BooleanField(default=False)
     need_physical_maintenance = models.BooleanField(default=False)
     need_replacement = models.BooleanField(default=False)
+    # TODO: add photo (of the camera)
 
     def __str__(self):
         return self.name

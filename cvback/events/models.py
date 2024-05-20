@@ -63,7 +63,7 @@ class Algorithm(models.Model):
         CLASSIFICATION_CLASSIC_CV = 'clccv', 'Classification classic computer vision'
 
     kind = models.CharField(
-           max_length=2,
+           max_length=255,
            choices=AlgorithmKind.choices
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
@@ -114,7 +114,7 @@ class Alert(models.Model):
         ('whatsapp_group', 'Whatsapp group'),
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
-    alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
+    alert_type = models.CharField(max_length=255, choices=ALERT_TYPES)
     recipient = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
     related_event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alerts')
