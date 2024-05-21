@@ -1,5 +1,5 @@
 import graphene
-from cvback.events.schema import AreaOfInterestType, BoundingBoxType, InferenceType, EventType, AlertType
+from cvback.events.schema import AreaOfInterestType, BoundingBoxType, InferenceType, EventType
 from cvback.events.models import *
 
 class UpdateEventMutation(graphene.Mutation):
@@ -21,7 +21,6 @@ class Query(graphene.ObjectType):
     all_bounding_boxes = graphene.List(BoundingBoxType)
     all_inferences = graphene.List(InferenceType)
     all_events = graphene.List(EventType)
-    all_alerts = graphene.List(AlertType)
 
     def resolve_all_areas_of_interest(self, info):
         return AreaOfInterest.objects.all()
@@ -34,9 +33,6 @@ class Query(graphene.ObjectType):
     
     def resolve_all_events(self, info):
         return Event.objects.all()
-    
-    def resolve_all_alerts(self, info):
-        return Alert.objects.all()
 
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
