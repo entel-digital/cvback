@@ -1,5 +1,5 @@
 from graphene_django import DjangoObjectType
-from cvback.events.models import AreaOfInterest, BoundingBox, Inference, InferenceDetectionClassification, InferenceClassification, Event, Alert
+from cvback.events.models import AreaOfInterest, BoundingBox, Inference, InferenceDetectionClassification, InferenceClassification, Event
 
 class AreaOfInterestType(DjangoObjectType):
     class Meta:
@@ -29,9 +29,4 @@ class InferenceDetectionClassificationType(DjangoObjectType):
 class InferenceClassificationType(DjangoObjectType):
     class Meta:
         model = InferenceClassification
-        fields = "__all__"
-
-class AlertType(DjangoObjectType):
-    class Meta:
-        model = Alert
         fields = "__all__"
