@@ -3,7 +3,6 @@ from .models import *
 
 # Register your models here.
 admin.site.register(AreaOfInterest)
-admin.site.register(Inference)
 admin.site.register(BoundingBox)
 admin.site.register(Event)
 admin.site.register(Algorithm)
