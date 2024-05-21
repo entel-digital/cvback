@@ -1,5 +1,5 @@
 from django.db import models
-
+from cvback.events.models import Event
 # Create your models here.
 class Alert(models.Model):
     ALERT_TYPES = (
