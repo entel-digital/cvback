@@ -17,7 +17,8 @@ load_dotenv(postgres_env_path, override=True)
 
 from cvback.devices.models import Area, Camera, InferenceComputer
 from cvback.events.models import AreaOfInterest, BoundingBox, Inference, \
-    InferenceDetectionClassification, InferenceClassification, Label, Event, Alert
+    InferenceDetectionClassification, InferenceClassification, Label, Event
+from cvback.alerts.models import Alert
 
 fake = Faker()
 
