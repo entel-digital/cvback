@@ -14,6 +14,7 @@ def validate_relative(value):
             params={"value": value},
         )
 
+
 class AreaOfInterest(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -26,6 +27,7 @@ class AreaOfInterest(models.Model):
     def __str__(self):
         return f"{self.camera} > {self.name}"
 
+
 class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
@@ -37,6 +39,7 @@ class Inference(models.Model):
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date}"
 
+
 class BoundingBox(Inference):
     # added_date = models.DateTimeField("date created", auto_now_add=True)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
@@ -44,6 +47,7 @@ class BoundingBox(Inference):
     inference_class = models.CharField(max_length=255)
     confidence = models.FloatField(validators=[validate_relative])
     # TODO: colores
+
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
@@ -72,14 +76,13 @@ class Algorithm(models.Model):
     repository = models.CharField(max_length=30, validators=[URLValidator])
 
 
-
-
 class Label(models.Model):
     model = models.CharField(max_length=255)
     label = models.CharField(max_length=255)
 
     def __str__(self):
         return self.label
+
 
 class InferenceDetectionClassification(Inference):
     bounding_boxes = models.ManyToManyField(BoundingBox)
