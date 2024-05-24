@@ -47,6 +47,8 @@ class BoundingBox(Inference):
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     inference_class = models.CharField(max_length=255)
     confidence = models.FloatField(validators=[validate_relative])
+    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.CASCADE)
+
     # TODO: colores
 
 

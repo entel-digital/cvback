@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
 from cvback.devices.models import Area, Camera, InferenceComputer
 from cvback.events.models import AreaOfInterest, BoundingBox, Inference, \
-    InferenceDetectionClassification, InferenceClassification, Label, Event, Alert
+    InferenceDetectionClassification, InferenceClassification, Label, Event
+from cvback.alerts.models import Alert
 
 class Command(BaseCommand):
     help = 'Deletes dummy data from the database'

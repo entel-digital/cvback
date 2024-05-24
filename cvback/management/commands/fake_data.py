@@ -49,12 +49,15 @@ def create_areas_of_interest(n):
 
 def create_bounding_boxes(n):
     for _ in range(n):
-        BoundingBox.objects.create(
-            top_left=[random.uniform(0, 1), random.uniform(0, 1)],
-            bottom_right=[random.uniform(0, 1), random.uniform(0, 1)],
-            inference_class=fake.word(),
-            confidence=random.uniform(0, 1)
-        )
+        inference_computer_instance = InferenceComputer.objects.order_by('?').first()
+        if inference_computer_instance:
+            BoundingBox.objects.create(
+                top_left=[random.uniform(0, 1), random.uniform(0, 1)],
+                bottom_right=[random.uniform(0, 1), random.uniform(0, 1)],
+                inference_class=fake.word(),
+                confidence=random.uniform(0, 1),
+                inference_computer=inference_computer_instance
+            )
 
 def create_labels(n):
     for _ in range(n):
@@ -70,12 +73,9 @@ def create_inferences(n):
         
         if inference_computer_instance and label_instance:
             if random.choice([True, False]):
-                kind_value = 'dc'
                 inference_instance = InferenceDetectionClassification(
-                    inference_computer=inference_computer_instance,
-                    kind=kind_value
+                    inference_computer=inference_computer_instance
                 )
-                # Save the instance to get an ID before adding many-to-many relationships
                 inference_instance.save()
 
                 bounding_box_instance = BoundingBox.objects.order_by('?').first()
@@ -83,18 +83,15 @@ def create_inferences(n):
                     inference_instance.bounding_boxes.add(bounding_box_instance)
                 inference_instance.labels.add(label_instance)
             else:
-                kind_value='cl'
                 InferenceClassification.objects.create(
                     inference_computer=inference_computer_instance,
-                    label=label_instance,
-                    kind=kind_value
+                    label=label_instance
                 )
 
 def create_events(n):
     for _ in range(n):
         camera_instance = Camera.objects.order_by('?').first()
 
-        # Randomly select between InferenceDetectionClassification and InferenceClassification
         if random.choice([True, False]):
             inference_instance = InferenceDetectionClassification.objects.order_by('?').first()
         else:
@@ -109,7 +106,7 @@ def create_events(n):
 def create_alerts(n):
     for _ in range(n):
         Alert.objects.create(
-            alert_type=random.choice(['telegram', 'sms']),
+            alert_type=random.choice(['telegram', 'sms', 'whatsapp_group']),
             recipient=fake.phone_number(),
             message=fake.text(),
             related_event=Event.objects.order_by('?').first()
