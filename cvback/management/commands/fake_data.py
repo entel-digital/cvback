@@ -52,7 +52,7 @@ def create_bounding_boxes(n):
         BoundingBox.objects.create(
             top_left=[random.uniform(0, 1), random.uniform(0, 1)],
             bottom_right=[random.uniform(0, 1), random.uniform(0, 1)],
-            type=fake.word(),
+            inference_class=fake.word(),
             confidence=random.uniform(0, 1)
         )
 

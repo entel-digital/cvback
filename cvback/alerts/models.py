@@ -1,5 +1,5 @@
 from django.db import models
-from cvback.events.models import Event
+#from django.apps import apps
 # Create your models here.
 class Alert(models.Model):
     ALERT_TYPES = (
@@ -11,4 +11,4 @@ class Alert(models.Model):
     alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
     recipient = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
-    related_event = models.ForeignKey(Event, on_delete=models.DO_NOTHING, related_name='alerts_from_alerts')
+    related_event = models.ForeignKey('events.Event', on_delete=models.DO_NOTHING, related_name='alerts_from_alerts_unique')
