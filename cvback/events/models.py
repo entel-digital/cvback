@@ -1,6 +1,8 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
+from cvback.alerts.models import Alert
+
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -52,6 +54,7 @@ class BoundingBox(Inference):
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    #related_alert = models.ForeignKey(Alert, on_delete=models.CASCADE, related_name='alerts_from_events')
 
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)

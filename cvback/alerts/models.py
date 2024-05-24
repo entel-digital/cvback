@@ -11,4 +11,4 @@ class Alert(models.Model):
     alert_type = models.CharField(max_length=50, choices=ALERT_TYPES)
     recipient = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
-    related_event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='alert_from_event')
+    related_event = models.ForeignKey(Event, on_delete=models.DO_NOTHING, related_name='alerts_from_alerts')
