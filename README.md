@@ -39,14 +39,14 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 # To create .envs directory and .django file with environment variables
 python generate_env_var.py
 
-docker-compose -f local.yml build
-docker-compose -f local.yml up
+docker-compose -f production.yml build
+docker-compose -f production.yml up
 
 # To create a superuser for admin panel: http://localhost:8000/admin/
-docker-compose -f local.yml exec django python manage.py createsuperuser
+docker-compose -f production.yml exec django python manage.py createsuperuser
 
 #To create dummy data in local
-docker-compose -f local.yml exec django python manage.py generate_fake_data
+docker-compose -f production.yml exec django python manage.py generate_fake_data
 
 http://localhost:8000/admin
 ```
