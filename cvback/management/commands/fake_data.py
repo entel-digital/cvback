@@ -24,9 +24,8 @@ from cvback.alerts.models import Alert
 fake = Faker()
 
 def generate_random_polygon():
-    # Generar un conjunto cerrado de coordenadas
     coordinates = [(fake.longitude(), fake.latitude()) for _ in range(4)]
-    coordinates.append(coordinates[0])  # Asegurar que el polígono está cerrado
+    coordinates.append(coordinates[0])
     return Polygon(coordinates)
 
 def create_areas(n):
@@ -34,19 +33,16 @@ def create_areas(n):
         area_polygon = generate_random_polygon()
         Area.objects.create(
             name=fake.word(),
-            area=area_polygon,
+            area=area_polygon
         )
 
 def create_cameras(n):
-    coordinates = [(fake.longitude(), fake.latitude()) for _ in range(4)]
-    coordinates.append(coordinates[0])
-    area_polygon = Polygon(coordinates)
     for _ in range(n):
         Camera.objects.create(
             name=fake.word(),
             enabled=fake.boolean(),
             primary_stream=fake.url(),
-            area=area_polygon
+            #area=area_polygon
         )
 
 def create_inference_computers(n):
@@ -139,7 +135,6 @@ def main():
     if not data_exists():
         print("No data found, generating dummy data...")
         
-        # Number of instances to create
         NUM_AREAS_OF_INTEREST = 20
         NUM_BOUNDING_BOXES = 20
         NUM_INFERENCES = 10
@@ -150,7 +145,7 @@ def main():
         NUM_AREAS = 10
         NUM_INFERENCE_COMPUTER = 10
 
-        create_areas(NUM_AREAS)
+        #create_areas(NUM_AREAS)
         create_cameras(NUM_CAMERAS)
         create_inference_computers(NUM_INFERENCE_COMPUTER)
         create_labels(NUM_LABELS)
