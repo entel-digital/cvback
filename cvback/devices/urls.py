@@ -1,10 +1,11 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from cvback.devices.views import CameraViewSet, InferenceComputerViewSet
+from cvback.devices.views import AreaViewSet, CameraViewSet, InferenceComputerViewSet
 from . import views
 
 
 router = DefaultRouter()
+router.register(r'areas', AreaViewSet)
 router.register(r'cameras', CameraViewSet)
 router.register(r'nference_computers', InferenceComputerViewSet)
 

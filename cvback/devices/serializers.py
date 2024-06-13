@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from .models import Camera, InferenceComputer
+from .models import Camera, Area, InferenceComputer
 
+class AreaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Area
+        fields = '__all__'
+        
 class CameraSerializer(serializers.ModelSerializer):
     class Meta:
         model = Camera

@@ -12,6 +12,7 @@ class Command(BaseCommand):
         InferenceDetectionClassification.objects.all().delete()
         InferenceClassification.objects.all().delete()
         Label.objects.all().delete()
+        Area.objects.all().delete()
         Camera.objects.all().delete()
         InferenceComputer.objects.all().delete()
         AreaOfInterest.objects.all().delete()
