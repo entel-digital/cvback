@@ -27,8 +27,8 @@
     {% endblock css %}
     <!-- Le javascript
     ================================================== -->
-    {# Placed at the top of the document so pages load faster with defer #} {%
-    block javascript %}
+    {# Placed at the top of the document so pages load faster with defer #}
+    {%block javascript %}
 
     <!-- Bootstrap JS -->
     <script
@@ -130,8 +130,8 @@
       {% endblock content %}
     </div>
     <!-- /container -->
-    {% block modal %} {% endblock modal %} {% block inline_javascript %} {%
-    comment %} Script tags with only code, no src (defer by default). To run
+    {% block modal %} {% endblock modal %} {% block inline_javascript %}
+    {%comment %} Script tags with only code, no src (defer by default). To run
     with a "defer" so that you run inline code:
     <script>
       window.addEventListener("DOMContentLoaded", () => {

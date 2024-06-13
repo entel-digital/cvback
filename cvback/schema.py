@@ -7,14 +7,13 @@ class UpdateEventMutation(graphene.Mutation):
         id = graphene.ID(required=True)
         tag = graphene.String()
 
-    book = graphene.Field(EventType)
+    event = graphene.Field(EventType)
 
     def mutate(self, info, id, tag):
         event = Event.objects.get(pk=id)
         event.tag = tag
         event.save()
         return UpdateEventMutation(event=event)
-
 
 class Query(graphene.ObjectType):
     all_areas_of_interest = graphene.List(AreaOfInterestType)

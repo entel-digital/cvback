@@ -55,7 +55,6 @@ class BoundingBox(Inference):
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
-
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
 
@@ -94,9 +93,7 @@ class InferenceDetectionClassification(Inference):
     def __str__(self):
         return f"InferenceDetectionClassification ID: {self.id}"
 
-    # TODO: Paula va a poner un validador que los bounding boxes sean la misma cantidad que los labels
     def clean(self):
-        #Validate only if both ManyToMany relationships have been established
         if self.pk:
             if self.bounding_boxes.count() != self.labels.count():
                 raise ValidationError("The number of bounding boxes must match the number of labels") #pag 146
