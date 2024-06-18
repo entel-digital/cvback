@@ -49,6 +49,8 @@ class BoundingBox(Inference):
     confidence = models.FloatField(validators=[validate_relative])
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.CASCADE)
 
+class TrackingID(Inference):
+    pass
     # TODO: colores
 
 class EventType(models.Model):
@@ -63,6 +65,7 @@ class Event(models.Model):
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
     # TODO: crear clases vinculadas
+    inference_detection_classification_tracker = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
     # inference_tracker
     # inference_ocr
     def __str__(self):
@@ -87,10 +90,17 @@ class Algorithm(models.Model):
 
 class Label(models.Model):
     model = models.CharField(max_length=255)
-    label = models.CharField(max_length=255)
+    label = models.CharField(max_length=255) # TODO: unique
+    # TODO render label (las del cvutls entel digital)
 
     def __str__(self):
         return self.label
+
+
+class InferenceOCR(Inference):
+    name = models.CharField(max_length=30)
+    value = models.CharField(max_length=255)
+    # TODO: confidence acá y en todos
 
 
 class InferenceDetectionClassification(Inference):
@@ -109,6 +119,22 @@ class InferenceDetectionClassification(Inference):
         super().save(*args, **kwargs)
         self.clean()
 
+class InferenceDetectionClassificationTracker(Inference):
+    tracking_ids = models.ManyToManyField(TrackingID)
+    bounding_boxes = models.ManyToManyField(BoundingBox)
+    labels = models.ManyToManyField(Label)
+
+    def __str__(self):
+        return f"InferenceDetectionClassification ID: {self.id}"
+
+    def clean(self):
+        if self.pk:
+            if self.bounding_boxes.count() != self.labels.count():
+                raise ValidationError("The number of bounding boxes must match the number of labels") #pag 146
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.clean()
 
 class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
