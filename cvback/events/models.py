@@ -51,13 +51,20 @@ class BoundingBox(Inference):
 
     # TODO: colores
 
+class EventType(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    name = models.CharField(max_length=30)
+
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    event_type = models.ForeignKey(EventType, on_delete=models.CASCADE) # TODO: one to many
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
-
+    # TODO: crear clases vinculadas
+    # inference_tracker
+    # inference_ocr
     def __str__(self):
         return f"Event at {self.added_date} from {self.camera}"
 
