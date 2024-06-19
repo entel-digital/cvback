@@ -39,10 +39,28 @@ class LineOfInterest(models.Model):
     description = models.TextField(null=True, blank=True)
 
 
+class Frame(models.Model):
+    image = models.FileField() # TODO: optional
+    cameras = models.ManyToManyField(Camera)
+
+class Video(models.Model):
+    video = models.FileField()
+    cameras = models.ManyToManyField(Camera)
+
+
+class KeyFrames(models.Model):
+    name = models.CharField()
+    frames = models.ManyToManyField(Frame)
+class KeyVideos(models.Model):
+    name = models.CharField()
+    frames = models.ManyToManyField(Video)
+
+
 class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey('Algorithm', on_delete=models.CASCADE, null=True, blank=True)
+    confidence = models.FloatField(validators=[validate_relative])
 
     class Meta:
         abstract = True
@@ -56,33 +74,41 @@ class BoundingBox(Inference):
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     color_label = models.CharField(max_length=30)
-    # inference_class = models.CharField(max_length=255)
-    # confidence = models.FloatField(validators=[validate_relative])
-    # inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.CASCADE)
 
-
-class TrackingID(Inference):
-    pass
-    # TODO: colores
+    class Meta:
+        verbose_name_plural = "Bounding boxes"
 
 class EventType(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
+    version = models.CharField(max_length=30) # TODO: validate x.x.x format
 
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
     cameras = models.ManyToManyField(Camera)
+    frames = models.ManyToManyField(Frame)
+    key_frames = models.ManyToManyField(KeyFrames)
+    videos = models.ManyToManyField(Video)
+    key_videos = models.ManyToManyField(KeyVideos)
+    confidence = models.FloatField(validators=[validate_relative])
+    labels_detected = models.ManyToManyField(Label)
+    labels_missing = models.ManyToManyField(Label)
 
+    # Inferences
+    # TODO: por que estan con comillas? tenemos que mover las definiciones arriba para que python las tome?
+    inference_classification = models.ManyToManyField('ManyToManyField', on_delete=models.CASCADE, null=True, blank=True)
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
-    inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
-    # TODO: crear clases vinculadas
-    inference_detection_classification_tracker = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
-    # inference_tracker
-    # inference_ocr
+    inference_detection_classification_tracker = models.ManyToManyField('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
+    inference_ocr = models.ManyToManyField(InferenceOCR, on_delete=models.CASCADE, null=True, blank=True)
+    # Key Inferences
+    key_inference_classification = models.ManyToManyField(KeyInferenceClassification)
+    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification)
+    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker)
+    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR)
     def __str__(self):
-        return f"Event at {self.added_date} from {self.cameras}"
+        return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
 
 
 class Algorithm(models.Model):
@@ -91,7 +117,7 @@ class Algorithm(models.Model):
         DETECTION_CLASSIFICATION_TRACKING_MODEL = 'detection_classification_tracking', 'Detection + classification + tracking model'
         CLASSIFICATION_MODEL = 'classification', 'Classification model'
         CLASSIFICATION_CLASSIC_CV = 'cl_classification', 'Classification classic computer vision'
-        BUSSINESS_LOGIC = ''
+        BUSINESS_LOGIC = 'business_logic', 'Custom business logic'
 
     kind = models.CharField(
            max_length=255,
@@ -112,7 +138,6 @@ class Label(models.Model):
         PPE = 'ppe'
         OTHER = 'other'
 
-    #model = models.CharField(max_length=255) # Para que el model?
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -120,10 +145,13 @@ class Label(models.Model):
 
 
 class InferenceOCR(Inference):
-    name = models.CharField(max_length=30)
-    value = models.CharField(max_length=255)
-    # TODO: confidence acá y en todos
+    name = models.CharField(max_length=255)
+    value = models.CharField(max_length=255) # TODO: un campo de texto más grande
+    confidence = models.FloatField(validators=[validate_relative])
 
+class KeyInferenceOCR(models.Model):
+    name = models.CharField(max_length=255)
+    inferences = models.ForeignKey(InferenceOCR)
 
 class InferenceDetectionClassification(Inference):
     bounding_boxes = models.ManyToManyField(BoundingBox)
@@ -141,8 +169,12 @@ class InferenceDetectionClassification(Inference):
         super().save(*args, **kwargs)
         self.clean()
 
+class KeyInferenceDetectionClassification(models.Model):
+    name = models.CharField(max_length=255)
+    inferences = models.ForeignKey(InferenceDetectionClassification)
+
 class InferenceDetectionClassificationTracker(Inference):
-    tracking_ids = models.ManyToManyField(TrackingID)
+    tracking_ids = models.ArrayField(models.IntegerField())
     bounding_boxes = models.ManyToManyField(BoundingBox)
     labels = models.ManyToManyField(Label)
 
@@ -158,9 +190,16 @@ class InferenceDetectionClassificationTracker(Inference):
         super().save(*args, **kwargs)
         self.clean()
 
+
+class KeyInferenceDetectionClassificationTracker(models.Model):
+    name = models.CharField(max_length=255)
+    inferences = models.ForeignKey(InferenceDetectionClassificationTracker)
 class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date} > {self.label}"
 
+class KeyInferenceClassification(models.Model):
+    name = models.CharField(max_length=255)
+    inferences = models.ForeignKey(InferenceClassification)

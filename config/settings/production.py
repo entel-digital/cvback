@@ -8,6 +8,8 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from .base import *  # noqa
 from .base import env
 
+# TODO: set storage to google storage
+# TODO: set cdn to "dome" (Entel's cloudflair)
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key

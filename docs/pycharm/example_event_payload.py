@@ -1,8 +1,9 @@
 payload = {
-  "event_type": "vehicle_tracking_completed",
-  "timestamp": "2024-06-18T09:54:54Z",
-  "camera": [0, 1],  # quemadisimo por ahora
-  "inference_detection_classification_tracker": [
+    "event_type": "vehicle_tracking_completed",
+    "label": "non_compliant",
+    "timestamp": "2024-06-18T09:54:54Z", # no se si ese es el formato que pide el back?
+    "camera": [0, 1],  # quemadisimo por ahora
+    "inference_detection_classification_tracker": [
     {
       "label": "vehicle",
       "track_id": 415, # id de seguimiento interno
@@ -10,10 +11,10 @@ payload = {
         {"previous_center": 0.84427083, "current_center": 0.84296875, "line_position": 0.82291667, "frame_index": 123}
       ]
     }
-  ],
-  "inference_detection_classification": [
+    ],
+    "inference_detection_classification": [
     {
-      "label": "vehiculo",
+      "label": 0,
       "bounding_box": {
         "x1": 0.1,
         "y1": 0.15,
@@ -72,30 +73,31 @@ payload = {
       "frame_index": 123,
       "timestamp": "2024-06-18T09:54:45Z"
     }
-  ],
-  "inference_detection_ocr": [
+    ],
+    "inference_detection_ocr": [
     {
       "name": "license_plate",
       "value": "TJYB39",
       "confidence": 0.99,
       "frame_index": 123
     }],
-  "frames": [
+    "frames": [
     {
       "id": 0,
       "path": "/mnt/Data/Compliance_Status/non_compliance/415_main_20240618_095454.jpg"
     }],
-  "inference_acceso_mina": {
-    "selected_track_id": 415,
-    "selected_license_plate": "TJYB39",
-    "classes_detected": ["vehículo", "baliza", "banderín", "pértiga"],
-    "missing_classes": ["chapulín"],
-    "compliance_status": "non_compliant",
-    "confidence": 0,
+    "labels_detected": [0, 2, 3, 4], # ID del cvback
+    "labels_missing": [1], # ID del cvback
+    "key_inference_ocr": {
+        "selected_license_plate": 420, # ID del cvback
+    },
+    "key_inference_detection_classification_tracker":{
+        "selected_track_id": 415,
+    },
     "key_frames": {
       "main_image": 123,
       "lpr_successful_image": 123,
       "lpr_middle_image": 132
-    }
-  }
+    },
+    "confidence": 0,
 }

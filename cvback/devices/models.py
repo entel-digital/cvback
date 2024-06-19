@@ -10,10 +10,9 @@ class Area(models.Model):
     name = models.CharField(max_length=255)
     area = Polygon()
     diagram = models.ImageField()
-    # La necesitamos? yo la borraria
-    area_location = models.PointField(default=Point(-70.6761237, -33.56396059, srid=4326))
+    #area_location = models.Polygon(default=Point(-70.6761237, -33.56396059, srid=4326))
     def __str__(self):
-        return self.name
+        return self.area
 
 
 class Camera(models.Model):
@@ -28,7 +27,7 @@ class Camera(models.Model):
     need_cleaning = models.BooleanField(default=False)
     need_physical_maintenance = models.BooleanField(default=False)
     need_replacement = models.BooleanField(default=False)
-    # TODO: add photo (of the camera)
+    photo = models.ImageField()
 
     def __str__(self):
         return self.name
