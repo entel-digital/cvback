@@ -9,7 +9,7 @@ class Area(models.Model):
     added_modified = models.DateTimeField("date modified", auto_now=True)
     name = models.CharField(max_length=255)
     area = Polygon()
-    diagram = models.ImageField()
+    diagram = models.ImageField(null=True, blank=True)
     #area_location = models.Polygon(default=Point(-70.6761237, -33.56396059, srid=4326))
     def __str__(self):
         return self.area
@@ -27,7 +27,7 @@ class Camera(models.Model):
     need_cleaning = models.BooleanField(default=False)
     need_physical_maintenance = models.BooleanField(default=False)
     need_replacement = models.BooleanField(default=False)
-    photo = models.ImageField()
+    photo = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return self.name
