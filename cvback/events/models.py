@@ -23,10 +23,20 @@ class AreaOfInterest(models.Model):
     name = models.CharField(max_length=255)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     geometry = ArrayField(ArrayField(models.FloatField(validators=[validate_relative]), size=2))
-    description = models.TextField(null=True, blank=True) ## validar TODO: color?
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.camera} > {self.name}"
+
+
+class LineOfInterest(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_modified = models.DateTimeField("date modified", auto_now=True)
+    enabled = models.BooleanField(default=True)
+    name = models.CharField(max_length=255)
+    camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    geometry = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
+    description = models.TextField(null=True, blank=True)
 
 
 class Inference(models.Model):
@@ -42,12 +52,14 @@ class Inference(models.Model):
 
 
 class BoundingBox(Inference):
-    # added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_date = models.DateTimeField("date created", auto_now_add=True)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
-    inference_class = models.CharField(max_length=255)
-    confidence = models.FloatField(validators=[validate_relative])
-    inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.CASCADE)
+    color_label = models.CharField(max_length=30)
+    # inference_class = models.CharField(max_length=255)
+    # confidence = models.FloatField(validators=[validate_relative])
+    # inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.CASCADE)
+
 
 class TrackingID(Inference):
     pass
@@ -60,8 +72,9 @@ class EventType(models.Model):
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
-    event_type = models.ForeignKey(EventType, on_delete=models.CASCADE) # TODO: one to many
-    camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    cameras = models.ManyToManyField(Camera)
+
     inference_detection_classification = models.ForeignKey('InferenceDetectionClassification', on_delete=models.CASCADE, null=True, blank=True)
     inference_classification = models.ForeignKey('InferenceClassification', on_delete=models.CASCADE, null=True, blank=True)
     # TODO: crear clases vinculadas
@@ -69,14 +82,16 @@ class Event(models.Model):
     # inference_tracker
     # inference_ocr
     def __str__(self):
-        return f"Event at {self.added_date} from {self.camera}"
+        return f"Event at {self.added_date} from {self.cameras}"
 
 
 class Algorithm(models.Model):
     class AlgorithmKind(models.TextChoices):
-        DETECTION_PLUS_CLASSIFICATION_MODEL = 'dc', 'Detection + classification model'
-        CLASSIFICATION_MODEL = 'cl', 'Classification model'
-        CLASSIFICATION_CLASSIC_CV = 'clccv', 'Classification classic computer vision'
+        DETECTION_CLASSIFICATION_MODEL = 'detection_classification', 'Detection + classification model'
+        DETECTION_CLASSIFICATION_TRACKING_MODEL = 'detection_classification_tracking', 'Detection + classification + tracking model'
+        CLASSIFICATION_MODEL = 'classification', 'Classification model'
+        CLASSIFICATION_CLASSIC_CV = 'cl_classification', 'Classification classic computer vision'
+        BUSSINESS_LOGIC = ''
 
     kind = models.CharField(
            max_length=255,
@@ -89,9 +104,16 @@ class Algorithm(models.Model):
 
 
 class Label(models.Model):
-    model = models.CharField(max_length=255)
-    label = models.CharField(max_length=255) # TODO: unique
-    # TODO render label (las del cvutls entel digital)
+    class ColorGroup(models.TextChoices):
+        PERSON = 'person'
+        ANIMAL = 'animal'
+        VEHICLE = 'vehicle'
+        ID = 'id'
+        PPE = 'ppe'
+        OTHER = 'other'
+
+    #model = models.CharField(max_length=255) # Para que el model?
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.label
