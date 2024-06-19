@@ -67,6 +67,10 @@ class Label(models.Model):
         OTHER = 'other'
 
     name = models.CharField(max_length=255, unique=True)
+    color_group =  models.CharField(
+           max_length=255,
+           choices=ColorGroup.choices
+    )
 
     def __str__(self):
         return self.label
