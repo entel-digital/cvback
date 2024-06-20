@@ -5,8 +5,8 @@ from cvback.devices.models import Camera, InferenceComputer
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.core.validators import URLValidator
-#Quizás hacer una nueva aplicación tipo "inference" para simplificar el archivo
+from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
+#Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
 
 def validate_relative(value):
     if value < 0 or value > 1:
@@ -15,7 +15,8 @@ def validate_relative(value):
             params={"value": value},
         )
 
-
+# https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning
+validate_semantic_versioning = RegexValidator('/^\d{1,2}\.\d{1,2}\.\d{1,3}$/g')
 class AreaOfInterest(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -53,7 +54,7 @@ class Algorithm(models.Model):
     )
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
-    version = models.CharField(max_length=30) # TODO: validate x.x.x format
+    version = models.CharField(max_length=30, validators=validate_semantic_versioning)
     repository = models.CharField(max_length=30, validators=[URLValidator])
 
 
@@ -77,12 +78,12 @@ class Label(models.Model):
 
 
 class Frame(models.Model):
-    image = models.FileField() # TODO: optional
+    image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
 
 class Video(models.Model):
-    video = models.FileField()
+    video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
 
@@ -113,7 +114,6 @@ class BoundingBox(Inference):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
-    color_label = models.CharField(max_length=30, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Bounding boxes"
@@ -190,7 +190,11 @@ class KeyInferenceClassification(models.Model):
 class EventType(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
-    version = models.CharField(max_length=30) # TODO: validate x.x.x format
+    version = models.CharField(max_length=30, validators=validate_semantic_versioning)
+    documentation = models.FileField(null=True,
+                           blank=True,
+                           validators=[FileExtensionValidator( ['pdf'] ) ])
+
 
 
 class Event(models.Model):
