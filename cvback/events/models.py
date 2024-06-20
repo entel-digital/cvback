@@ -6,7 +6,10 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
-#Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
+
+#
+# TODO: Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
+
 
 def validate_relative(value):
     if value < 0 or value > 1:
@@ -15,8 +18,11 @@ def validate_relative(value):
             params={"value": value},
         )
 
+
 # https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning
 validate_semantic_versioning = RegexValidator('/^\d{1,2}\.\d{1,2}\.\d{1,3}$/g')
+
+
 class AreaOfInterest(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -28,8 +34,9 @@ class AreaOfInterest(models.Model):
 
     def __str__(self):
         return f"{self.camera} > {self.name}"
-
 # TODO: Módulo para guardar historial... Field
+
+
 class LineOfInterest(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -43,18 +50,15 @@ class LineOfInterest(models.Model):
 class Algorithm(models.Model):
     class AlgorithmKind(models.TextChoices):
         DETECTION_CLASSIFICATION_MODEL = 'detection_classification', 'Detection + classification model'
-        DETECTION_CLASSIFICATION_TRACKING_MODEL = 'detection_classification_tracking', 'Detection + classification + tracking model'
+        DETECTION_CLASSIFICATION_TRACKING_MODEL = 'detection_classification_tracking','Detection + classification + tracking model'
         CLASSIFICATION_MODEL = 'classification', 'Classification model'
         CLASSIFICATION_CLASSIC_CV = 'cl_classification', 'Classification classic computer vision'
         BUSINESS_LOGIC = 'business_logic', 'Custom business logic'
 
-    kind = models.CharField(
-           max_length=255,
-           choices=AlgorithmKind.choices
-    )
+    kind = models.CharField(max_length=255, choices=AlgorithmKind.choices)
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
-    version = models.CharField(max_length=30, validators=validate_semantic_versioning)
+    version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     repository = models.CharField(max_length=30, validators=[URLValidator])
 
 
@@ -68,13 +72,10 @@ class Label(models.Model):
         OTHER = 'other'
 
     name = models.CharField(max_length=255, unique=True)
-    color_group =  models.CharField(
-           max_length=255,
-           choices=ColorGroup.choices
-    )
+    color_group = models.CharField(max_length=255, choices=ColorGroup)
 
     def __str__(self):
-        return self.label
+        return self.name
 
 
 class Frame(models.Model):
@@ -121,7 +122,7 @@ class BoundingBox(Inference):
 
 class InferenceOCR(Inference):
     name = models.CharField(max_length=255)
-    value = models.CharField(max_length=255) # TODO: un campo de texto más grande
+    value = models.TextField()
     confidence = models.FloatField(validators=[validate_relative])
 
 
@@ -163,7 +164,7 @@ class InferenceDetectionClassificationTracker(Inference):
     def clean(self):
         if self.pk:
             if self.bounding_boxes.count() != self.labels.count():
-                raise ValidationError("The number of bounding boxes must match the number of labels") #pag 146
+                raise ValidationError("The number of bounding boxes must match the number of labels")
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -190,11 +191,10 @@ class KeyInferenceClassification(models.Model):
 class EventType(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
-    version = models.CharField(max_length=30, validators=validate_semantic_versioning)
+    version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     documentation = models.FileField(null=True,
-                           blank=True,
-                           validators=[FileExtensionValidator( ['pdf'] ) ])
-
+                                     blank=True,
+                                     validators=[FileExtensionValidator(['pdf'])])
 
 
 class Event(models.Model):
@@ -211,18 +211,16 @@ class Event(models.Model):
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
-    inference_detection_classification = models.ForeignKey(InferenceDetectionClassification, on_delete=models.CASCADE, null=True, blank=True)
-    inference_detection_classification_tracker = models.ManyToManyField(InferenceDetectionClassificationTracker, blank=True)
+    inference_detection_classification = models.ForeignKey(InferenceDetectionClassification, on_delete=models.CASCADE,
+                                                           null=True, blank=True)
+    inference_detection_classification_tracker = models.ManyToManyField(InferenceDetectionClassificationTracker,
+                                                                        blank=True)
     inference_ocr = models.ManyToManyField(InferenceOCR, blank=True)
     # Key Inferences
     key_inference_classification = models.ManyToManyField(KeyInferenceClassification)
     key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification)
     key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker)
     key_inference_ocr = models.ManyToManyField(KeyInferenceOCR)
+
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
-
-
-
-
-
