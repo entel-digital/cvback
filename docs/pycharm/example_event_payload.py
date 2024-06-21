@@ -1,8 +1,8 @@
 payload = {
     "timestamp": "2024-06-18T09:54:54Z", # no se si ese es el formato que pide el back?
     "event_type": "vehicle_tracking_completed",
-    "label": "non_compliant",
-    "confidence": 1,
+    "event_label": "non_compliant",
+    "event_confidence": 1,
     "labels_detected": [0, 2, 3, 4], # ID del cvback
     "labels_missing": [1], # ID del cvback
     "cameras": [0, 1],  # quemadisimo por ahora
