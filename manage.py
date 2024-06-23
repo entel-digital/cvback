@@ -4,7 +4,13 @@ import sys
 from pathlib import Path
 
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+    if (os.getenv('PLATFORM_APPLICATION_NAME') is None):
+        if(os.getenv('CVBACK_PRODUCTION') == 'True'):
+            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
+        else:
+            os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.platform")
 
     try:
         from django.core.management import execute_from_command_line

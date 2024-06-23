@@ -3,19 +3,31 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
+from datetime import timedelta
 
 import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
+
 # cvback/
 APPS_DIR = BASE_DIR / "cvback"
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=False)
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", default=True)
+
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
-    env.read_env(str(BASE_DIR / ".env"))
+    env.read_env(str(BASE_DIR / ".envs/.local/.django"))
+    env.read_env(str(BASE_DIR / ".envs/.local/.postgres"), override=True)
 
+database_config = {
+         "ENGINE": "django.contrib.gis.db.backends.postgis",
+          "NAME": env("POSTGRES_DB"),
+          "USER": env("POSTGRES_USER"),
+          "PASSWORD": env("POSTGRES_PASSWORD"),
+          "HOST": env("POSTGRES_HOST"),
+          "PORT": env("POSTGRES_PORT")
+          }
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -45,24 +57,16 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ['DJANGO_ENCRYPTED_FIELD_KEY'], "utf-8")#.decode('unicode_escape')
-#DJANGO_ENCRYPTED_FIELD_KEY = b'12345678901234567890123456789012'
-#bytes(os.environ["FOO"], "utf-8").decode('unicode_escape')
+#SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
+DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
+SECRET_KEY = env('SECRET_KEY')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASES = {"default": env.db("DATABASE_URL")}
-# DATABASES = {
-#     "default": {
-#         #"ENGINE": "django.contrib.gis.db.backends.postgis",
-#         "ENGINE": "django.db.backends.postgresql",
-#         "URL": env.db("DATABASE_URL"),
-#         # "USER": env.db("POSTGRES_USER"),
-#         # "PASSWORD": env.db("POSTGRES_PASSWORD"),
-#         # "HOST": env.db("POSTGRES_HOST"),
-#         # "PORT": env.db("POSTGRES_PORT")
-#     },
-# }
+#DATABASES = {"default": env.db("DATABASE_URL")}
+#database_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+DATABASES = {'default': database_config}
+
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
@@ -98,13 +102,17 @@ THIRD_PARTY_APPS = [
     "rest_framework",
 #    "django_better_admin_arrayfield",
     "django_jsonform",
-    "drf_spectacular"
+    "drf_spectacular",
+    "graphene_django",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
 ]
 
 LOCAL_APPS = [
+    "cvback",
     "cvback.users",
     "cvback.devices",
-    "cvback.events"
+    "cvback.events",
+    "cvback.alerts"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -165,11 +173,15 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-STATIC_ROOT = str(BASE_DIR / "staticfiles")
+#STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_ROOT =  os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR / "static")]
+#STATICFILES_DIRS = [str(APPS_DIR / "static")]
+STATICFILES_DIRS = [
+    os.path.join(APPS_DIR, 'static')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -179,7 +191,9 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-MEDIA_ROOT = str(APPS_DIR / "media")
+#MEDIA_ROOT = str(APPS_DIR / "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "/media/"
 
@@ -210,6 +224,8 @@ TEMPLATES = [
         },
     }
 ]
+
+
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
@@ -307,3 +323,27 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
 }
+
+#============= Configuration JWT Authentication===
+GRAPHQL_JWT = {
+    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=10),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_SECRET_KEY": SECRET_KEY,
+    "JWT_ALGORITHM": "HS256",
+}
+
+GRAPHENE = {
+    "SCHEMA": "cvback.events.schema.schema",
+    "MIDDLEWARE": [
+        "graphql_jwt.middleware.JSONWebTokenMiddleware",
+    ],
+}
+AUTHENTICATION_BACKENDS = [
+    "graphql_jwt.backends.JSONWebTokenBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+LOGIN_REDIRECT_URL = "/"

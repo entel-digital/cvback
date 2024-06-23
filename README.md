@@ -9,26 +9,19 @@ License: MIT
 
 ## TODO
 
-- Projects app
-  - Zones
-- Events app
-  - https://django-storages.readthedocs.io/en/latest/
-  - https://www.djongomapper.com/get-started/
-  - On graphana?
-    - https://grafana.com/grafana/plugins/dalvany-image-panel/
-    - https://grafana.com/grafana/plugins/innius-video-panel/
-- Devices app
-  - Camera
-    - last image
-    - [encrypt url](https://pypi.org/project/django-encrypted-field/)
 - Front
   - scss
   - event list
   - camera list
-- Authentication
-  - External Oauth?
-  - Oauth for rest (m2m)
--
+- Authentication (native)
+- storage: what we want to do?
+- Alerts (app)
+  - Telegram
+  - Whatsapp
+- Inference computers: add what data?
+  - IP adress?
+  - Specs? (GPU, ram, etc)
+- 
 
 ## Some criteria
 
@@ -43,29 +36,20 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 ### Development Setup
 
 ```bash
-docker-compose -f local.yml build
-docker-compose -f local.yml up
-docker-compose -f local.yml run --rm django python manage.py createsuperuser
+# To create .envs directory and .django file with environment variables
+python generate_env_var.py
+
+docker-compose -f production.yml build
+docker-compose -f production.yml up
+
+# To create a superuser for admin panel: http://localhost:8000/admin/
+docker-compose -f production.yml exec django python manage.py createsuperuser
+
+#To create dummy data in local
+docker-compose -f production.yml exec django python manage.py generate_fake_data
+
 http://localhost:8000/admin
 ```
-
-#### Encryption Key Generation
-
-- To secure sensitive data, it's crucial to generate a unique encryption key for your project. Follow these steps to generate one:
-
-1. Generate the Encryption Key: Navigate to the `tools` directory and run the following script with Python:
-
-```bash
-python generate_encryption_key.py
-```
-
-2. Check the Encryption Key: Open your '.django' file and verify that `DJANGO_ENCRYPTED_FIELD_KEY` has a generated key:
-
-```bash
-DJANGO_ENCRYPTED_FIELD_KEY = <YOUR_GENERATED_KEY>
-```
-
-3. Note: Ensure that your '.django' file is not tracked by git to mantain the security of your key.
 
 ### Setting Up Your Users
 

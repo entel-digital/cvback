@@ -1,6 +1,29 @@
 from rest_framework import serializers
 #from drf_compound_fields.fields import ListField
-from .models import AreaOfInterest
+from cvback.events.models import AreaOfInterest, Event, InferenceDetectionClassification, InferenceClassification
+
+class EventSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    added_date = serializers.DateTimeField(read_only=True)
+    camera = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    inference_detection_classification = serializers.SlugRelatedField(
+        slug_field='id', 
+        queryset=InferenceDetectionClassification.objects.all(),
+        required=False,
+        allow_null=True
+    )
+    inference_classification = serializers.SlugRelatedField(
+        slug_field='id', 
+        queryset=InferenceClassification.objects.all(),
+        required=False,
+        allow_null=True
+    )
+
+    def create(self, validated_data):
+        """
+        Create and return a new `Snippet` instance, given the validated data.
+        """
+        return Event.objects.create(**validated_data)
 
 
 class AreaOfInterestSerializer(serializers.Serializer):
@@ -33,3 +56,4 @@ class AreaOfInterestSerializer(serializers.Serializer):
         instance.geometry = validated_data.get('geometry', instance.geometry)
         instance.save()
         return instance
+
