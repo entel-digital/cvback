@@ -1,4 +1,6 @@
 from graphene_django import DjangoObjectType
+
+
 from cvback.events.models import (AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, Video,
                                   KeyFrames, KeyVideos, BoundingBox, Inference, InferenceOCR, KeyInferenceOCR,
                                   InferenceDetectionClassification, KeyInferenceDetectionClassification,
@@ -9,7 +11,7 @@ class AreaOfInterestType(DjangoObjectType):
     class Meta:
         model = AreaOfInterest
         fields = "__all__"
-        
+
 class LineOfInterestType(DjangoObjectType):
     class Meta:
         model = LineOfInterest
@@ -19,17 +21,18 @@ class AlgorithmType(DjangoObjectType):
     class Meta:
         model = Algorithm
         fields = "__all__"
-            
+
+
 class LabelType(DjangoObjectType):
     class Meta:
         model = Label
         fields = "__all__"
-             
+
 class FrameType(DjangoObjectType):
     class Meta:
         model = Frame
         fields = "__all__"
-              
+
 class VideoType(DjangoObjectType):
     class Meta:
         model = Video
@@ -39,7 +42,7 @@ class KeyFramesType(DjangoObjectType):
     class Meta:
         model = KeyFrames
         fields = "__all__"
-        
+
 class KeyVideosType(DjangoObjectType):
     class Meta:
         model = KeyVideos
@@ -59,7 +62,7 @@ class InferenceOCRType(DjangoObjectType):
     class Meta:
         model = InferenceOCR
         fields = "__all__"
-        
+
 class KeyInferenceOCRType(DjangoObjectType):
     class Meta:
         model = KeyInferenceOCR
@@ -69,7 +72,7 @@ class InferenceOCRType(DjangoObjectType):
     class Meta:
         model = InferenceOCR
         fields = "__all__"
-        
+
 class InferenceDetectionClassificationType(DjangoObjectType):
     class Meta:
         model = InferenceDetectionClassification
@@ -79,22 +82,22 @@ class KeyInferenceDetectionClassificationType(DjangoObjectType):
     class Meta:
         model = KeyInferenceDetectionClassification
         fields = "__all__"
-        
+
 class InferenceClassificationType(DjangoObjectType):
     class Meta:
         model = InferenceClassification
         fields = "__all__"
-        
+
 class KeyInferenceClassificationType(DjangoObjectType):
     class Meta:
         model = KeyInferenceClassification
         fields = "__all__"
-        
+
 class InferenceDetectionClassificationTrackerType(DjangoObjectType):
     class Meta:
         model = InferenceDetectionClassificationTracker
         fields = "__all__"
-        
+
 class KeyInferenceDetectionClassificationTrackerType(DjangoObjectType):
     class Meta:
         model = KeyInferenceDetectionClassificationTracker

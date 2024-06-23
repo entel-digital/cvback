@@ -48,14 +48,15 @@ class LineOfInterest(models.Model):
 
 
 class Algorithm(models.Model):
-    class AlgorithmKind(models.TextChoices):
-        DETECTION_CLASSIFICATION_MODEL = 'detection_classification', 'Detection + classification model'
-        DETECTION_CLASSIFICATION_TRACKING_MODEL = 'detection_classification_tracking','Detection + classification + tracking model'
-        CLASSIFICATION_MODEL = 'classification', 'Classification model'
-        CLASSIFICATION_CLASSIC_CV = 'cl_classification', 'Classification classic computer vision'
-        BUSINESS_LOGIC = 'business_logic', 'Custom business logic'
+    ALGORITHM_CHOICES = [
+        ('detection_classification', 'Detection + classification model'),
+        ('detection_classification_tracking', 'Detection + classification + tracking model'),
+        ('classification', 'Classification model'),
+        ('cl_classification', 'Classification classic computer vision'),
+        ('business_logic', 'Custom business logic')
+    ]
 
-    kind = models.CharField(max_length=255, choices=AlgorithmKind.choices)
+    kind = models.CharField(max_length=255, choices=ALGORITHM_CHOICES)
     added_date = models.DateTimeField("date created", auto_now_add=True)
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
@@ -63,16 +64,17 @@ class Algorithm(models.Model):
 
 
 class Label(models.Model):
-    class ColorGroup(models.TextChoices):
-        PERSON = 'person'
-        ANIMAL = 'animal'
-        VEHICLE = 'vehicle'
-        ID = 'id'
-        PPE = 'ppe'
-        OTHER = 'other'
+    COLOR_GROUP_CHOICES = [
+        ('person', 'Person'),
+        ('animal', 'Animal'),
+        ('vehicle', 'Vehicle'),
+        ('id', 'Id'),
+        ('ppe', 'PPE'),
+        ('other', 'Other')
+    ]
 
     name = models.CharField(max_length=255, unique=True)
-    color_group = models.CharField(max_length=255, choices=ColorGroup)
+    color_group = models.CharField(max_length=255, choices=COLOR_GROUP_CHOICES)
 
     def __str__(self):
         return self.name
