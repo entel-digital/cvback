@@ -20,14 +20,7 @@ if READ_DOT_ENV_FILE:
     env.read_env(str(BASE_DIR / ".envs/.local/.django"))
     env.read_env(str(BASE_DIR / ".envs/.local/.postgres"), override=True)
 
-database_config = {
-         "ENGINE": "django.contrib.gis.db.backends.postgis",
-          "NAME": env("POSTGRES_DB"),
-          "USER": env("POSTGRES_USER"),
-          "PASSWORD": env("POSTGRES_PASSWORD"),
-          "HOST": env("POSTGRES_HOST"),
-          "PORT": env("POSTGRES_PORT")
-          }
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -63,12 +56,21 @@ SECRET_KEY = env('SECRET_KEY')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-#DATABASES = {"default": env.db("DATABASE_URL")}
-#database_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-DATABASES = {'default': database_config}
+database_config = {
+    **env.db("DATABASE_URL"),
+    "ENGINE": "django.contrib.gis.db.backends.postgis",
+} if "DATABASE_URL" in env else {
+    "ENGINE": "django.contrib.gis.db.backends.postgis",
+    "NAME": env("POSTGRES_DB"),
+    "USER": env("POSTGRES_USER"),
+    "PASSWORD": env("POSTGRES_PASSWORD"),
+    "HOST": env("POSTGRES_HOST"),
+    "PORT": env("POSTGRES_PORT")
+}
 
-
+DATABASES = {"default": database_config}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
