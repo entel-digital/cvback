@@ -79,6 +79,24 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 # # ------------------------------------------------------------------------------
 # DEFAULT_FILE_STORAGE = "cvback.utils.storages.MediaGoogleCloudStorage"
 # MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+if GS_BUCKET_NAME:
+    # Collectfast
+    # ------------------------------------------------------------------------------
+    # https://github.com/antonagestam/collectfast#installation
+    INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
+    GS_DEFAULT_ACL = "publicRead"
+
+else:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL.replace("/", ""))
+
 
 # EMAIL
 # ------------------------------------------------------------------------------
@@ -98,7 +116,7 @@ EMAIL_SUBJECT_PREFIX = env(
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
-ADMIN_URL = env("DJANGO_ADMIN_URL")
+ADMIN_URL = env("DJANGO_ADMIN_URL", default="admin/")
 
 # Anymail
 # ------------------------------------------------------------------------------
@@ -115,48 +133,43 @@ EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.c
 #     "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
 # }
 
-# Collectfast
-# ------------------------------------------------------------------------------
-# https://github.com/antonagestam/collectfast#installation
-INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
-
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
 # See https://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": True,
-    "formatters": {
-        "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        }
-    },
-    "root": {"level": "INFO", "handlers": ["console"]},
-    "loggers": {
-        "django.db.backends": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-        # Errors logged by the SDK itself
-        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
-        "django.security.DisallowedHost": {
-            "level": "ERROR",
-            "handlers": ["console"],
-            "propagate": False,
-        },
-    },
-}
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": True,
+#     "formatters": {
+#         "verbose": {
+#             "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s",
+#         },
+#     },
+#     "handlers": {
+#         "console": {
+#             "level": "DEBUG",
+#             "class": "logging.StreamHandler",
+#             "formatter": "verbose",
+#         }
+#     },
+#     "root": {"level": "INFO", "handlers": ["console"]},
+#     "loggers": {
+#         "django.db.backends": {
+#             "level": "ERROR",
+#             "handlers": ["console"],
+#             "propagate": False,
+#         },
+#         # Errors logged by the SDK itself
+#         "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
+#         "django.security.DisallowedHost": {
+#             "level": "ERROR",
+#             "handlers": ["console"],
+#             "propagate": False,
+#         },
+#     },
+# }
 
 # Sentry
 # ------------------------------------------------------------------------------

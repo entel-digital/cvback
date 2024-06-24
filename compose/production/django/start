@@ -16,4 +16,4 @@ if [ "$DJANGO_EXEC_COLLECTSTATIC" == "true" ]; then
     python manage.py collectstatic --noinput
 fi
 
-exec python manage.py runserver_plus 0.0.0.0:$DJANGO_PORT
+exec /usr/local/bin/gunicorn --preload --workers=1 --threads=8 --timeout=0 --bind=0.0.0.0:$DJANGO_PORT --chdir=/app config.wsgi:application
