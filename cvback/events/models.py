@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
 
-#
+
 # TODO: Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
 
 
@@ -34,6 +34,8 @@ class AreaOfInterest(models.Model):
 
     def __str__(self):
         return f"{self.camera} > {self.name}"
+
+
 # TODO: Módulo para guardar historial... Field
 
 
@@ -85,14 +87,14 @@ class Frame(models.Model):
     cameras = models.ManyToManyField(Camera)
 
 
-class Video(models.Model):
-    video = models.FileField(null=True, blank=True)
-    cameras = models.ManyToManyField(Camera)
-
-
 class KeyFrames(models.Model):
     name = models.CharField()
     frames = models.ManyToManyField(Frame)
+
+
+class Video(models.Model):
+    video = models.FileField(null=True, blank=True)
+    cameras = models.ManyToManyField(Camera)
 
 
 class KeyVideos(models.Model):

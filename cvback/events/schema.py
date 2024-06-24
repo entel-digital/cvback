@@ -1,11 +1,11 @@
+import graphene
 from graphene_django import DjangoObjectType
-
-
 from cvback.events.models import (AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, Video,
                                   KeyFrames, KeyVideos, BoundingBox, Inference, InferenceOCR, KeyInferenceOCR,
                                   InferenceDetectionClassification, KeyInferenceDetectionClassification,
                                   InferenceClassification, KeyInferenceClassification,
-                                  InferenceDetectionClassificationTracker, KeyInferenceDetectionClassificationTracker, Event)
+                                  InferenceDetectionClassificationTracker, KeyInferenceDetectionClassificationTracker,
+                                  EventType, Event)
 
 class AreaOfInterestType(DjangoObjectType):
     class Meta:
@@ -22,35 +22,23 @@ class AlgorithmType(DjangoObjectType):
         model = Algorithm
         fields = "__all__"
 
-
-class LabelType(DjangoObjectType):
-    class Meta:
-        model = Label
-        fields = "__all__"
-
 class FrameType(DjangoObjectType):
     class Meta:
         model = Frame
         fields = "__all__"
 
+class KeyFramesType(DjangoObjectType):
+    class Meta:
+        model = KeyFrames
+        fields = ('id', 'name', 'frames')
 class VideoType(DjangoObjectType):
     class Meta:
         model = Video
         fields = "__all__"
 
-class KeyFramesType(DjangoObjectType):
-    class Meta:
-        model = KeyFrames
-        fields = "__all__"
-
 class KeyVideosType(DjangoObjectType):
     class Meta:
         model = KeyVideos
-        fields = "__all__"
-
-class BoundingBoxType(DjangoObjectType):
-    class Meta:
-        model = BoundingBox
         fields = "__all__"
 
 class InferenceType(DjangoObjectType):
@@ -103,7 +91,26 @@ class KeyInferenceDetectionClassificationTrackerType(DjangoObjectType):
         model = KeyInferenceDetectionClassificationTracker
         fields = "__all__"
 
+
+class EventTypeType(DjangoObjectType):
+    class Meta:
+        model = EventType
+        fields = ('id', 'name', 'added_date')
+
+class LabelType(DjangoObjectType):
+    class Meta:
+        model = Label
+        fields = ('id', 'name', 'color_group')
+
+class BoundingBoxType(DjangoObjectType):
+    class Meta:
+        model = BoundingBox
+        fields = ('id', 'top_left', 'bottom_right')
+
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = (
+            'id', 'added_date', 'event_type', 'labels', 'bounding_boxes', 'keyframes',
+            'labels_detected', 'labels_missing'
+        )
