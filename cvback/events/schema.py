@@ -110,7 +110,4 @@ class BoundingBoxType(DjangoObjectType):
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
-        fields = (
-            'id', 'added_date', 'event_type', 'labels', 'bounding_boxes', 'keyframes',
-            'labels_detected', 'labels_missing'
-        )
+        fields = "__all__"
