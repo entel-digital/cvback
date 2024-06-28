@@ -3,7 +3,7 @@ import secrets
 
 def main():
     base_dir = os.path.dirname(__file__)  # Ubicación base del script
-    env_directory = os.path.join(base_dir, '.envs', '.production')
+    env_directory = os.path.join(base_dir, '.envs', '.local')
     env_file_django = os.path.join(env_directory, '.django')
     env_file_postgres = os.path.join(env_directory, '.postgres')
 
