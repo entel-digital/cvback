@@ -95,22 +95,19 @@ class KeyInferenceDetectionClassificationTrackerType(DjangoObjectType):
 class EventTypeType(DjangoObjectType):
     class Meta:
         model = EventType
-        fields = ('id', 'name', 'added_date')
+        fields = ("__all__")
 
 class LabelType(DjangoObjectType):
     class Meta:
         model = Label
-        fields = ('id', 'name', 'color_group')
+        fields = ("__all__")
 
 class BoundingBoxType(DjangoObjectType):
     class Meta:
         model = BoundingBox
-        fields = ('id', 'top_left', 'bottom_right')
+        fields = ("__all__")
 
 class EventType(DjangoObjectType):
     class Meta:
         model = Event
-        fields = (
-            'id', 'added_date', 'event_type', 'labels', 'bounding_boxes', 'keyframes',
-            'labels_detected', 'labels_missing'
-        )
+        fields = ("__all__")

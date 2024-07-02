@@ -181,7 +181,7 @@ class KeyInferenceDetectionClassificationTracker(models.Model):
 
 
 class InferenceClassification(Inference):
-    label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
+    label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date} > {self.label}"
@@ -189,7 +189,7 @@ class InferenceClassification(Inference):
 
 class KeyInferenceClassification(models.Model):
     name = models.CharField(max_length=255)
-    inferences = models.ForeignKey(InferenceClassification, on_delete=models.DO_NOTHING)
+    inferences = models.ForeignKey(InferenceClassification, on_delete=models.CASCADE)
 
 
 class EventType(models.Model):
