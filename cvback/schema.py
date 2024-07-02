@@ -1,6 +1,9 @@
 import graphene
 from cvback.events.schema import (LabelType, KeyFramesType, BoundingBoxType, EventTypeType, EventType)
 from cvback.events.models import (Label, KeyFrames, BoundingBox, Event)
+import logging
+
+logger = logging.getLogger(__name__)
 
 class UpdateEventMutation(graphene.Mutation):
     class Arguments:
@@ -22,9 +25,10 @@ class Query(graphene.ObjectType):
     all_bounding_boxes = graphene.List(BoundingBoxType)
     all_key_frames = graphene.List(KeyFramesType)
 
-def resolve_all_events(self, info):
-    return Event.objects.all()
-
+    def resolve_all_events(self, info):
+        events = Event.objects.all()
+        print(f"Number of events: {events.count()}")
+        return events
 
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
