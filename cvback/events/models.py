@@ -1,6 +1,7 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
+from cvback.utils.api import api_key_generator
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -20,7 +21,7 @@ def validate_relative(value):
 
 
 # https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning
-validate_semantic_versioning = RegexValidator('/^\d{1,2}\.\d{1,2}\.\d{1,3}$/g')
+validate_semantic_versioning = RegexValidator('^\d{1,2}\.\d{1,2}\.\d{1,3}$')
 
 
 class AreaOfInterest(models.Model):
@@ -83,6 +84,8 @@ class Label(models.Model):
 
 
 class Frame(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -93,6 +96,8 @@ class KeyFrames(models.Model):
 
 
 class Video(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -104,6 +109,7 @@ class KeyVideos(models.Model):
 
 class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
     confidence = models.FloatField(validators=[validate_relative])
@@ -117,6 +123,7 @@ class Inference(models.Model):
 
 class BoundingBox(Inference):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
 
@@ -181,7 +188,7 @@ class KeyInferenceDetectionClassificationTracker(models.Model):
 
 
 class InferenceClassification(Inference):
-    label = models.ForeignKey(Label, on_delete=models.DO_NOTHING)
+    label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.inference_computer} > {self.added_date} > {self.label}"
@@ -189,7 +196,7 @@ class InferenceClassification(Inference):
 
 class KeyInferenceClassification(models.Model):
     name = models.CharField(max_length=255)
-    inferences = models.ForeignKey(InferenceClassification, on_delete=models.DO_NOTHING)
+    inferences = models.ForeignKey(InferenceClassification, on_delete=models.CASCADE)
 
 
 class EventType(models.Model):
@@ -203,6 +210,7 @@ class EventType(models.Model):
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
@@ -228,3 +236,20 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
+
+
+class APIToken(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    expiration_date = models.DateTimeField("expiration date")
+    key = models.GeneratedField(
+        expression=api_key_generator(),
+        output_field=models.TextField(),
+        db_persist=True,
+    )
+    # TODO: user = referenciar 1 usuario o 1 maquina
+    # TODO: valid (calculado)
+    # TODO: creator = referencia a usuario automatica
+
+
+
+

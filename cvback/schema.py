@@ -19,12 +19,11 @@ class Query(graphene.ObjectType):
     all_events = graphene.List(EventType)
     #event_type = graphene.Field(EventTypeType)
     #all_labels = graphene.List(LabelType)
-    all_bounding_boxes = graphene.List(BoundingBoxType)
-    all_key_frames = graphene.List(KeyFramesType)
+    #all_bounding_boxes = graphene.List(BoundingBoxType)
+    #all_key_frames = graphene.List(KeyFramesType)
 
-def resolve_all_events(self, info):
-    return Event.objects.all()
-
+    def resolve_all_events(self, info):
+        return Event.objects.all()
 
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
