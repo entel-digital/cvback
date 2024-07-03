@@ -4,13 +4,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.parsers import JSONParser
 from cvback.events.serializers import BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer, InferenceDetectionClassificationSerializer, InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer, VideoSerializer, EventSerializer
+from cvback.events.models import Frame
 from django.views import View
 from rest_framework.views import APIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 import json
 import logging
-# Create your views here.
+
 # TODO: filter by camera
 
 logger = logging.getLogger(__name__)
@@ -26,14 +28,22 @@ class BoundingBoxApiView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @method_decorator(csrf_exempt, name='dispatch')
-class FrameApiView(APIView):
-    def post(self, request, format=None):
-        serializer = FrameSerializer(data=request.data)
+class FrameApiView(ListCreateAPIView):
+    model = Frame
+    queryset = Frame.objects.all()
+    serializer_class = FrameSerializer
+    
+    def create(self, request, *args, **kwargs):
+        if isinstance(request.data, list):
+            serializer = self.get_serializer(data=request.data, many=True)
+        else:
+            serializer = self.get_serializer(data=request.data)
+            
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+        
 @method_decorator(csrf_exempt, name='dispatch')
 class InferenceClassificationApiView(APIView):
     def post(self, request, format=None):
