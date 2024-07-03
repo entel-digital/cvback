@@ -211,6 +211,7 @@ class Event(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    event_label = models.ForeignKey(Label,on_delete=models.CASCADE )
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
     key_frames = models.ManyToManyField(KeyFrames)
