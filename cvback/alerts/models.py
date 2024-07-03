@@ -12,3 +12,7 @@ class Alert(models.Model):
     recipient = models.CharField(max_length=255)
     message = models.CharField(max_length=255)
     related_event = models.ForeignKey('events.Event', on_delete=models.DO_NOTHING, related_name='alerts_from_alerts_unique')
+
+
+
+# TODO: https://www.geeksforgeeks.org/send-message-to-telegram-user-using-python/
