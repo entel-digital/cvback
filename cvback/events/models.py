@@ -20,7 +20,7 @@ def validate_relative(value):
 
 
 # https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning
-validate_semantic_versioning = RegexValidator('/^\d{1,2}\.\d{1,2}\.\d{1,3}$/g')
+validate_semantic_versioning = RegexValidator('^\d{1,2}\.\d{1,2}\.\d{1,3}$')
 
 
 class AreaOfInterest(models.Model):
