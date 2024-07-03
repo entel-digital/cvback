@@ -1,6 +1,7 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
+from cvback.utils.api import api_key_generator
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -235,3 +236,20 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
+
+
+class APIToken(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    expiration_date = models.DateTimeField("expiration date")
+    key = models.GeneratedField(
+        expression=api_key_generator(),
+        output_field=models.TextField(),
+        db_persist=True,
+    )
+    # TODO: user = referenciar 1 usuario o 1 maquina
+    # TODO: valid (calculado)
+    # TODO: creator = referencia a usuario automatica
+
+
+
+
