@@ -28,7 +28,7 @@ from cvback.events.models import AreaOfInterest, Event, InferenceDetectionClassi
 #
 #
 
-
+# TODO: +Frames, +Videos, +Inference classification, +Inference detection classification tracker, +Inference detection classification, +Inference ocr, +Event
 class BoundingBoxSerializer(serializers.ModelSerializer):
     class Meta:
         model = BoundingBox
