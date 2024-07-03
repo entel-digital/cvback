@@ -2,7 +2,7 @@ from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
 from cvback.utils.api import api_key_generator
-
+from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -25,7 +25,7 @@ validate_semantic_versioning = RegexValidator('^\d{1,2}\.\d{1,2}\.\d{1,3}$')
 
 
 class AreaOfInterest(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_date = models.DateTimeField("date created", default=timezone.now)
     added_modified = models.DateTimeField("date modified", auto_now=True)
     enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
@@ -41,7 +41,7 @@ class AreaOfInterest(models.Model):
 
 
 class LineOfInterest(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_date = models.DateTimeField("date created", default=timezone.now)
     added_modified = models.DateTimeField("date modified", auto_now=True)
     enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
@@ -60,7 +60,7 @@ class Algorithm(models.Model):
     ]
 
     kind = models.CharField(max_length=255, choices=ALGORITHM_CHOICES)
-    added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_date = models.DateTimeField("date created", default=timezone.now)
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     repository = models.CharField(max_length=30, validators=[URLValidator])
@@ -84,8 +84,8 @@ class Label(models.Model):
 
 
 class Frame(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    informed_date = models.DateTimeField("date informed")
+    added_date = models.DateTimeField("date created", default=timezone.now)
+    informed_date = models.DateTimeField("date informed", default=timezone.now)
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -96,8 +96,8 @@ class KeyFrames(models.Model):
 
 
 class Video(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    informed_date = models.DateTimeField("date informed")
+    added_date = models.DateTimeField("date created", default=timezone.now)
+    informed_date = models.DateTimeField("date informed", default=timezone.now)
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -108,8 +108,8 @@ class KeyVideos(models.Model):
 
 
 class Inference(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    informed_date = models.DateTimeField("date informed")
+    added_date = models.DateTimeField("date created", default=timezone.now)
+    informed_date = models.DateTimeField("date informed", default=timezone.now)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
     confidence = models.FloatField(validators=[validate_relative])
@@ -122,8 +122,8 @@ class Inference(models.Model):
 
 
 class BoundingBox(Inference):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    informed_date = models.DateTimeField("date informed")
+    added_date = models.DateTimeField("date created", default=timezone.now)
+    informed_date = models.DateTimeField("date informed", default=timezone.now)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
 
@@ -200,7 +200,7 @@ class KeyInferenceClassification(models.Model):
 
 
 class EventType(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
+    added_date = models.DateTimeField("date created", default=timezone.now)
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     documentation = models.FileField(null=True,
@@ -209,9 +209,10 @@ class EventType(models.Model):
 
 
 class Event(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    informed_date = models.DateTimeField("date informed")
+    added_date = models.DateTimeField("date created", default=timezone.now)
+    informed_date = models.DateTimeField("date informed", default=timezone.now)
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
+    event_label = models.ForeignKey(Label,on_delete=models.CASCADE )
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
     key_frames = models.ManyToManyField(KeyFrames)
