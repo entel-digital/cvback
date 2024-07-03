@@ -83,6 +83,8 @@ class Label(models.Model):
 
 
 class Frame(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -93,6 +95,8 @@ class KeyFrames(models.Model):
 
 
 class Video(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
@@ -104,6 +108,7 @@ class KeyVideos(models.Model):
 
 class Inference(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
     confidence = models.FloatField(validators=[validate_relative])
@@ -117,6 +122,7 @@ class Inference(models.Model):
 
 class BoundingBox(Inference):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     bottom_right = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
 
@@ -203,6 +209,7 @@ class EventType(models.Model):
 
 class Event(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
+    informed_date = models.DateTimeField("date informed")
     event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
