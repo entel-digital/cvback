@@ -242,11 +242,11 @@ class Event(models.Model):
 class APIToken(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     expiration_date = models.DateTimeField("expiration date")
-    key = models.GeneratedField(
-        expression=api_key_generator(),
-        output_field=models.TextField(),
-        db_persist=True,
-    )
+    # key = models.GeneratedField(
+    #     expression=api_key_generator(),
+    #     output_field=models.TextField(),
+    #     db_persist=True,
+    # )
     # TODO: user = referenciar 1 usuario o 1 maquina
     # TODO: valid (calculado)
     # TODO: creator = referencia a usuario automatica
