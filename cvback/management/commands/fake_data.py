@@ -226,8 +226,10 @@ def create_events(n):
     for _ in range(n):
         event = Event.objects.create(
             event_type=EventType.objects.order_by('?').first(),
-            confidence=random.uniform(0, 1)
+            confidence=random.uniform(0, 1),
+            event_label = Label.objects.order_by('?')[random.randint(1,3)]
         )
+        
         event.cameras.set(Camera.objects.order_by('?')[:random.randint(1, 3)])
         event.frames.set(Frame.objects.order_by('?')[:random.randint(1, 5)])
         event.key_frames.set(KeyFrames.objects.order_by('?')[:random.randint(1, 3)])

@@ -7,7 +7,7 @@ from cvback.schema import schema
 
 urlpatterns = [
     path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
-#    path('rest/bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
+    path('bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
     path('frames/', FrameApiView.as_view(), name='events_frames'),
     path('inference_classification/', InferenceClassificationApiView.as_view(), name='events_inference_classification'),
     path('inference_detection_classification/', InferenceDetectionClassificationApiView.as_view(), name='events_inference_detection_classification'),

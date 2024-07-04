@@ -88,6 +88,8 @@ class Frame(models.Model):
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
+    #
+    frame_number = models.IntegerField("frame number", null=True, blank=True)
 
 
 class KeyFrames(models.Model):
@@ -216,11 +218,11 @@ class Event(models.Model):
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
     key_frames = models.ManyToManyField(KeyFrames)
-    videos = models.ManyToManyField(Video)
-    key_videos = models.ManyToManyField(KeyVideos)
+    videos = models.ManyToManyField(Video, blank=True)
+    key_videos = models.ManyToManyField(KeyVideos, blank=True)
     confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
-    labels_detected = models.ManyToManyField(Label, related_name='events_detected')
-    labels_missing = models.ManyToManyField(Label, related_name='events_missing')
+    labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
+    labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
@@ -230,10 +232,10 @@ class Event(models.Model):
                                                                         blank=True)
     inference_ocr = models.ManyToManyField(InferenceOCR, blank=True)
     # Key Inferences
-    key_inference_classification = models.ManyToManyField(KeyInferenceClassification)
-    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification)
-    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker)
-    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR)
+    key_inference_classification = models.ManyToManyField(KeyInferenceClassification, blank=True)
+    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification, blank=True)
+    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker, blank=True)
+    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
