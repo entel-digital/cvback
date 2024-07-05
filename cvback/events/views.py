@@ -5,10 +5,6 @@ from django.utils.decorators import method_decorator
 from rest_framework.parsers import JSONParser
 from cvback.events.serializers import BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer, InferenceDetectionClassificationSerializer, InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer, VideoSerializer, EventSerializer, KeyFramesSerializer, LabelSerializer
 from cvback.events.models import Frame, Label, KeyFrames,BoundingBox, InferenceClassification, InferenceDetectionClassification, InferenceDetectionClassificationTracker, InferenceOCR, Event, Video
-from cvback.devices.serializers import CameraSerializer
-from cvback.devices.models import Camera
-from django.views import View
-from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
