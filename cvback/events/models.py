@@ -225,8 +225,7 @@ class Event(models.Model):
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
-    inference_detection_classification = models.ManyToManyField(InferenceDetectionClassification,
-                                                           null=True, blank=True)
+    inference_detection_classification = models.ManyToManyField(InferenceDetectionClassification, blank=True)
     inference_detection_classification_tracker = models.ManyToManyField(InferenceDetectionClassificationTracker,
                                                                         blank=True)
     inference_ocr = models.ManyToManyField(InferenceOCR, blank=True)
