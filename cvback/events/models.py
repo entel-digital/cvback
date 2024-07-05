@@ -39,7 +39,6 @@ class AreaOfInterest(models.Model):
 
 # TODO: Módulo para guardar historial... Field
 
-
 class LineOfInterest(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     added_modified = models.DateTimeField("date modified", auto_now=True)

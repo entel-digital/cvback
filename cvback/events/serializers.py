@@ -87,20 +87,3 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = "__all__"
 
-    def create(self, validated_data):
-        
-        event = Event.objects.create(event_type=validated_data["event_type"],
-                                     event_label=validated_data["event_label"],
-                                     inference_detection_classification=validated_data["inference_detection_classification"]
-                                     )
-        [event.frames.add(frame.id) for frame in validated_data["frames"]]
-        [event.key_frames.add(frame.id) for frame in validated_data['key_frames']]
-                
-        [event.inference_classification.add(inference.id) for inference in validated_data["inference_classification"]]
-        
-        [event.inference_detection_classification_tracker.add(inference.id) for inference in validated_data["inference_detection_classification_tracker"]]
-        [event.inference_ocr.add(inference.id) for inference in validated_data["inference_ocr"]]
-        print(validated_data.keys())
-        
-        return event
-
