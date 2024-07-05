@@ -30,4 +30,7 @@ graphene-django
 djangorestframework
 django-graphql-jwt
 # TODO: add version
-zxcvbn
+#zxcvbn
+
+#apikeytesting
+djangorestframework-api-key

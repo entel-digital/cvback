@@ -1,11 +1,10 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
-from cvback.utils.api import api_key_generator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from django.contrib.contenttypes.fields import GenericForeignKey
+#from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
 
 
@@ -242,6 +241,8 @@ class Event(models.Model):
 class APIToken(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
     expiration_date = models.DateTimeField("expiration date")
+
+
     # key = models.GeneratedField(
     #     expression=api_key_generator(),
     #     output_field=models.TextField(),

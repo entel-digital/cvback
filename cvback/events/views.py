@@ -10,6 +10,11 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 import logging
+from rest_framework_api_key.permissions import HasAPIKey
+
+
+
+from rest_framework_api_key.models import BaseAPIKeyManager
 
 # TODO: filter by camera
 
@@ -18,12 +23,15 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class BaseListCreateAPIView(ListCreateAPIView):
-    
+    permission_classes=[HasAPIKey] 
     @classmethod
     def __init__(self, *args,**kwargs ):
         self.queryset = self.model.objects.all()
 
     def create(self, request, *args, **kwargs):
+        print()
+        print(request.headers['X-Api-Key'])
+        print('KKKAAA')
         if isinstance(request.data, list):
             serializer = self.get_serializer(data=request.data, many=True)
         else:
@@ -41,6 +49,8 @@ class BoundingBoxApiView(BaseListCreateAPIView):
 class FrameApiView(BaseListCreateAPIView):
     model = Frame
     serializer_class = FrameSerializer
+    
+    
 
 class KeyFrameApiView(BaseListCreateAPIView):
     model = KeyFrames
