@@ -39,7 +39,6 @@ class AreaOfInterest(models.Model):
 
 # TODO: Módulo para guardar historial... Field
 
-
 class LineOfInterest(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -64,6 +63,9 @@ class Algorithm(models.Model):
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     repository = models.CharField(max_length=30, validators=[URLValidator])
+    
+    def __str__():
+        return f"{self.name} {self.version}"
 
 
 class Label(models.Model):
@@ -88,9 +90,14 @@ class Frame(models.Model):
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
+    #
+    frame_number = models.IntegerField("frame number", null=True, blank=True)
+    
+    def __str__(self):
+        return self.name
 
 
-class KeyFrames(models.Model):
+class KeyFrame(models.Model):
     name = models.CharField()
     frames = models.ManyToManyField(Frame)
 
@@ -101,8 +108,10 @@ class Video(models.Model):
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
+    def __str__(self):
+        return self.name
 
-class KeyVideos(models.Model):
+class KeyVideo(models.Model):
     name = models.CharField()
     frames = models.ManyToManyField(Video)
 
@@ -118,7 +127,7 @@ class Inference(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date}"
+        return f"{self.inference_computer} > {self.added_date.date()}"
 
 
 class BoundingBox(Inference):
@@ -191,7 +200,7 @@ class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date} > {self.label}"
+        return f"{self.inference_computer} > {self.added_date.date()} > {self.label}"
 
 
 class KeyInferenceClassification(models.Model):
@@ -206,6 +215,9 @@ class EventType(models.Model):
     documentation = models.FileField(null=True,
                                      blank=True,
                                      validators=[FileExtensionValidator(['pdf'])])
+    
+    def __str__(self):
+        return self.name
 
 
 class Event(models.Model):
@@ -215,28 +227,27 @@ class Event(models.Model):
     event_label = models.ForeignKey(Label,on_delete=models.CASCADE )
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
-    key_frames = models.ManyToManyField(KeyFrames)
+    key_frames = models.ManyToManyField(KeyFrame)
     videos = models.ManyToManyField(Video)
-    key_videos = models.ManyToManyField(KeyVideos)
+    key_videos = models.ManyToManyField(KeyVideo)
     confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
-    labels_detected = models.ManyToManyField(Label, related_name='events_detected')
-    labels_missing = models.ManyToManyField(Label, related_name='events_missing')
+    labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
+    labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
-    inference_detection_classification = models.ForeignKey(InferenceDetectionClassification, on_delete=models.CASCADE,
-                                                           null=True, blank=True)
+    inference_detection_classification = models.ManyToManyField(InferenceDetectionClassification, blank=True)
     inference_detection_classification_tracker = models.ManyToManyField(InferenceDetectionClassificationTracker,
                                                                         blank=True)
     inference_ocr = models.ManyToManyField(InferenceOCR, blank=True)
     # Key Inferences
-    key_inference_classification = models.ManyToManyField(KeyInferenceClassification)
-    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification)
-    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker)
-    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR)
+    key_inference_classification = models.ManyToManyField(KeyInferenceClassification, blank=True)
+    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification, blank=True)
+    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker, blank=True)
+    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
-        return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
+        return f"{self.event_type.name} at {self.added_date.date()} from {self.cameras}"
 
 
 class APIToken(models.Model):
