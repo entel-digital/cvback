@@ -3,6 +3,7 @@ version: "3"
 volumes:
   cvback_local_postgres_data: {}
   cvback_local_postgres_data_backups: {}
+  cvback_local_redis_data: {}
 
 services:
   django: &django
@@ -38,10 +39,17 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: docker.io/redis:6
+    container_name: cvback_local_redis
+
+    volumes:
+      - cvback_local_redis_data:/data
+
   celeryworker:
     <<: *django
-    image: cvback_local_local_celeryworker
-    container_name: cvback_local_local_celeryworker
+    image: cvback_local_celeryworker
+    container_name: cvback_local_celeryworker
     depends_on:
       - postgres
     ports: []
@@ -59,7 +67,7 @@ services:
   flower:
     <<: *django
     image: cvback_local_flower
-    container_name: django_example_local_flower
+    container_name: cvback_local_flower
     ports:
       - '5555:5555'
     command: /start-flower
