@@ -14,5 +14,12 @@ class Alert(models.Model):
     related_event = models.ForeignKey('events.Event', on_delete=models.DO_NOTHING, related_name='alerts_from_alerts_unique')
 
 
+class HumanSubscriber(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    priority = models.IntegerField()
+    class Meta:
+        abstract = True
+
+
 
 # TODO: https://www.geeksforgeeks.org/send-message-to-telegram-user-using-python/
