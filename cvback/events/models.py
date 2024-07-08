@@ -90,7 +90,7 @@ class Frame(models.Model):
     cameras = models.ManyToManyField(Camera)
 
 
-class KeyFrames(models.Model):
+class KeyFrame(models.Model):
     name = models.CharField()
     frames = models.ManyToManyField(Frame)
 
@@ -102,7 +102,7 @@ class Video(models.Model):
     cameras = models.ManyToManyField(Camera)
 
 
-class KeyVideos(models.Model):
+class KeyVideo(models.Model):
     name = models.CharField()
     frames = models.ManyToManyField(Video)
 
@@ -215,9 +215,9 @@ class Event(models.Model):
     event_label = models.ForeignKey(Label,on_delete=models.CASCADE )
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
-    key_frames = models.ManyToManyField(KeyFrames)
+    key_frames = models.ManyToManyField(KeyFrame)
     videos = models.ManyToManyField(Video)
-    key_videos = models.ManyToManyField(KeyVideos)
+    key_videos = models.ManyToManyField(KeyVideo)
     confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
     labels_detected = models.ManyToManyField(Label, related_name='events_detected')
     labels_missing = models.ManyToManyField(Label, related_name='events_missing')

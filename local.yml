@@ -73,6 +73,7 @@ services:
     command: /start-flower
 
   docs:
+    <<: *django
     platform: linux/amd64
     image: cvback_local_docs
     container_name: cvback_local_docs

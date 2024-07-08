@@ -1,7 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
 from cvback.events.models import (AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, Video,
-                                  KeyFrames, KeyVideos, BoundingBox, Inference, InferenceOCR, KeyInferenceOCR,
+                                  KeyFrame, KeyVideo, BoundingBox, Inference, InferenceOCR, KeyInferenceOCR,
                                   InferenceDetectionClassification, KeyInferenceDetectionClassification,
                                   InferenceClassification, KeyInferenceClassification,
                                   InferenceDetectionClassificationTracker, KeyInferenceDetectionClassificationTracker,
@@ -29,7 +29,7 @@ class FrameType(DjangoObjectType):
 
 class KeyFramesType(DjangoObjectType):
     class Meta:
-        model = KeyFrames
+        model = KeyFrame
         fields = ('id', 'name', 'frames')
 class VideoType(DjangoObjectType):
     class Meta:
@@ -38,7 +38,7 @@ class VideoType(DjangoObjectType):
 
 class KeyVideosType(DjangoObjectType):
     class Meta:
-        model = KeyVideos
+        model = KeyVideo
         fields = "__all__"
 
 class InferenceType(DjangoObjectType):

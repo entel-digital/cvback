@@ -1,6 +1,6 @@
 import graphene
 from cvback.events.schema import (LabelType, KeyFramesType, BoundingBoxType, EventTypeType, EventType)
-from cvback.events.models import (Label, KeyFrames, BoundingBox, Event)
+from cvback.events.models import (Label, KeyFrame, BoundingBox, Event)
 
 class UpdateEventMutation(graphene.Mutation):
     class Arguments:
