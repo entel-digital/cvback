@@ -54,7 +54,6 @@ class KeyInferenceOCRSerializer(serializers.ModelSerializer):
         model = KeyInferenceOCR
         fields = "__all__"
 
-
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
@@ -70,19 +69,12 @@ class LabelSerializer(serializers.ModelSerializer):
         model = Label
         fields = ("id",)
 
-
 class KeyFrameSerializer(serializers.ModelSerializer):
     class Meta:
         model = KeyFrame
         fields = "__all__"
 
 class EventSerializer(serializers.ModelSerializer):
-
-    cameras = CameraSerializer(many=True,read_only=True )
-
-
-    labels_detected = LabelSerializer(required=False, many=True, read_only=True)
-    labels_missing = LabelSerializer(required=False, many=True,read_only=True)
     class Meta:
         model = Event
         fields = "__all__"
