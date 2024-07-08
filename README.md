@@ -43,10 +43,10 @@ docker-compose -f local.yml build
 docker-compose -f local.yml up
 
 # To create a superuser for admin panel: http://localhost:8000/admin/
-docker-compose -f local.yml exec django python manage.py createsuperuser
+docker-compose -f local.yml run django python manage.py createsuperuser
 
 #To create dummy data in local
-docker-compose -f local.yml exec django python manage.py generate_fake_data
+docker-compose -f local.yml run django python manage.py generate_fake_data
 
 http://localhost:8000/admin
 ```
