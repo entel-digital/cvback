@@ -1,11 +1,9 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
-from cvback.utils.api import api_key_generator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
 
 
@@ -216,41 +214,24 @@ class Event(models.Model):
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
     key_frames = models.ManyToManyField(KeyFrame)
-    videos = models.ManyToManyField(Video)
-    key_videos = models.ManyToManyField(KeyVideo)
+    videos = models.ManyToManyField(Video, blank=True)
+    key_videos = models.ManyToManyField(KeyVideo, blank=True)
     confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
-    labels_detected = models.ManyToManyField(Label, related_name='events_detected')
-    labels_missing = models.ManyToManyField(Label, related_name='events_missing')
+    labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
+    labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
-    inference_detection_classification = models.ForeignKey(InferenceDetectionClassification, on_delete=models.CASCADE,
-                                                           null=True, blank=True)
+    inference_detection_classification = models.ManyToManyField(InferenceDetectionClassification, blank=True)
     inference_detection_classification_tracker = models.ManyToManyField(InferenceDetectionClassificationTracker,
                                                                         blank=True)
     inference_ocr = models.ManyToManyField(InferenceOCR, blank=True)
     # Key Inferences
-    key_inference_classification = models.ManyToManyField(KeyInferenceClassification)
-    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification)
-    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker)
-    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR)
+    key_inference_classification = models.ManyToManyField(KeyInferenceClassification, blank=True)
+    key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification, blank=True)
+    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker, blank=True)
+    key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
-
-
-class APIToken(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    expiration_date = models.DateTimeField("expiration date")
-    # key = models.GeneratedField(
-    #     expression=api_key_generator(),
-    #     output_field=models.TextField(),
-    #     db_persist=True,
-    # )
-    # TODO: user = referenciar 1 usuario o 1 maquina
-    # TODO: valid (calculado)
-    # TODO: creator = referencia a usuario automatica
-
-
-
 

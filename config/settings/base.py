@@ -107,6 +107,7 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "graphene_django",
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "rest_framework_api_key",
     "django_celery_beat",
 ]
 
@@ -348,6 +349,8 @@ ACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "cvback.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSocialSignupForm"}
+
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 REST_FRAMEWORK = {
     # YOUR SETTINGS
