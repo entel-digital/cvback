@@ -109,14 +109,15 @@ THIRD_PARTY_APPS = [
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "rest_framework_api_key",
     "django_celery_beat",
+    "corsheaders"
 ]
 
 LOCAL_APPS = [
     "cvback",
     "cvback.users",
+    "cvback.alerts",
     "cvback.devices",
-    "cvback.events",
-    "cvback.alerts"
+    "cvback.events"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -163,6 +164,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
