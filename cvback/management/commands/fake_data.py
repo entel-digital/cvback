@@ -89,8 +89,7 @@ from django.db import IntegrityError
 def create_labels(n):
     created_labels = 0
     attempts = 0
-    max_attempts = n * 3  # Set a maximum number of attempts to avoid infinite loops
-
+    max_attempts = n * 3 
     while created_labels < n and attempts < max_attempts:
         try:
             name = fake.unique.word()
@@ -100,8 +99,6 @@ def create_labels(n):
             )
             created_labels += 1
         except IntegrityError:
-            # If we get an IntegrityError, it means the name was duplicated
-            # We'll just try again with a new name
             pass
         attempts += 1
 
