@@ -233,7 +233,7 @@ def create_events(n):
         event.labels_detected.set(Label.objects.order_by('?')[:random.randint(1, 5)])
         event.labels_missing.set(Label.objects.order_by('?')[:random.randint(1, 5)])
         event.inference_classification.set(InferenceClassification.objects.order_by('?')[:random.randint(1, 3)])
-        event.inference_detection_classification = InferenceDetectionClassification.objects.order_by('?').first()
+        event.inference_detection_classification.set(InferenceDetectionClassification.objects.order_by('?')[:random.randint(1, 3)])
         event.inference_detection_classification_tracker.set(InferenceDetectionClassificationTracker.objects.order_by('?')[:random.randint(1, 3)])
         event.inference_ocr.set(InferenceOCR.objects.order_by('?')[:random.randint(1, 3)])
         event.key_inference_classification.set(KeyInferenceClassification.objects.order_by('?')[:random.randint(1, 3)])
