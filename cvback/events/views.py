@@ -29,9 +29,6 @@ class BaseListCreateAPIView(ListCreateAPIView):
         self.queryset = self.model.objects.all()
 
     def create(self, request, *args, **kwargs):
-        print()
-        print(request.headers['X-Api-Key'])
-        print('KKKAAA')
         if isinstance(request.data, list):
             serializer = self.get_serializer(data=request.data, many=True)
         else:
