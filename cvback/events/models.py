@@ -59,9 +59,12 @@ class Algorithm(models.Model):
 
     kind = models.CharField(max_length=255, choices=ALGORITHM_CHOICES)
     added_date = models.DateTimeField("date created", default=timezone.now)
-    name = models.CharField(max_length=30)
-    version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
-    repository = models.CharField(max_length=30, validators=[URLValidator])
+    name = models.CharField(max_length=100)
+    version = models.CharField(max_length=50, validators=[validate_semantic_versioning])
+    repository = models.CharField(max_length=255, validators=[URLValidator])
+
+    def __str__(self):
+        return f"{self.get_kind_display()} > {self.name}"
 
 
 class Label(models.Model):
@@ -99,6 +102,8 @@ class Video(models.Model):
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
+    def __str__(self):
+        return f"Video informed at: {self.informed_date.date()}"
 
 class KeyVideo(models.Model):
     name = models.CharField()
@@ -116,7 +121,7 @@ class Inference(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date}"
+        return f"{self.inference_computer} > {self.added_date.date()}"
 
 
 class BoundingBox(Inference):
@@ -189,7 +194,7 @@ class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date} > {self.label}"
+        return f"{self.inference_computer} > {self.added_date.date()} > {self.label}"
 
 
 class KeyInferenceClassification(models.Model):
@@ -204,6 +209,9 @@ class EventType(models.Model):
     documentation = models.FileField(null=True,
                                      blank=True,
                                      validators=[FileExtensionValidator(['pdf'])])
+
+    def __str__(self):
+        return self.name
 
 
 class Event(models.Model):
@@ -233,5 +241,5 @@ class Event(models.Model):
     key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
-        return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
-
+        camera_names = ", ".join(self.cameras.values_list('name', flat=True))
+        return f"{self.event_type.name} at {self.added_date.date()} from {camera_names or 'No cameras'}"
