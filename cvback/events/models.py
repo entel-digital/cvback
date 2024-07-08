@@ -184,6 +184,7 @@ class InferenceDetectionClassificationTracker(Inference):
         super().save(*args, **kwargs)
         self.clean()
 
+<<<<<<< Updated upstream
 
 class KeyInferenceDetectionClassificationTracker(models.Model):
     name = models.CharField(max_length=255)
@@ -241,5 +242,28 @@ class Event(models.Model):
     key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
+<<<<<<< Updated upstream
         camera_names = ", ".join(self.cameras.values_list('name', flat=True))
         return f"{self.event_type.name} at {self.added_date.date()} from {camera_names or 'No cameras'}"
+=======
+        return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
+
+
+class APIToken(models.Model):
+    added_date = models.DateTimeField("date created", auto_now_add=True)
+    expiration_date = models.DateTimeField("expiration date")
+    # key = models.GeneratedField(
+    #     expression=api_key_generator(),
+    #     output_field=models.TextField(),
+    #     db_persist=True,
+    # )
+    # TODO: user = referenciar 1 usuario o 1 maquina
+    # TODO: valid (calculado)
+    # TODO: creator = referencia a usuario automatica
+
+
+
+
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
