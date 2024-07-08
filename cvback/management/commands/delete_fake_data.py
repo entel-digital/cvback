@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from cvback.devices.models import Area, Camera, InferenceComputer
 from cvback.events.models import (
-    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrames, Video, KeyVideos,
+    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrame, Video, KeyVideo,
     BoundingBox, InferenceOCR, KeyInferenceOCR, InferenceDetectionClassification,
     KeyInferenceDetectionClassification, InferenceDetectionClassificationTracker,
     KeyInferenceDetectionClassificationTracker, InferenceClassification,
@@ -30,9 +30,9 @@ class Command(BaseCommand):
 
         BoundingBox.objects.all().delete()
 
-        KeyVideos.objects.all().delete()
+        KeyVideo.objects.all().delete()
         Video.objects.all().delete()
-        KeyFrames.objects.all().delete()
+        KeyFrame.objects.all().delete()
         Frame.objects.all().delete()
 
         Label.objects.all().delete()

@@ -1,11 +1,9 @@
 from django.db import models
 from django_jsonform.models.fields import ArrayField
 from cvback.devices.models import Camera, InferenceComputer
-from cvback.utils.api import api_key_generator
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
 
 
@@ -39,6 +37,7 @@ class AreaOfInterest(models.Model):
 
 # TODO: Módulo para guardar historial... Field
 
+
 class LineOfInterest(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     added_modified = models.DateTimeField("date modified", auto_now=True)
@@ -63,9 +62,6 @@ class Algorithm(models.Model):
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     repository = models.CharField(max_length=30, validators=[URLValidator])
-    
-    def __str__():
-        return f"{self.name} {self.version}"
 
 
 class Label(models.Model):
@@ -90,11 +86,6 @@ class Frame(models.Model):
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     image = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
-    #
-    frame_number = models.IntegerField("frame number", null=True, blank=True)
-    
-    def __str__(self):
-        return self.name
 
 
 class KeyFrame(models.Model):
@@ -108,8 +99,6 @@ class Video(models.Model):
     video = models.FileField(null=True, blank=True)
     cameras = models.ManyToManyField(Camera)
 
-    def __str__(self):
-        return self.name
 
 class KeyVideo(models.Model):
     name = models.CharField()
@@ -127,7 +116,7 @@ class Inference(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date.date()}"
+        return f"{self.inference_computer} > {self.added_date}"
 
 
 class BoundingBox(Inference):
@@ -200,7 +189,7 @@ class InferenceClassification(Inference):
     label = models.ForeignKey(Label, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.inference_computer} > {self.added_date.date()} > {self.label}"
+        return f"{self.inference_computer} > {self.added_date} > {self.label}"
 
 
 class KeyInferenceClassification(models.Model):
@@ -215,9 +204,6 @@ class EventType(models.Model):
     documentation = models.FileField(null=True,
                                      blank=True,
                                      validators=[FileExtensionValidator(['pdf'])])
-    
-    def __str__(self):
-        return self.name
 
 
 class Event(models.Model):
@@ -228,8 +214,8 @@ class Event(models.Model):
     cameras = models.ManyToManyField(Camera)
     frames = models.ManyToManyField(Frame)
     key_frames = models.ManyToManyField(KeyFrame)
-    videos = models.ManyToManyField(Video)
-    key_videos = models.ManyToManyField(KeyVideo)
+    videos = models.ManyToManyField(Video, blank=True)
+    key_videos = models.ManyToManyField(KeyVideo, blank=True)
     confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
     labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
     labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
@@ -247,21 +233,5 @@ class Event(models.Model):
     key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
-        return f"{self.event_type.name} at {self.added_date.date()} from {self.cameras}"
-
-
-class APIToken(models.Model):
-    added_date = models.DateTimeField("date created", auto_now_add=True)
-    expiration_date = models.DateTimeField("expiration date")
-    # key = models.GeneratedField(
-    #     expression=api_key_generator(),
-    #     output_field=models.TextField(),
-    #     db_persist=True,
-    # )
-    # TODO: user = referenciar 1 usuario o 1 maquina
-    # TODO: valid (calculado)
-    # TODO: creator = referencia a usuario automatica
-
-
-
+        return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
 

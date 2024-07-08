@@ -10,6 +10,11 @@ from rest_framework.response import Response
 from rest_framework import status
 import json
 import logging
+from rest_framework_api_key.permissions import HasAPIKey
+
+
+
+from rest_framework_api_key.models import BaseAPIKeyManager
 
 # TODO: filter by camera
 
@@ -18,17 +23,20 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class BaseListCreateAPIView(ListCreateAPIView):
-    
+    permission_classes=[HasAPIKey]
     @classmethod
     def __init__(self, *args,**kwargs ):
         self.queryset = self.model.objects.all()
 
     def create(self, request, *args, **kwargs):
+        print()
+        print(request.headers['X-Api-Key'])
+        print('KKKAAA')
         if isinstance(request.data, list):
             serializer = self.get_serializer(data=request.data, many=True)
         else:
             serializer = self.get_serializer(data=request.data)
-            
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,6 +50,8 @@ class FrameApiView(BaseListCreateAPIView):
     model = Frame
     serializer_class = FrameSerializer
 
+
+
 class KeyFrameApiView(BaseListCreateAPIView):
     model = KeyFrame
     serializer_class = KeyFrameSerializer
@@ -49,7 +59,7 @@ class KeyFrameApiView(BaseListCreateAPIView):
 class InferenceClassificationApiView(BaseListCreateAPIView):
     model = InferenceClassification
     serializer_class = InferenceClassificationSerializer
-    
+
 class InferenceDetectionClassificationApiView(BaseListCreateAPIView):
     model = InferenceDetectionClassification
     serializer_class = InferenceDetectionClassificationSerializer
@@ -71,5 +81,5 @@ class EventApiView(BaseListCreateAPIView):
     serializer_class= EventSerializer
 
 class VideoApiView(BaseListCreateAPIView):
-    model = Video 
+    model = Video
     serializer_class = VideoSerializer

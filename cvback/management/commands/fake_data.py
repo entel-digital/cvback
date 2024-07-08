@@ -18,7 +18,7 @@ load_dotenv(postgres_env_path, override=True)
 
 from cvback.devices.models import Area, Camera, InferenceComputer
 from cvback.events.models import (
-    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrames, Video, KeyVideos,
+    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrame, Video, KeyVideo,
     BoundingBox, InferenceOCR, KeyInferenceOCR, InferenceDetectionClassification,
     KeyInferenceDetectionClassification, InferenceDetectionClassificationTracker,
     KeyInferenceDetectionClassificationTracker, InferenceClassification,
@@ -89,8 +89,7 @@ from django.db import IntegrityError
 def create_labels(n):
     created_labels = 0
     attempts = 0
-    max_attempts = n * 3  # Set a maximum number of attempts to avoid infinite loops
-
+    max_attempts = n * 3 
     while created_labels < n and attempts < max_attempts:
         try:
             name = fake.unique.word()
@@ -100,8 +99,6 @@ def create_labels(n):
             )
             created_labels += 1
         except IntegrityError:
-            # If we get an IntegrityError, it means the name was duplicated
-            # We'll just try again with a new name
             pass
         attempts += 1
 
@@ -117,7 +114,7 @@ def create_frames(n):
 
 def create_key_frames(n):
     for _ in range(n):
-        key_frame = KeyFrames.objects.create(
+        key_frame = KeyFrame.objects.create(
             name=fake.word()
         )
         key_frame.frames.set(Frame.objects.order_by('?')[:random.randint(1, 5)])
@@ -131,7 +128,7 @@ def create_videos(n):
 
 def create_key_videos(n):
     for _ in range(n):
-        key_video = KeyVideos.objects.create(
+        key_video = KeyVideo.objects.create(
             name=fake.word()
         )
         key_video.frames.set(Video.objects.order_by('?')[:random.randint(1, 5)])
@@ -226,13 +223,15 @@ def create_events(n):
     for _ in range(n):
         event = Event.objects.create(
             event_type=EventType.objects.order_by('?').first(),
-            confidence=random.uniform(0, 1)
+            confidence=random.uniform(0, 1),
+            event_label = Label.objects.order_by('?')[random.randint(1,3)]
         )
+        
         event.cameras.set(Camera.objects.order_by('?')[:random.randint(1, 3)])
         event.frames.set(Frame.objects.order_by('?')[:random.randint(1, 5)])
-        event.key_frames.set(KeyFrames.objects.order_by('?')[:random.randint(1, 3)])
+        event.key_frames.set(KeyFrame.objects.order_by('?')[:random.randint(1, 3)])
         event.videos.set(Video.objects.order_by('?')[:random.randint(1, 3)])
-        event.key_videos.set(KeyVideos.objects.order_by('?')[:random.randint(1, 3)])
+        event.key_videos.set(KeyVideo.objects.order_by('?')[:random.randint(1, 3)])
         event.labels_detected.set(Label.objects.order_by('?')[:random.randint(1, 5)])
         event.labels_missing.set(Label.objects.order_by('?')[:random.randint(1, 5)])
         event.inference_classification.set(InferenceClassification.objects.order_by('?')[:random.randint(1, 3)])
@@ -251,7 +250,7 @@ def data_exists():
 def main():
     if not data_exists():
         print("No data found, generating dummy data...")
-        
+
         NUM_AREAS = 10
         NUM_CAMERAS = 10
         NUM_INFERENCE_COMPUTERS = 10

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from cvback.events.models import BoundingBox, Frame, Video, InferenceDetectionClassificationTracker, InferenceDetectionClassification, InferenceOCR, Event
 #from drf_compound_fields.fields import ListField
-from cvback.events.models import AreaOfInterest, Event, InferenceDetectionClassification, InferenceClassification, Label, KeyVideos, KeyInferenceClassification, KeyInferenceDetectionClassification, KeyInferenceDetectionClassificationTracker, KeyInferenceOCR, KeyFrame
+from cvback.events.models import AreaOfInterest, Event, InferenceDetectionClassification, InferenceClassification, Label, KeyVideo, KeyInferenceClassification, KeyInferenceDetectionClassification, KeyInferenceDetectionClassificationTracker, KeyInferenceOCR, KeyFrame
 from cvback.devices.serializers import CameraSerializer
 # TODO: +Frames, +Videos, +Inference classification, +Inference detection classification tracker, +Inference detection classification, +Inference ocr, +Event
 class BoundingBoxSerializer(serializers.ModelSerializer):
@@ -60,9 +60,9 @@ class VideoSerializer(serializers.ModelSerializer):
         model = Video
         fields = "__all__"
 
-class KeyVideosSerializer(serializers.ModelSerializer):
+class KeyVideoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = KeyVideos
+        model = KeyVideo
         fields = "__all__"
 
 class LabelSerializer(serializers.ModelSerializer):
@@ -80,7 +80,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     cameras = CameraSerializer(many=True,read_only=True )
 
-    
+
     labels_detected = LabelSerializer(required=False, many=True, read_only=True)
     labels_missing = LabelSerializer(required=False, many=True,read_only=True)
     class Meta:
