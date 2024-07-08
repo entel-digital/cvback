@@ -4,6 +4,5 @@ WORKDIR /app
 
 COPY ./vue_frontend/package.json /app
 
-RUN npm install && npm install -g @quasar/cli && npm cache clean --force
-
+RUN npm install && npm install -g @quasar/cli
 ENV PATH ./node_modules/.bin/:$PATH

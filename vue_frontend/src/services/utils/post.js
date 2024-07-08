@@ -8,6 +8,7 @@ export const Post = async (path, body) => {
     console.log("document", document);
     // const url = `${process.env.CV_API}/${path}/graphql`;
     const url = `http://0.0.0.0:8000/${path}/graphql/`;
+    console.log("url", url);
 
     console.log("token del post", token);
 
