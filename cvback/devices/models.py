@@ -12,7 +12,7 @@ class Area(models.Model):
     diagram = models.ImageField(null=True, blank=True)
     #area_location = models.Polygon(default=Point(-70.6761237, -33.56396059, srid=4326))
     def __str__(self):
-        return self.area
+        return self.name
 
 
 class Camera(models.Model):
