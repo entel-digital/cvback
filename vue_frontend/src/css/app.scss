@@ -1,0 +1,53 @@
+// app global css in SCSS form
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&display=swap");
+
+body {
+  font-family: "Barlow", sans-serif;
+}
+
+.barlow-bold {
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+}
+.barlow-semibold {
+  font-family: "Barlow", sans-serif;
+  font-weight: 600;
+}
+.space-page {
+  padding: 20px 100px;
+}
+.space-page-responsive {
+  padding: 20px 20px;
+}
+
+.fs-23-28 {
+  font-size: 23px;
+  line-height: 28px;
+}
+
+.fs-18-23 {
+  font-size: 18px;
+  line-height: 23px;
+}
+.fs-21-25 {
+  font-size: 21px;
+  line-height: 25px;
+}
+.fs-28-34 {
+  font-size: 28px;
+  line-height: 34px;
+}
+
+.fs-16-19 {
+  font-size: 16px;
+  line-height: 19px;
+}
+
+.fs-15-18 {
+  font-size: 15px;
+  line-height: 18px;
+}
+.fs-14-19 {
+  font-size: 14px;
+  line-height: 19px;
+}
