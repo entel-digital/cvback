@@ -1,5 +1,5 @@
 import graphene
-from cvback.events.schema import (LabelType, KeyFramesType, BoundingBoxType, EventTypeType, EventType)
+from cvback.events.schema import (LabelType, KeyFrameType, BoundingBoxType, EventTypeType, EventType)
 from cvback.events.models import (Label, KeyFrame, BoundingBox, Event)
 
 class UpdateEventMutation(graphene.Mutation):
@@ -20,7 +20,7 @@ class Query(graphene.ObjectType):
     #event_type = graphene.Field(EventTypeType)
     #all_labels = graphene.List(LabelType)
     #all_bounding_boxes = graphene.List(BoundingBoxType)
-    #all_key_frames = graphene.List(KeyFramesType)
+    #all_key_frames = graphene.List(KeyFrameType)
 
     def resolve_all_events(self, info):
         return Event.objects.all()

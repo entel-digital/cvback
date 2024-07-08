@@ -27,7 +27,7 @@ class FrameType(DjangoObjectType):
         model = Frame
         fields = "__all__"
 
-class KeyFramesType(DjangoObjectType):
+class KeyFrameType(DjangoObjectType):
     class Meta:
         model = KeyFrame
         fields = ('id', 'name', 'frames')
@@ -36,7 +36,7 @@ class VideoType(DjangoObjectType):
         model = Video
         fields = "__all__"
 
-class KeyVideosType(DjangoObjectType):
+class KeyVideoType(DjangoObjectType):
     class Meta:
         model = KeyVideo
         fields = "__all__"

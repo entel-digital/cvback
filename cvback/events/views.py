@@ -3,8 +3,8 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.parsers import JSONParser
-from cvback.events.serializers import BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer, InferenceDetectionClassificationSerializer, InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer, VideoSerializer, EventSerializer, KeyFramesSerializer, LabelSerializer
-from cvback.events.models import Frame, Label, KeyFrames,BoundingBox, InferenceClassification, InferenceDetectionClassification, InferenceDetectionClassificationTracker, InferenceOCR, Event, Video
+from cvback.events.serializers import BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer, InferenceDetectionClassificationSerializer, InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer, VideoSerializer, EventSerializer, KeyFrameSerializer, LabelSerializer
+from cvback.events.models import Frame, Label, KeyFrame,BoundingBox, InferenceClassification, InferenceDetectionClassification, InferenceDetectionClassificationTracker, InferenceOCR, Event, Video
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class BaseListCreateAPIView(ListCreateAPIView):
-    permission_classes=[HasAPIKey] 
+    permission_classes=[HasAPIKey]
     @classmethod
     def __init__(self, *args,**kwargs ):
         self.queryset = self.model.objects.all()
@@ -36,7 +36,7 @@ class BaseListCreateAPIView(ListCreateAPIView):
             serializer = self.get_serializer(data=request.data, many=True)
         else:
             serializer = self.get_serializer(data=request.data)
-            
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -49,17 +49,17 @@ class BoundingBoxApiView(BaseListCreateAPIView):
 class FrameApiView(BaseListCreateAPIView):
     model = Frame
     serializer_class = FrameSerializer
-    
-    
+
+
 
 class KeyFrameApiView(BaseListCreateAPIView):
-    model = KeyFrames
-    serializer_class = KeyFramesSerializer
+    model = KeyFrame
+    serializer_class = KeyFrameSerializer
 
 class InferenceClassificationApiView(BaseListCreateAPIView):
     model = InferenceClassification
     serializer_class = InferenceClassificationSerializer
-    
+
 class InferenceDetectionClassificationApiView(BaseListCreateAPIView):
     model = InferenceDetectionClassification
     serializer_class = InferenceDetectionClassificationSerializer
@@ -81,5 +81,5 @@ class EventApiView(BaseListCreateAPIView):
     serializer_class= EventSerializer
 
 class VideoApiView(BaseListCreateAPIView):
-    model = Video 
+    model = Video
     serializer_class = VideoSerializer
