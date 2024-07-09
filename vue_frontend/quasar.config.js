@@ -54,6 +54,8 @@ module.exports = configure(function (/* ctx */) {
         node: "node16",
       },
       env: require("dotenv").config().parsed,
+      distDir: '/static/vue',
+      publicPath: '/static/vue',
 
       vueRouterMode: "history", // available values: 'hash', 'history'
       // vueRouterBase,

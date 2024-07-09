@@ -69,7 +69,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .container-img {
-  background-image: url("src/assets/vision_img_test.jpg");
+  background-image: url("src/assets/vision_img_test.png");
 }
 .border-radius {
   border-radius: 10px;
