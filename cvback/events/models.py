@@ -111,7 +111,8 @@ class Inference(models.Model):
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
     confidence = models.FloatField(validators=[validate_relative])
-
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE, null=True, related_name="%(class)s_inferences")
+    
     class Meta:
         abstract = True
 
@@ -119,7 +120,7 @@ class Inference(models.Model):
         return f"{self.inference_computer} > {self.added_date}"
 
 
-class BoundingBox(Inference):
+class BoundingBox(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     top_left = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
@@ -143,7 +144,8 @@ class KeyInferenceOCR(models.Model):
 class InferenceDetectionClassification(Inference):
     bounding_boxes = models.ManyToManyField(BoundingBox)
     labels = models.ManyToManyField(Label)
-
+    #frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='detections', null=True)
+    
     def __str__(self):
         return f"InferenceDetectionClassification ID: {self.id}"
 
@@ -195,6 +197,7 @@ class InferenceClassification(Inference):
 class KeyInferenceClassification(models.Model):
     name = models.CharField(max_length=255)
     inferences = models.ForeignKey(InferenceClassification, on_delete=models.CASCADE)
+
 
 
 class EventType(models.Model):
