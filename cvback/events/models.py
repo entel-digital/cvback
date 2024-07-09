@@ -112,7 +112,7 @@ class Inference(models.Model):
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
     confidence = models.FloatField(validators=[validate_relative])
     frame = models.ForeignKey(Frame, on_delete=models.CASCADE, null=True, related_name="%(class)s_inferences")
-    
+
     class Meta:
         abstract = True
 
@@ -145,7 +145,7 @@ class InferenceDetectionClassification(Inference):
     bounding_boxes = models.ManyToManyField(BoundingBox)
     labels = models.ManyToManyField(Label)
     #frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='detections', null=True)
-    
+
     def __str__(self):
         return f"InferenceDetectionClassification ID: {self.id}"
 
@@ -199,7 +199,6 @@ class KeyInferenceClassification(models.Model):
     inferences = models.ForeignKey(InferenceClassification, on_delete=models.CASCADE)
 
 
-
 class EventType(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     name = models.CharField(max_length=30)
@@ -207,6 +206,9 @@ class EventType(models.Model):
     documentation = models.FileField(null=True,
                                      blank=True,
                                      validators=[FileExtensionValidator(['pdf'])])
+
+    def __str__(self):
+        return f"{self.name} {self.version}"
 
 
 class Event(models.Model):
