@@ -15,5 +15,13 @@ export const useUserStore = defineStore("user", {
         console.log("HERE IN ERROR SIGN_IN", error);
       }
     },
+    async SIGN_OUT() {
+      try {
+        this.user = null
+        await api.delete("_allauth/browser/v1/auth/session ")
+      } catch (error) {
+        console.log("HERE IN ERROR SIGN_IN", error);
+      }
+    },
   },
 });

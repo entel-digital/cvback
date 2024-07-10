@@ -48,7 +48,7 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "stores/user-store";
-
+import { useQuasar } from "quasar";
 
 export default defineComponent({
   name: "SignInIndex",
@@ -57,25 +57,25 @@ export default defineComponent({
     const password = ref("");
     const router = useRouter();
     const userStore = useUserStore();
+    const $q = useQuasar();
 
-    const signInVision = async () =>  {
-          console.log("Sign in");
-          await userStore.SIGN_IN({username: username.value, password: password.value});
-          console.log("userstore user", userStore.user);
-          if(userStore.user?.status === 200){
-            router.push({ name: "events" })
-          } else {
-            $q.notify({
-              color: "red-5",
-              textColor: "white",
-              icon: "report_problem",
-              message: "Usuario o contraseña incorrectos",
-            });
-          }
-          // router.push({ name: "events" }).catch((err) => {
-          //   console.error("Failed to navigate:", err);
-          // });
-        }
+
+    const signInVision = async () => {
+      await userStore.SIGN_IN({
+        username: username.value,
+        password: password.value,
+      });
+      if (userStore.user?.status === 200) {
+        router.push({ name: "events" });
+      } else {
+        $q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "report_problem",
+          message: "Usuario o contraseña incorrectos",
+        });
+      }
+    };
 
     return {
       username,

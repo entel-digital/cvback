@@ -16,6 +16,7 @@
         v-for="(frame, index) in newFrames"
         :key="frame.id"
         :name="index + 1"
+        class="q-px-md"
       >
         <q-img
           :key="frame.id"
@@ -94,6 +95,7 @@
             style="object-fit: contain"
             :ratio="16 / 9"
             class="q-mb-xl"
+            @load="initializeCanvas"
           />
         </q-carousel-slide>
 
@@ -148,26 +150,23 @@ import { defineComponent, ref, watch } from "vue";
 export default defineComponent({
   name: "CarouselImages",
 
-  props: ["frames", "loading", "event_id", "expanded"],
+  props: ["frames",],
 
   setup(props) {
     const slide = ref(1);
     const fullscreen = ref(false);
     const newFrames = ref(props.frames);
-        const image1Url = ref('')
-    //  const   mode: "fill";
-    // carousel: false,
-    // modalcenter: "center",
-    console.log("expanded", props.expanded);
 
-   const getFullImageUrl = (relativePath) => {
+    const getFullImageUrl = (relativePath) => {
       return `http://localhost:8000/media/${relativePath}`;
     };
+
+
     return {
       slide,
       fullscreen,
       newFrames,
-      getFullImageUrl
+      getFullImageUrl,
     };
   },
 });
@@ -177,9 +176,16 @@ export default defineComponent({
 .carousel-control {
   background: #000000b3;
   width: 100%;
-  height: 50px;
 }
-.custom-pt {
-  padding-top: 14px;
+.q-img.q-img--menu {
+  margin-bottom: 20px;
 }
+
+#dialog_carousel-frames {
+  padding: 0em 7em 0em 7em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 </style>

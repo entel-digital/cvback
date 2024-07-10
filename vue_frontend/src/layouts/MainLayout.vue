@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh lpR fFf">
-    <q-header style="z-index: -1 !important">
+    <q-header >
       <q-toolbar
         class="bg-info fit row inline no-wrap justify-between items-center q-py-md"
       >
@@ -20,30 +20,16 @@
           </q-toolbar-title>
         </div>
 
-        <q-btn-dropdown
+      <q-btn-dropdown
           id="dropdown-user"
           class="text-grey-6 text-bold"
           flat
-          pushactiveMenu
+          push
           icon="person_outline"
-          :ripple="false"
           dropdown-icon="expand_more"
         >
           <q-list separator>
-            <q-item class="column">
-              <q-item-label class="q-py-sm font-12-3 text-center text-grey-11"
-                >Alerta sonora</q-item-label
-              >
-              <div class="row justify-center minus-mt-10">
-                <q-item-label class="q-pt-md font-15-3 text-grey-11 text-bold"
-                  >OFF</q-item-label
-                >
-                <q-toggle v-model="soundAlertActive" size="lg" color="white" />
-                <q-item-label class="q-pt-md font-15-3 text-grey-11 text-bold"
-                  >ON</q-item-label
-                >
-              </div>
-            </q-item>
+
             <q-item>
               <q-item-section>
                 <q-btn
@@ -51,7 +37,7 @@
                   no-caps
                   dense
                   @click="signOut"
-                  class="text-grey-3 text-bold font-15-3"
+                  class="text-grey-3 barlow-bold font-15-3"
                   >Cerrar Sesión
                 </q-btn>
               </q-item-section>
@@ -70,7 +56,6 @@
       :breakpoint="500"
       bordered
       class="bg-dark"
-      style="z-index: 0 !important"
     >
       <!-- drawer content -->
       <div v-if="miniState" class="flex flex-center" style="height: 68px">
@@ -137,6 +122,7 @@
 
 <script>
 import { defineComponent, ref, computed } from "vue";
+import { useUserStore } from "stores/user-store";
 
 const menuList = [
   {
@@ -145,24 +131,6 @@ const menuList = [
     icon: "error",
     disable: false,
   },
-  {
-    value: "cameras",
-    label: "Cámaras",
-    icon: "videocam",
-    disable: true,
-  },
-  // {
-  //   value: "users",
-  //   label: "Usuarios",
-  //   icon: "group",
-  //   disable: true,
-  // },
-  // {
-  //   value: "settings",
-  //   label: "Configuración",
-  //   icon: "settings",
-  //   disable: false,
-  // },
 ];
 export default defineComponent({
   name: "MainLayout",
@@ -171,6 +139,7 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
     const miniState = ref(false);
     const activeMenu = ref("events");
+    const userStore = useUserStore();
 
     const labelsHeader = {
       events: "Eventos",
@@ -181,19 +150,25 @@ export default defineComponent({
 
     const labelSelected = computed(() => labelsHeader[activeMenu.value]);
 
-    return {
+    const toggleLeftDrawer = (e) => {
+        if (miniState.value) {
+          miniState.value = false;
+          e.stopPropagation();
+        }
+      };
+
+      const signOut = async () => {
+        await userStore.SIGN_OUT();
+    };
+        return {
       menuList,
       leftDrawerOpen,
       miniState,
       activeMenu,
       labelSelected,
+      signOut,
+      toggleLeftDrawer
 
-      toggleLeftDrawer(e) {
-        if (miniState.value) {
-          miniState.value = false;
-          e.stopPropagation();
-        }
-      },
     };
   },
 });
@@ -213,7 +188,7 @@ div.q-item.icon-container {
   width: 6rem;
 }
 .logo-header-mini {
-  width: 1.5rem;
+  width: 1.5rem !important;
 }
 aside.q-drawer--left.q-drawer--bordered {
   border-right: 0 !important;

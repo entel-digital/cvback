@@ -1,213 +1,207 @@
 <template>
-<div>
-  <div
-    class="fit row no-wrap justify-between items-start content-start q-py-md"
-  >
-     <div class="gt-sm fit col-12">
-      <q-table
-        class="fit my-sticky-dynamic fs-15-18"
-        flat
-        bordered
-        :rows="rows"
-        :columns="columns"
-        :loading="loading"
-        row-key="id"
-        :pagination="pagination"
-        v-model:expanded="expanded"
+  <div>
+    <div
+      class="fit row no-wrap justify-between items-start content-start q-py-md"
+    >
+      <div class="gt-sm fit col-12">
+        <q-table
+          class="fit my-sticky-dynamic fs-15-18"
+          flat
+          bordered
+          :rows="rows"
+          :columns="columns"
+          :loading="loading"
+          row-key="id"
+          :pagination="pagination"
+          v-model:expanded="expanded"
+        >
+          <template v-slot:body="props">
+            <q-tr
+              :props="props"
+              :class="colorRowSelected(props.row)"
+              @click="getRowSelected(props.row)"
+            >
+              <q-td key="name" :props="props">
+                <span class="barlow-semibold fs-15-18">
+                  {{ props.row.eventType.name }}
+                </span>
+              </q-td>
+              <q-td key="date" :props="props">
+                <span class="barlow-semibold fs-15-18">
+                  {{ formatDateEvent(props.row.addedDate).date }}
+                </span>
 
-      >
-        <template v-slot:body="props">
-          <q-tr
-            :props="props"
-            :class="colorRowSelected(props.row)"
-            @click="getRowSelected(props.row)"
-          >
-            <q-td key="name" :props="props">
-              <span class="barlow-semibold fs-15-18">
-                {{ props.row.eventType.name }}
-              </span>
-            </q-td>
-            <q-td key="date" :props="props">
-              <span class="barlow-semibold fs-15-18">
-                {{ formatDateEvent(props.row.addedDate).date }}
-              </span>
+                <span class="fs-15-18">
+                  | {{ formatDateEvent(props.row.addedDate).time }}</span
+                >
+              </q-td>
+              <q-td key="detected" :props="props">
+                <span class="barlow-semibold fs-15-18">
+                  {{ props.row.labelsDetected.length }}
+                </span>
 
-              <span class="fs-15-18">
-                | {{ formatDateEvent(props.row.addedDate).time }}</span
-              >
-            </q-td>
-            <q-td key="detected" :props="props">
-              <span class="barlow-semibold fs-15-18">
-                {{ props.row.labelsDetected.length }}
-              </span>
-
-              <span class="barlow fs-15-18"> labels </span>
-            </q-td>
-            <q-td key="missing" :props="props">
-              <span class="barlow-semibold fs-15-18">
-                {{ props.row.labelsMissing.length }}
-              </span>
-              <span class="barlow fs-15-18"> labels </span>
-            </q-td>
-            <q-td autowidth >
-              <q-btn
-                size="sm"
-                color="accent"
-                round
-                dense
-                :icon="
-                  props.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
-                "
-              />
-            </q-td>
-          </q-tr>
-          <q-tr v-show="props.expand" :props="props">
-            <q-td colspan="100%" class="no-padding">
-              <div class="fit row justify-between q-py-sm">
-                <div class="col-5 text-left q-pa-md q-gutter-md">
-                  <q-list>
-                    <q-item>
-                      <q-item-section>
-                        <q-item-label
-                          >Confiabilidad:
-                          <span class="barlow-bold">
-                            {{ toPercentage(props.row.confidence) }}%
-                          </span>
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item>
-                      <q-item-section>
-                        <q-item-label class="row wrap q-mr-md" lines="3">
-                          <div
-                            class="q-gutter-xs row inline"
-                            style="max-width: 350px"
-                          >
-                            <span> EPP Detectados:</span>
-                            <q-chip
-                              v-for="label in props.row.labelsDetected"
-                              :key="label.id"
-                              outline
-                              dense
-                              color="primary"
-                              text-color="white"
-                              class="q-px-sm"
+                <span class="barlow fs-15-18"> labels </span>
+              </q-td>
+              <q-td key="missing" :props="props">
+                <span class="barlow-semibold fs-15-18">
+                  {{ props.row.labelsMissing.length }}
+                </span>
+                <span class="barlow fs-15-18"> labels </span>
+              </q-td>
+              <q-td autowidth>
+                <q-btn
+                  size="sm"
+                  color="accent"
+                  round
+                  dense
+                  :icon="
+                    props.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                  "
+                />
+              </q-td>
+            </q-tr>
+            <q-tr v-show="props.expand" :props="props">
+              <q-td colspan="100%" class="no-padding">
+                <div class="fit row justify-between q-py-sm">
+                  <div class="col-5 text-left q-pa-md q-gutter-md">
+                    <q-list>
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label
+                            >Confiabilidad:
+                            <span class="barlow-bold">
+                              {{ toPercentage(props.row.confidence) }}%
+                            </span>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label class="row wrap q-mr-md" lines="3">
+                            <div
+                              class="q-gutter-xs row inline"
+                              style="max-width: 350px"
                             >
-                              {{ label.name }}
-                            </q-chip>
-                          </div>
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item>
-                      <q-item-section>
-                        <q-item-label
-                          >EPP No Detectados:
-                          <span>
-                            <q-chip
-                              v-for="label in props.row.labelsMissing"
-                              :key="label.id"
-                              outline
-                              dense
-                              color="primary"
-                              text-color="white"
-                              class="q-px-sm"
-                            >
-                              {{ label.name }}
-                            </q-chip>
-                          </span>
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
+                              <span>Detectados:</span>
+                              <q-chip
+                                v-for="label in props.row.labelsDetected"
+                                :key="label.id"
+                                dense
+                                :style="findColor(label.name)"
+                                class="q-px-sm"
+                              >
+                                {{ label.name }}
+                              </q-chip>
+                            </div>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label
+                            >No Detectados:
+                            <span>
+                              <q-chip
+                                v-for="label in props.row.labelsMissing"
+                                :key="label.id"
+                                dense
+                                class="q-px-sm"
+                                :style="findColor(label.name)"
+                              >
+                                {{ label.name }}
+                              </q-chip>
+                            </span>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </div>
+                  <div class="col-6">
+                    <CarouselImages :frames="props.row.frames" />
+                  </div>
                 </div>
-                <div class="col-6">
-               <CarouselImages
-                    :frames="props.row.frames"
-                    :expanded="expanded"
-                  />
-                </div>
-              </div>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
-    </div>
+              </q-td>
+            </q-tr>
+          </template>
+        </q-table>
       </div>
+    </div>
 
+    <div class="lt-md">
+      <q-list bordered separator class="rounded-borders">
+        <q-expansion-item
+          group="events"
+          bordered
+          v-for="row in rows"
+          :key="row.id"
+        >
+          <template v-slot:header>
+            <q-item-section class="column">
+              <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
+                {{ row.eventType.name }}
+              </q-item-label>
+              <q-item-label class="fs-14-19 text-grey-3">
+                <span class="barlow-semibold fs-15-18">
+                  {{ formatDateEvent(row.addedDate).date }}
+                </span>
 
-  <div class="lt-md">
-    <q-list bordered separator class="rounded-borders">
-      <q-expansion-item group="events" bordered v-for="row in rows" :key="row.id">
-        <template v-slot:header>
-          <q-item-section class="column">
-            <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
-              {{ row.eventType.name }}
-            </q-item-label>
-            <q-item-label class="fs-14-19 text-grey-3">
-              <span class="barlow-semibold fs-15-18">
-                {{ formatDateEvent(row.addedDate).date }}
-              </span>
+                <span class="fs-15-18">
+                  | {{ formatDateEvent(row.addedDate).time }}</span
+                >
+              </q-item-label>
+            </q-item-section>
+          </template>
 
-              <span class="fs-15-18">
-                | {{ formatDateEvent(row.addedDate).time }}</span
-              >
-            </q-item-label>
-          </q-item-section>
-        </template>
+          <q-card>
+            <q-card-section>
+              <q-item-label class="text-grey-3 fs-14-19 q-py-sm"
+                >Confiabilidad:
+                <span class="barlow-bold fs-15-18">
+                  {{ toPercentage(row.confidence) }}%
+                </span>
+              </q-item-label>
+              <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
+                Detectados:
+                <q-chip
+                  v-for="label in row.labelsMissing"
+                  :key="label.id"
+                  outline
+                  dense
+                  color="primary"
+                  text-color="white"
+                >
+                  {{ label.name }}
+                </q-chip>
+              </q-item-label>
+              <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
+                No Detectados:
+                <q-chip
+                  v-for="label in row.labelsMissing"
+                  :key="label.id"
+                  outline
+                  dense
+                  color="primary"
+                  text-color="white"
+                >
+                  {{ label.name }}
+                </q-chip>
+              </q-item-label>
+            </q-card-section>
+            <q-card-section>
+              <CarouselImages :frames="row.frames" />
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
 
-        <q-card>
-          <q-card-section>
-            <q-item-label class="text-grey-3 fs-14-19 q-py-sm"
-              >Confiabilidad:
-              <span class="barlow-bold fs-15-18">
-                {{ toPercentage(row.confidence) }}%
-              </span>
-            </q-item-label>
-            <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
-             EPP Detectados:
-              <q-chip
-                v-for="label in row.labelsMissing"
-                :key="label.id"
-                outline
-                dense
-                color="primary"
-                text-color="white"
-              >
-                {{ label.name }}
-              </q-chip>
-            </q-item-label>
-            <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
-              EPP No Detectados:
-              <q-chip
-                v-for="label in row.labelsMissing"
-                :key="label.id"
-                outline
-                dense
-                color="primary"
-                text-color="white"
-              >
-                {{ label.name }}
-              </q-chip>
-            </q-item-label>
-          </q-card-section>
-          <q-card-section>
-               <CarouselImages
-                    :frames="row.frames"
-                    :expanded="expanded"
-                  />
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-separator />
-    </q-list>
+        <q-separator />
+      </q-list>
+    </div>
   </div>
-   </div>
 </template>
 
 <script>
 import { defineComponent, ref, computed, nextTick } from "vue";
+import { types, labels } from "src/utils/colors";
 
 import CarouselImages from "src/components/CarouselImages.vue";
 
@@ -216,7 +210,7 @@ export default defineComponent({
 
   props: ["rows", "columns"],
   components: {
-    CarouselImages
+    CarouselImages,
   },
   setup(props) {
     const nextPage = ref(2);
@@ -226,15 +220,15 @@ export default defineComponent({
     const fullscreen = ref(false);
     const expanded = ref([]);
 
-    function getRowSelected(row, column, event) {
-      if (this.rowSelected?.id === row.id) {
-        this.rowSelected = null;
-        this.expanded = [];
+    const getRowSelected = (row, column, event) => {
+      if (rowSelected.value?.id === row.id) {
+        rowSelected.value = null;
+        expanded.value = [];
       } else {
-        this.rowSelected = row;
-        this.expanded = [row.id];
+        rowSelected.value = row;
+        expanded.value = [row.id];
       }
-    }
+    };
 
     const pagination = computed(() => {
       return {
@@ -271,10 +265,21 @@ export default defineComponent({
     };
 
     const toPercentage = (value) => {
-      console.log("value confidence", value);
-       if((value * 100).lenght > 4){
+      if ((value * 100).lenght > 4) {
         return Math.round(value * 100);
-       } return value *100
+      }
+      return value * 100;
+    };
+
+    const findColor = (value) => {
+      const label = labels[value];
+      const color = types[label];
+
+      if (color == "#000000") {
+        return `background-color: ${color}; boder: 2px solid ${color}; color: white`;
+      } else {
+        return `background-color: ${color}; boder: 2px solid ${color}; `;
+      }
     };
 
     return {
@@ -289,7 +294,8 @@ export default defineComponent({
       fullscreen,
       expanded,
       toggleExpand,
-      toPercentage
+      toPercentage,
+      findColor,
     };
   },
 });
@@ -333,4 +339,8 @@ export default defineComponent({
 
 tbody tr:nth-child(odd) // Add this selector
   background-color: #FAFAFA // Add your desired color here
+
+// .q-chip
+//   background-color: #939393 !important
+//   border: 2px solid
 </style>
