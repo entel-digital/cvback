@@ -221,7 +221,7 @@ class Event(models.Model):
     key_frames = models.ManyToManyField(KeyFrame)
     videos = models.ManyToManyField(Video, blank=True)
     key_videos = models.ManyToManyField(KeyVideo, blank=True)
-    confidence = models.FloatField(validators=[validate_relative], null=True, blank=True)
+    confidence = models.FloatField(validators=[validate_relative], default=0)
     labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
     labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
 

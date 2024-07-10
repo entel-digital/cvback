@@ -14,6 +14,8 @@ class FrameSerializer(serializers.ModelSerializer):
         model = Frame
         fields = "__all__"
 
+
+
 class InferenceClassificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = InferenceClassification
