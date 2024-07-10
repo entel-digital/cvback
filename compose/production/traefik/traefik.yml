@@ -28,7 +28,7 @@ certificatesResolvers:
 http:
   routers:
     web-secure-router:
-      rule: 'Host(`enteldigital.cl`) || Host(`www.enteldigital.cl`)'
+      rule: 'Host(`app-beta.sgscm.vision.enteldigital.cl`)'
       entryPoints:
         - web-secure
       middlewares:
