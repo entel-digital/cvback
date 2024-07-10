@@ -47,6 +47,19 @@ class FrameApiView(BaseListCreateAPIView):
     model = Frame
     serializer_class = FrameSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        image = self.request.FILES.get('image')
+        image_with_boundingboxes = self.request.FILES.get('image_with_boundingboxes')
+        serializer.save(image=image, image_with_boundingboxes=image_with_boundingboxes)
+
 
 
 class KeyFrameApiView(BaseListCreateAPIView):
@@ -80,3 +93,4 @@ class EventApiView(BaseListCreateAPIView):
 class VideoApiView(BaseListCreateAPIView):
     model = Video
     serializer_class = VideoSerializer
+
