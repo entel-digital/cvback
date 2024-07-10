@@ -25,7 +25,8 @@ class AlgorithmType(DjangoObjectType):
 class FrameType(DjangoObjectType):
     class Meta:
         model = Frame
-        fields = "__all__"
+        # fields = "__all__"
+        field = ['added_date', 'image.url']
 
 class KeyFrameType(DjangoObjectType):
     class Meta:

@@ -1,9 +1,6 @@
 import {api} from "src/boot/axios";
 import { getToken } from "src/services/utils/getToken";
 
-const token = getToken("csrfmiddlewaretoken");
-console.log("token", token);
-
 export const Post = async (path, body) => {
   try {
     // const url = `${process.env.CV_API}/${path}/graphql`;

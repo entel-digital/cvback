@@ -2,7 +2,7 @@
   "name": "cvfront",
   "version": "0.0.1",
   "description": "front end application to visualice your events",
-  "productName": "Vision-light",
+  "productName": "cvfront",
   "author": "natiacostap <natiacostap@gmail.com>",
   "private": true,
   "scripts": {

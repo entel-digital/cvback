@@ -76,7 +76,7 @@
       <div v-if="miniState" class="flex flex-center" style="height: 68px">
         <q-btn round>
           <img
-            src="~assets/Imagotipo_vision.png"
+            src="~assets/imagotipo_vision.png"
             class="logo-header-mini"
             alt="logo vision"
           />
@@ -85,7 +85,7 @@
       <div v-else class="flex flex-start q-pl-sm q-py-md">
         <q-btn push>
           <img
-            src="~assets/logo_vision.png"
+            src="~assets/logo_vision_blanco.png"
             class="logo-header"
             alt="logo vision"
           />
@@ -173,8 +173,8 @@ export default defineComponent({
     const activeMenu = ref("events");
 
     const labelsHeader = {
-      events: "Gestión de eventos",
-      cameras: "Gestión de cámaras",
+      events: "Eventos",
+      cameras: "Cámaras",
       users: "Usuarios",
       settings: "Configuración del sistema",
     };

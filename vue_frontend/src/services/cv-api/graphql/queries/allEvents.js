@@ -1,36 +1,76 @@
 export default `
 query allEvents {
   allEvents {
-    addedDate
     id
-    confidence
     eventType {
+      id
       name
+    }
+    eventLabel {
+      id
+      name
+    }
+    informedDate
+    addedDate
+    keyFrames {
+      id
+      name
+      frames {
+        id
+        image
+      }
     }
     labelsDetected {
       id
-      colorGroup
       name
     }
     labelsMissing {
-      colorGroup
       id
       name
     }
     inferenceDetectionClassification {
-      boundingBoxes {
-        bottomRight
-        topLeft
+      id
+      confidence
+      frame {
+        id
+        image
       }
-      algorithm {
-        kind
+      labels {
+        id
         name
-        boundingboxSet {
-          bottomRight
-          topLeft
-        }
+      }
+      boundingBoxes {
+        id
+        topLeft
+        bottomRight
       }
     }
+    inferenceDetectionClassificationTracker {
+      id
+      confidence
+      trackingIds
+      labels {
+        id
+        name
+      }
+      boundingBoxes {
+        id
+        topLeft
+        bottomRight
+      }
+    }
+    inferenceOcr {
+      id
+      name
+      value
+      confidence
+    }
+    frames {
+      id
+   		image
+      addedDate
+    }
+    confidence
   }
 }
 `;

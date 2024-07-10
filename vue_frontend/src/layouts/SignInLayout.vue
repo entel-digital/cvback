@@ -31,7 +31,7 @@
       >
         <div class="q-pt-xl flex justify-center">
           <img
-            src="~assets/logo_vision.png"
+            src="~assets/logo_vision_blanco.png"
             alt="vision-logo"
             style="width: 50%"
           />
@@ -65,7 +65,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .container-img {
-  background-image: url("src/assets/vision_img_test.png");
+  background-image: url("src/assets/bg_vision.png");
   background-size: cover; /* Asegura que la imagen de fondo cubra todo el espacio */
   background-repeat: no-repeat; /* Evita que la imagen se repita */
   background-position: center; /* Centra la imagen de fondo */

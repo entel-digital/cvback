@@ -1,10 +1,11 @@
 <template>
+<div>
   <div
-    class="fit row no-wrap justify-between items-start content-start q-py-md gt-sm"
+    class="fit row no-wrap justify-between items-start content-start q-py-md"
   >
-    <div class="col-12">
+     <div class="gt-sm fit col-12">
       <q-table
-        class="my-sticky-dynamic fs-15-18"
+        class="fit my-sticky-dynamic fs-15-18"
         flat
         bordered
         :rows="rows"
@@ -13,6 +14,7 @@
         row-key="id"
         :pagination="pagination"
         v-model:expanded="expanded"
+
       >
         <template v-slot:body="props">
           <q-tr
@@ -39,177 +41,108 @@
                 {{ props.row.labelsDetected.length }}
               </span>
 
-              <span class="barlow fs-15-18">
-                {{ checkIfPlural(props.row.labelsDetected.length) }}
-              </span>
+              <span class="barlow fs-15-18"> labels </span>
             </q-td>
             <q-td key="missing" :props="props">
               <span class="barlow-semibold fs-15-18">
                 {{ props.row.labelsMissing.length }}
-                <!-- {{ checkIfPlural(props.row.labelsMissing.length) }} -->
               </span>
-              <span class="barlow fs-15-18">
-                {{ checkIfPlural(props.row.labelsMissing.length) }}
-              </span>
+              <span class="barlow fs-15-18"> labels </span>
             </q-td>
-            <q-td auto-width>
-              <q-toggle
-                v-model="props.expand"
-                checked-icon="add"
-                unchecked-icon="remove"
+            <q-td autowidth >
+              <q-btn
+                size="sm"
+                color="accent"
+                round
+                dense
+                :icon="
+                  props.expand ? 'keyboard_arrow_up' : 'keyboard_arrow_down'
+                "
               />
             </q-td>
           </q-tr>
           <q-tr v-show="props.expand" :props="props">
-            <q-td colspan="100%">
-              <div class="text-left">
-                <q-list>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label
-                        >Confiabilidad:
-                        <span class="barlow-bold">
-                          {{ Math.round(props.row.confidence * 100) }}%
-                        </span>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label
-                        >Detectados:
-                        <span>
-                          <q-chip
-                            v-for="label in props.row.labelsDetected"
-                            :key="label.id"
-                            color="primary"
-                            text-color="white"
+            <q-td colspan="100%" class="no-padding">
+              <div class="fit row justify-between q-py-sm">
+                <div class="col-5 text-left q-pa-md q-gutter-md">
+                  <q-list>
+                    <q-item>
+                      <q-item-section>
+                        <q-item-label
+                          >Confiabilidad:
+                          <span class="barlow-bold">
+                            {{ toPercentage(props.row.confidence) }}%
+                          </span>
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section>
+                        <q-item-label class="row wrap q-mr-md" lines="3">
+                          <div
+                            class="q-gutter-xs row inline"
+                            style="max-width: 350px"
                           >
-                            {{ label.name }}
-                          </q-chip>
-                        </span>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                  <q-item>
-                    <q-item-section>
-                      <q-item-label
-                        >No encontrados:
-                        <span>
-                          <q-chip
-                            v-for="label in props.row.labelsMissing"
-                            :key="label.id"
-                            color="primary"
-                            text-color="white"
-                          >
-                            {{ label.name }}
-                          </q-chip>
-                        </span>
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-                <!-- This is expand slot for row above: {{ props.row.name }}. -->
+                            <span> EPP Detectados:</span>
+                            <q-chip
+                              v-for="label in props.row.labelsDetected"
+                              :key="label.id"
+                              outline
+                              dense
+                              color="primary"
+                              text-color="white"
+                              class="q-px-sm"
+                            >
+                              {{ label.name }}
+                            </q-chip>
+                          </div>
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                    <q-item>
+                      <q-item-section>
+                        <q-item-label
+                          >EPP No Detectados:
+                          <span>
+                            <q-chip
+                              v-for="label in props.row.labelsMissing"
+                              :key="label.id"
+                              outline
+                              dense
+                              color="primary"
+                              text-color="white"
+                              class="q-px-sm"
+                            >
+                              {{ label.name }}
+                            </q-chip>
+                          </span>
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </div>
+                <div class="col-6">
+               <CarouselImages
+                    :frames="props.row.frames"
+                    :expanded="expanded"
+                  />
+                </div>
               </div>
             </q-td>
           </q-tr>
         </template>
       </q-table>
     </div>
-    <!-- <div v-if="rowSelected" :class="rowSelected ? 'col-5' : 'col-12'">
-      <div class="flex flex-center">
-       <q-carousel animated v-model="slide" infinite>
-          <q-carousel-slide name="soft-jazz">
-            <q-img src="~assets/img_test.jpeg" />
-          </q-carousel-slide>
-
-          <q-carousel-slide name="Rihanna">
-            <q-img src="~assets/img_test.jpeg" />
-          </q-carousel-slide>
-
-          <q-carousel-slide name="ibiza">
-            <q-img src="~assets/img_test.jpeg" />
-          </q-carousel-slide>
-        </q-carousel>
-        <q-carousel
-          v-if="!fullscreen"
-          id="carousel-frames"
-          class="carousel_slides"
-          swipeable
-          animated
-          v-model="slide"
-          ref="carousel"
-          infinite
-          height="100%"
-          style="width: 100%; object-fit: contain; border-radius: 5px"
-        >
-          <q-carousel-slide
-            v-for="(frame, index) in newFrames"
-            :key="frame.id"
-            :name="index + 1"
-          >
-            <q-img
-              :key="frame.id"
-              :src="frame.url"
-              contain
-              :ratio="16 / 9"
-              loading="lazy"
-              spinner-color="primary"
-              style="object-fit: contain"
-            />
-          </q-carousel-slide>
-
-          <template v-slot:control>
-            <q-carousel-control
-              position="bottom-left"
-              :offset="[0, 0]"
-              class="text-white rounded-borders carousel-control row justify-between items-center"
-            >
-              <div class="row">
-                <q-btn
-                  push
-                  dense
-                  size="md"
-                  text-color="white"
-                  icon="arrow_left"
-                  @click="$refs.carousel.previous()"
-                />
-                <div class="q-px-sm q-pt-xs font-18-22 text-bold">
-                  {{ slide }}/{{ frames.length }}
-                </div>
-                <q-btn
-                  push
-                  dense
-                  size="md"
-                  text-color="white"
-                  icon="arrow_right"
-                  @click="$refs.carousel.next()"
-                />
-              </div>
-
-              <div class="row q-px-md">
-                <q-btn
-                  push
-                  round
-                  dense
-                  text-color="white"
-                  :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
-                  @click="fullscreen = true"
-                />
-              </div>
-            </q-carousel-control>
-          </template>
-        </q-carousel>
       </div>
-    </div> -->
-  </div>
+
+
   <div class="lt-md">
     <q-list bordered separator class="rounded-borders">
-      <q-expansion-item bordered v-for="row in rows" :key="row.id">
+      <q-expansion-item group="events" bordered v-for="row in rows" :key="row.id">
         <template v-slot:header>
           <q-item-section class="column">
-            <q-item-label class="barlow-bold text-dark fs-16-19">
-              {{ row.id }}
+            <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
+              {{ row.eventType.name }}
             </q-item-label>
             <q-item-label class="fs-14-19 text-grey-3">
               <span class="barlow-semibold fs-15-18">
@@ -225,28 +158,32 @@
 
         <q-card>
           <q-card-section>
-            <q-item-label class="text-grey-3 fs-14-19"
+            <q-item-label class="text-grey-3 fs-14-19 q-py-sm"
               >Confiabilidad:
               <span class="barlow-bold fs-15-18">
-                {{ Math.round(row.confidence * 100) }}%
+                {{ toPercentage(row.confidence) }}%
               </span>
             </q-item-label>
-            <q-item-label class="text-grey-3 fs-14-19">
-              Detectados:
+            <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
+             EPP Detectados:
               <q-chip
                 v-for="label in row.labelsMissing"
                 :key="label.id"
+                outline
+                dense
                 color="primary"
                 text-color="white"
               >
                 {{ label.name }}
               </q-chip>
             </q-item-label>
-            <q-item-label class="text-grey-3 fs-14-19">
-              No encontrados:
+            <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
+              EPP No Detectados:
               <q-chip
                 v-for="label in row.labelsMissing"
                 :key="label.id"
+                outline
+                dense
                 color="primary"
                 text-color="white"
               >
@@ -255,9 +192,10 @@
             </q-item-label>
           </q-card-section>
           <q-card-section>
-            <q-img
-              src="https://firebasestorage.googleapis.com/v0/b/eocean-cv-processed-bucket-nonprod/o/268136ca-4ce3-3250-8439-44bb857b6d77%2F2023-07-16%2F376d8cc5-c173-58a5-8b31-591298dbae3e%2F29d34290-bc51-436c-a6ff-76cd548bcf14.png?alt=media&token=c376e83c-a374-465b-9af3-be8e5d1bc564"
-            />
+               <CarouselImages
+                    :frames="row.frames"
+                    :expanded="expanded"
+                  />
           </q-card-section>
         </q-card>
       </q-expansion-item>
@@ -265,35 +203,36 @@
       <q-separator />
     </q-list>
   </div>
+   </div>
 </template>
 
 <script>
-import { ref, computed, nextTick } from "vue";
-export default {
+import { defineComponent, ref, computed, nextTick } from "vue";
+
+import CarouselImages from "src/components/CarouselImages.vue";
+
+export default defineComponent({
   name: "TableEvents",
-  props: {
-    rows: {
-      type: Array,
-      default: () => [],
-    },
-    columns: {
-      type: Array,
-      default: () => [],
-    },
+
+  props: ["rows", "columns"],
+  components: {
+    CarouselImages
   },
-  setup() {
+  setup(props) {
     const nextPage = ref(2);
     const loading = ref(false);
     const rowSelected = ref(null);
-    const slide = ref("soft-jazz");
+    const slide = ref(1);
     const fullscreen = ref(false);
     const expanded = ref([]);
 
     function getRowSelected(row, column, event) {
-      if (rowSelected.value?.id === row.id) {
-        rowSelected.value = null;
+      if (this.rowSelected?.id === row.id) {
+        this.rowSelected = null;
+        this.expanded = [];
       } else {
-        rowSelected.value = row;
+        this.rowSelected = row;
+        this.expanded = [row.id];
       }
     }
 
@@ -326,10 +265,16 @@ export default {
         return "bg-blue-3";
       }
     };
+    const toggleExpand = (row, event) => {
+      event.stopPropagation();
+      this.getRowSelected(row, event);
+    };
 
-    const checkIfPlural = (row) => {
-      console.log("row plural", row);
-      return row > 1 ? " labels" : " label";
+    const toPercentage = (value) => {
+      console.log("value confidence", value);
+       if((value * 100).lenght > 4){
+        return Math.round(value * 100);
+       } return value *100
     };
 
     return {
@@ -343,16 +288,18 @@ export default {
       slide,
       fullscreen,
       expanded,
-      checkIfPlural,
+      toggleExpand,
+      toPercentage
     };
   },
-};
+});
 </script>
 
 <style lang="sass">
 .my-sticky-dynamic
   /* height or max-height is important */
-  max-height: 410px
+  height: 60vh
+
 
   .q-table__top,
   .q-table__bottom,
