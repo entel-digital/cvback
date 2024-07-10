@@ -2,8 +2,7 @@ FROM docker.io/node:20-bookworm-slim
 
 WORKDIR /app
 
-COPY ./package.json /app
+COPY ./vue_frontend/package.json /app
 
-RUN npm install && npm cache clean --force
-
+RUN npm install && npm install -g @quasar/cli
 ENV PATH ./node_modules/.bin/:$PATH

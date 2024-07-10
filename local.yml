@@ -69,7 +69,7 @@ services:
     image: cvback_local_flower
     container_name: cvback_local_flower
     ports:
-      - '5555:5555'
+      - "5555:5555"
     command: /start-flower
 
   docs:
@@ -100,11 +100,12 @@ services:
     depends_on:
       - django
     volumes:
-      - .:/app:z
+      - ./vue_frontend:/app:z
+      - ./cvback/static:/static:z
       # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
       - /app/node_modules
-    command: npm run dev
+    command: /bin/sh -c "npm i && quasar dev"
     ports:
-      - '3000:3000'
+      - "3000:3000"
       # Expose browsersync UI: https://www.browsersync.io/docs/options/#option-ui
-      - '3001:3001'
+      - "3001:3001"

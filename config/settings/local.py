@@ -31,16 +31,34 @@ EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.c
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
-INSTALLED_APPS += ["debug_toolbar", "corsheaders"]  # noqa: F405
+INSTALLED_APPS += ["debug_toolbar"]  # noqa: F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
 MIDDLEWARE += [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware"
     ]  # noqa: F405
 
-CORS_ALLOW_ALL_ORIGINS = True
+# Allow all origins (not recommended for production)
+CORS_ALLOW_CREDENTIALS = True
+
+# Or allow specific origins
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+# Name of token in header
+CSRF_COOKIE_NAME = "csrftoken"
+
+# 20 minutes in seconds
+SESSION_COOKIE_AGE = 1200
+
+# Resets the cookie are after each request
+SESSION_SAVE_EVERY_REQUEST = True
+
 
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
 DEBUG_TOOLBAR_CONFIG = {

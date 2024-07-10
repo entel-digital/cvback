@@ -37,4 +37,3 @@ django-coverage-plugin==3.1.0  # https://github.com/nedbat/django_coverage_plugi
 pytest-django==4.5.2  # https://github.com/pytest-dev/pytest-django
 faker
 python-dotenv
-django-cors-headers
