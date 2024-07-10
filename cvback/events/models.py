@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
+from django.conf import settings
 
 
 # TODO: Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
@@ -84,8 +85,20 @@ class Label(models.Model):
 class Frame(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
-    image = models.FileField(null=True, blank=True)
+
     cameras = models.ManyToManyField(Camera)
+    image = models.ImageField(upload_to='frames/', null=True, blank=True)
+    image_with_boundingboxes = models.ImageField(upload_to='frames/', null=True, blank=True)
+
+    def get_image_url(self):
+        if self.image:
+            return f"{settings.MEDIA_URL}{self.image}"
+        return None
+
+    def get_image_with_boundingboxes_url(self):
+        if self.image_with_boundingboxes:
+            return f"{settings.MEDIA_URL}{self.image_with_boundingboxes}"
+        return None
 
 
 class KeyFrame(models.Model):
