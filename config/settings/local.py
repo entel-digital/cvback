@@ -63,3 +63,5 @@ INSTALLED_APPS += ["django_extensions"]  # noqa: F405
 # Your stuff...
 # ------------------------------------------------------------------------------
 #GDAL_LIBRARY_PATH = '/usr/local/Cellar/gdal/3.8.1_1/lib/libgdal.dylib'
+
+MEDIA_URL = 'http://localhost:8000/media/'
