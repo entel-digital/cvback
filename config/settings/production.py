@@ -85,7 +85,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 # DEFAULT_FILE_STORAGE = "cvback.utils.storages.MediaGoogleCloudStorage"
 # MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
 STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+#MEDIA_URL = "/media/"
 GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
 if GS_BUCKET_NAME:
     # Collectfast
