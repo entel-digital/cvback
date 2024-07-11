@@ -25,6 +25,4 @@ class Subscription(models.Model):
     priority=models.IntegerField()
     # TODO: ver turnos
 
-
-
 # TODO: https://www.geeksforgeeks.org/send-message-to-telegram-user-using-python/

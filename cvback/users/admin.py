@@ -34,6 +34,7 @@ class UserAdmin(auth_admin.UserAdmin):
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
-    )
-    list_display = ["username", "name", "is_superuser"]
+        (_("Contact Info"), {"fields":("phone_number","telegram_chat_id")}))
+    
+    list_display = ["username", "name", "is_superuser","phone_number", "telegram_chat_id"]
     search_fields = ["name"]
