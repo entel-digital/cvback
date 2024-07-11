@@ -14,7 +14,7 @@ export const useUserStore = defineStore("user", {
         );
         return this.user;
       } catch (error) {
-        console.log("HERE IN ERROR SIGN_IN", error);
+        console.log("HERE IN ERROR SIGN_IN");
       }
     },
     async SIGN_OUT() {
@@ -22,7 +22,7 @@ export const useUserStore = defineStore("user", {
         this.user = null;
         await api.delete("_allauth/browser/v1/auth/session ");
       } catch (error) {
-        console.log("HERE IN ERROR SIGN_OUT", error);
+        console.log("HERE IN ERROR SIGN_OUT");
       }
     },
     async GET_SESSION() {
@@ -30,8 +30,9 @@ export const useUserStore = defineStore("user", {
       try {
         const session  = await api.get("_allauth/browser/v1/auth/session ");
         return session.status
-      } catch (error) {
+        } catch (error) {
         console.log("HERE IN ERROR SESSION", error);
+        // return error
       }
     },
   },

@@ -11,7 +11,7 @@ export const useGlobalStore = defineStore("global", {
         const data = await getAllEvents();
         return data.allEvents;
       } catch (error) {
-        console.log("HERE IN ERROR FETCH_EVENTS", error);
+        console.log("HERE IN ERROR FETCH_EVENTS");
       }
     },
   },

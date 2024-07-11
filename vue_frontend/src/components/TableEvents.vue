@@ -62,7 +62,7 @@
             </q-tr>
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%" class="no-padding">
-                <div class="fit row justify-between q-py-sm">
+                <div class="fit row justify-between q-py-sm" style="min-height:400px">
                   <div class="col-6 text-left q-pa-md q-gutter-md">
                     <q-list class="fit">
                       <q-item>
