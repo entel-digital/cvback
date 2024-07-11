@@ -3,7 +3,8 @@
     <div
       class="bg-blue-5 border-radius flex flex-center column q-pa-lg"
       style="height: 50vh"
-    >
+    > <div class="column">
+
       <p class="q-py-lg text-center text-white barlow-bold">Iniciar sesión</p>
       <form
         @submit.prevent="signInVision()"
@@ -39,6 +40,8 @@
           />
         </div>
       </form>
+      </div>
+
     </div>
   </div>
 </template>

@@ -38,7 +38,6 @@ export default boot(({ app }) => {
         const csrfToken = getCookie('csrftoken');
         if (csrfToken) {
             config.headers['X-CSRFToken'] = csrfToken;
-            console.log("crsfToken axios", csrfToken);
         }
     }
     return config;

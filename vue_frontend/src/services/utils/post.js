@@ -1,10 +1,10 @@
-import {api} from "src/boot/axios";
+import { api } from "src/boot/axios";
 import { getToken } from "src/services/utils/getToken";
 
 export const Post = async (path, body) => {
   try {
     // const url = `${process.env.CV_API}/${path}/graphql`;
-    const url = `/${path}/graphql/`;
+    const url = `${window.location.origin}/${path}/graphql/`;
 
     const { data, status } = await api.post(url, JSON.stringify(body), {
       // mode: "cors",

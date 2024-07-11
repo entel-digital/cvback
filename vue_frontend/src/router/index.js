@@ -36,7 +36,6 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach(async (to, from, next) => {
     const session = await store.GET_SESSION();
-
     if (to.matched.some((record) => record.meta.authorize)) {
       if (session !== 200 ) {
         // not logged in so redirect to login page with the return url

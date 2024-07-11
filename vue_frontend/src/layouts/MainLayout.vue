@@ -57,7 +57,7 @@
     >
       <!-- drawer content -->
       <div v-if="miniState" class="flex flex-center" style="height: 68px">
-        <q-btn round flat >
+        <q-btn round flat>
           <img
             src="~assets/imagotipo_vision.png"
             class="logo-header-mini"
@@ -155,16 +155,12 @@ export default defineComponent({
         e.stopPropagation();
       }
     };
-
     const signOut = async () => {
       await userStore.SIGN_OUT();
       router.push({ name: "login" });
     };
 
-    const user = computed(() => {
-      console.log("userStore.user", userStore.user);
-      return userStore.user
-    });
+
 
     return {
       menuList,
@@ -174,7 +170,6 @@ export default defineComponent({
       labelSelected,
       signOut,
       toggleLeftDrawer,
-      user
     };
   },
 });
