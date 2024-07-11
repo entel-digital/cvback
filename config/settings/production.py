@@ -42,9 +42,9 @@ CACHES = {
 
 # SECURITY
 # ------------------------------------------------------------------------------
-CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=["enteldigital.cl"])
-CSRF_ALLOWED_ORIGINS = env.list("DJANGO_CSRF_ALLOWED_ORIGINS", default=["enteldigital.cl"])
-CORS_ORIGINS_WHITELIST = env.list("DJANGO_CORS_ORIGINS_WHITELIST", default=["enteldigital.cl"])
+#CSRF_TRUSTED_ORIGINS = env.list("DJANGO_CSRF_TRUSTED_ORIGINS", default=["enteldigital.cl"])
+#CSRF_ALLOWED_ORIGINS = env.list("DJANGO_CSRF_ALLOWED_ORIGINS", default=["enteldigital.cl"])
+#CORS_ORIGINS_WHITELIST = env.list("DJANGO_CORS_ORIGINS_WHITELIST", default=["enteldigital.cl"])
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-ssl-redirect

@@ -55,7 +55,7 @@ module.exports = configure(function (/* ctx */) {
       },
       env: require("dotenv").config().parsed,
       distDir: '/static/vue',
-      publicPath: '/static/vue',
+      publicPath: 'https://storage.googleapis.com/cbback-dev-sierra-gorda/vue',
 
       vueRouterMode: "history", // available values: 'hash', 'history'
       // vueRouterBase,
