@@ -274,7 +274,7 @@ MANAGERS = ADMINS
 # Force the `admin` sign in process to go through the `django-allauth` workflow
 DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
 
-TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN", None)
+TELEGRAM_BOT_TOKEN = None
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
