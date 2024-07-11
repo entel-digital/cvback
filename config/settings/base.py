@@ -201,6 +201,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+TIME_ZONE = 'America/Santiago'
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
