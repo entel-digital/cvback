@@ -92,16 +92,12 @@ class Frame(models.Model):
 
     def get_image_url(self):
         if self.image:
-            request = self.context.get('request')
-            image_url = self.image.url
-            return request.build_absolute_uri(image_url)
+            return self.image.url
         return None
 
     def get_image_with_boundingboxes_url(self):
         if self.image_with_boundingboxes:
-            request = self.context.get('request')
-            image_url = self.image_with_boundingboxes.url
-            return request.build_absolute_uri(image_url)
+            return self.image_with_boundingboxes.url
         return None
 
 
