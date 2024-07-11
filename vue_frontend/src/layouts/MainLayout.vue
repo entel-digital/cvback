@@ -170,7 +170,6 @@ export default defineComponent({
       labelSelected,
       signOut,
       toggleLeftDrawer,
-      user,
     };
   },
 });
