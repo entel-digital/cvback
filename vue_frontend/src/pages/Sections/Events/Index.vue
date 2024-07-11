@@ -88,7 +88,7 @@ export default defineComponent({
     };
     onMounted(() => {
       fetchAllEvents();
-      intervalId.value = setInterval(fetchData, 30000);
+      intervalId.value = setInterval(fetchAllEvents, 30000);
     });
 
     onUnmounted(() => {

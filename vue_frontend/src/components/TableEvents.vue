@@ -270,7 +270,6 @@ export default defineComponent({
 
     const findColor = (value) => {
       const color = types[value.colorGroup.toLowerCase()];
-      console.log("value", value.colorGroup.toLowerCase());
 
       if (color == "#000000") {
         return `background-color: ${color}; boder: 2px solid ${color}; color: white`;
