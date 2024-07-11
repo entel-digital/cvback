@@ -63,8 +63,8 @@
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%" class="no-padding">
                 <div class="fit row justify-between q-py-sm">
-                  <div class="col-5 text-left q-pa-md q-gutter-md">
-                    <q-list>
+                  <div class="col-6 text-left q-pa-md q-gutter-md">
+                    <q-list class="fit">
                       <q-item>
                         <q-item-section>
                           <q-item-label
@@ -87,7 +87,7 @@
                                 v-for="label in props.row.labelsDetected"
                                 :key="label.id"
                                 dense
-                                :style="findColor(label.name)"
+                                :style="findColor(label)"
                                 class="q-px-sm"
                               >
                                 {{ label.name }}
@@ -106,7 +106,7 @@
                                 :key="label.id"
                                 dense
                                 class="q-px-sm"
-                                :style="findColor(label.name)"
+                                :style="findColor(label)"
                               >
                                 {{ label.name }}
                               </q-chip>
@@ -163,12 +163,11 @@
               <q-item-label class="text-grey-3 fs-14-19 q-py-xs">
                 Detectados:
                 <q-chip
-                  v-for="label in row.labelsMissing"
+                  v-for="label in row.labelsDetected"
                   :key="label.id"
-                  outline
                   dense
-                  color="primary"
-                  text-color="white"
+                  :style="findColor(label)"
+                  class="q-px-sm"
                 >
                   {{ label.name }}
                 </q-chip>
@@ -178,10 +177,9 @@
                 <q-chip
                   v-for="label in row.labelsMissing"
                   :key="label.id"
-                  outline
                   dense
-                  color="primary"
-                  text-color="white"
+                  class="q-px-sm"
+                  :style="findColor(label)"
                 >
                   {{ label.name }}
                 </q-chip>
@@ -201,20 +199,19 @@
 
 <script>
 import { defineComponent, ref, computed, nextTick } from "vue";
-import { types, labels } from "src/utils/colors";
+import { types } from "src/utils/colors";
 
 import CarouselImages from "src/components/CarouselImages.vue";
 
 export default defineComponent({
   name: "TableEvents",
 
-  props: ["rows", "columns"],
+  props: ["rows", "columns", "loading"],
   components: {
     CarouselImages,
   },
   setup(props) {
     const nextPage = ref(2);
-    const loading = ref(false);
     const rowSelected = ref(null);
     const slide = ref(1);
     const fullscreen = ref(false);
@@ -272,8 +269,7 @@ export default defineComponent({
     };
 
     const findColor = (value) => {
-      const label = labels[value];
-      const color = types[label];
+      const color = types[value.colorGroup.toLowerCase()];
 
       if (color == "#000000") {
         return `background-color: ${color}; boder: 2px solid ${color}; color: white`;
@@ -284,7 +280,6 @@ export default defineComponent({
 
     return {
       nextPage,
-      loading,
       rowSelected,
       pagination,
       getRowSelected,
@@ -339,8 +334,4 @@ export default defineComponent({
 
 tbody tr:nth-child(odd) // Add this selector
   background-color: #FAFAFA // Add your desired color here
-
-// .q-chip
-//   background-color: #939393 !important
-//   border: 2px solid
 </style>

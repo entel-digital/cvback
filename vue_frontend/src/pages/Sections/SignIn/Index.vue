@@ -17,7 +17,6 @@
           label="Usuario"
           lazy-rules
           color="white"
-          :rules="nameRules"
         />
 
         <q-input
@@ -27,7 +26,6 @@
           v-model="password"
           label="Contraseña"
           lazy-rules
-          :rules="passwordRules"
         />
 
         <div class="q-py-lg">
@@ -37,6 +35,7 @@
             type="submit"
             color="accent"
             class="full-width"
+            :loading="loading"
           />
         </div>
       </form>
@@ -58,22 +57,32 @@ export default defineComponent({
     const router = useRouter();
     const userStore = useUserStore();
     const $q = useQuasar();
+    const loading = ref(false);
 
+    const clearForm = () => {
+      username.value = "";
+      password.value = "";
+    };
 
     const signInVision = async () => {
+      loading.value = true;
       await userStore.SIGN_IN({
         username: username.value,
         password: password.value,
       });
       if (userStore.user?.status === 200) {
         router.push({ name: "events" });
+        loading.value = false;
+        clearForm();
       } else {
+        loading.value = false;
         $q.notify({
           color: "red-5",
           textColor: "white",
           icon: "report_problem",
           message: "Usuario o contraseña incorrectos",
         });
+        clearForm()
       }
     };
 
@@ -81,6 +90,8 @@ export default defineComponent({
       username,
       password,
       signInVision,
+      loading,
+
     };
   },
 });
