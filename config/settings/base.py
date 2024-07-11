@@ -168,7 +168,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
-#    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -179,7 +179,7 @@ MIDDLEWARE = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 #STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATIC_ROOT =  os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
