@@ -33,8 +33,12 @@ graphene-django
 djangorestframework
 django-graphql-jwt
 django-cors-headers
+
 # TODO: add version
 #zxcvbn
 
 #apikeytesting
 djangorestframework-api-key
+
+# phone number
+django-phonenumber-field[phonenumbers]

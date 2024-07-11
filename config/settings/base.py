@@ -110,6 +110,7 @@ THIRD_PARTY_APPS = [
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     "rest_framework_api_key",
     "django_celery_beat",
+    "phonenumber_field",
 ]
 
 LOCAL_APPS = [
