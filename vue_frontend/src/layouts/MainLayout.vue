@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh lpR fFf">
-    <q-header >
+    <q-header>
       <q-toolbar
         class="bg-info fit row inline no-wrap justify-between items-center q-py-md"
       >
@@ -19,8 +19,7 @@
             {{ labelSelected }}
           </q-toolbar-title>
         </div>
-
-      <q-btn-dropdown
+        <q-btn-dropdown
           id="dropdown-user"
           class="text-grey-6 text-bold"
           flat
@@ -29,7 +28,6 @@
           dropdown-icon="expand_more"
         >
           <q-list separator>
-
             <q-item>
               <q-item-section>
                 <q-btn
@@ -59,7 +57,7 @@
     >
       <!-- drawer content -->
       <div v-if="miniState" class="flex flex-center" style="height: 68px">
-        <q-btn round>
+        <q-btn round flat >
           <img
             src="~assets/imagotipo_vision.png"
             class="logo-header-mini"
@@ -68,7 +66,7 @@
         </q-btn>
       </div>
       <div v-else class="flex flex-start q-pl-sm q-py-md">
-        <q-btn push>
+        <q-btn flat push>
           <img
             src="~assets/logo_vision_blanco.png"
             class="logo-header"
@@ -102,11 +100,11 @@
           so that user can switch back
           to mini-mode
         -->
-      <div class="q-mini-drawer-hide absolute" style="top: 15px; right: -17px">
+      <div class="q-mini-drawer-hide absolute" style="top: 20px; right: 0px">
         <q-btn
           dense
-          round
           unelevated
+          square
           color="accent"
           icon="chevron_left"
           @click="miniState = true"
@@ -123,6 +121,7 @@
 <script>
 import { defineComponent, ref, computed } from "vue";
 import { useUserStore } from "stores/user-store";
+import { useRouter } from "vue-router";
 
 const menuList = [
   {
@@ -140,7 +139,7 @@ export default defineComponent({
     const miniState = ref(false);
     const activeMenu = ref("events");
     const userStore = useUserStore();
-
+    const router = useRouter();
     const labelsHeader = {
       events: "Eventos",
       cameras: "Cámaras",
@@ -151,24 +150,31 @@ export default defineComponent({
     const labelSelected = computed(() => labelsHeader[activeMenu.value]);
 
     const toggleLeftDrawer = (e) => {
-        if (miniState.value) {
-          miniState.value = false;
-          e.stopPropagation();
-        }
-      };
-
-      const signOut = async () => {
-        await userStore.SIGN_OUT();
+      if (miniState.value) {
+        miniState.value = false;
+        e.stopPropagation();
+      }
     };
-        return {
+
+    const signOut = async () => {
+      await userStore.SIGN_OUT();
+      router.push({ name: "login" });
+    };
+
+    const user = computed(() => {
+      console.log("userStore.user", userStore.user);
+      return userStore.user
+    });
+
+    return {
       menuList,
       leftDrawerOpen,
       miniState,
       activeMenu,
       labelSelected,
       signOut,
-      toggleLeftDrawer
-
+      toggleLeftDrawer,
+      user
     };
   },
 });

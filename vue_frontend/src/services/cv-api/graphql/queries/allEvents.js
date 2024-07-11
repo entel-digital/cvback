@@ -9,6 +9,7 @@ query allEvents {
     eventLabel {
       id
       name
+      colorGroup
     }
     informedDate
     addedDate
@@ -23,10 +24,12 @@ query allEvents {
     labelsDetected {
       id
       name
+      colorGroup
     }
     labelsMissing {
       id
       name
+      colorGroup
     }
     inferenceDetectionClassification {
       id
@@ -67,8 +70,8 @@ query allEvents {
     }
     frames {
       id
-   		image
-      addedDate
+      imageUrl
+      imageWithBoundingboxesUrl
     }
     confidence
   }

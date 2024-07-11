@@ -2,6 +2,7 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/SignInLayout.vue"),
+    meta: { authorize: false},
     children: [
       {
         path: "",
@@ -13,6 +14,7 @@ const routes = [
   {
     path: "/dashboard",
     component: () => import("layouts/MainLayout.vue"),
+    meta: { authorize: true},
     children: [
       {
         path: "",
