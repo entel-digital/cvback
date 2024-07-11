@@ -1,5 +1,5 @@
-import requests 
-import os
+import requests
+from django.conf import settings
 
 class WhatsappSender():
     def get_access_token(self, url, client_id, client_secret):
@@ -14,44 +14,44 @@ class WhatsappSender():
 
 
     def authenticate_whatsapp(self):
-        cid = os.environ["WHATSAPP_CLIENT_ID"]
-        csec = os.environ["WHATSAPP_CLIENT_SECRET"]
-        url = os.environ["WHATSAPP_AUTHENTICATION_URL"]
+        cid = settings.WHATSAPP_CLIENT_ID
+        csec = settings.WHATSAPP_CLIENT_SECRET
+        url = settings.WHATSAPP_AUTHENTICATION_URL
 
-        return self.get_access_token(url, cid, csec)   
-        
-    
-    def send_whatsapp(self, phone_numbers,token,username,images,details_link,missing_labels,vehicle_license_plate,date,time):    
-         
+        return self.get_access_token(url, cid, csec)
+
+
+    def send_whatsapp(self, phone_numbers,token,username,images,details_link,missing_labels,vehicle_license_plate,date,time):
+
         url = os.environ["WHATSAPP_SEND_MESSAGES_URL"]
-        data = { 
-            "campaign": { 
-            "name": "campaña API", 
-            "type_campaign_id": os.environ["WHATSAPP_CAMPAIGN_ID"], 
-            "type_action": os.environ['WHATSAPP_TYPE_ACTION'], 
-            "registers": [ 
-                { 
-                    "id": "", 
-                    "name": username, 
-                    "phone": phone_number, 
-                    "email": "", 
-                    "fecha": date, 
-                    "hora": time, 
-                    "placa_vehiculo": vehicle_license_plate, 
-                    "elementos_faltantes": missing_labels, 
-                    "link_detalles": details_link, 
+        data = {
+            "campaign": {
+            "name": "campaña API",
+            "type_campaign_id": os.environ["WHATSAPP_CAMPAIGN_ID"],
+            "type_action": os.environ['WHATSAPP_TYPE_ACTION'],
+            "registers": [
+                {
+                    "id": "",
+                    "name": username,
+                    "phone": phone_number,
+                    "email": "",
+                    "fecha": date,
+                    "hora": time,
+                    "placa_vehiculo": vehicle_license_plate,
+                    "elementos_faltantes": missing_labels,
+                    "link_detalles": details_link,
                     "imagenes": [images]
                 } for phone_number in phone_numbers
-                ] 
-            } 
+                ]
+            }
         }
-        
+
         token = f"Bearer {token}"
-        
-    
+
+
         response = requests.post(
             url,
-            headers={ 
+            headers={
                 "Authorization": token,
                 },json=data
         )

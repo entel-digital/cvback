@@ -275,6 +275,10 @@ MANAGERS = ADMINS
 DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
 
 TELEGRAM_BOT_TOKEN = None
+WHATSAPP_CLIENT_ID = None
+WHATSAPP_CLIENT_SECRET = None
+WHATSAPP_AUTHENTICATION_URL = None
+
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging

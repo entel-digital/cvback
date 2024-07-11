@@ -15,6 +15,9 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["enteldigital.cl"])
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN", None)
+WHATSAPP_CLIENT_ID = env("WHATSAPP_CLIENT_ID", None)
+WHATSAPP_CLIENT_SECRET = env("WHATSAPP_CLIENT_SECRET", None)
+WHATSAPP_AUTHENTICATION_URL = env("WHATSAPP_AUTHENTICATION_URL", None)
 
 # DATABASES
 # ------------------------------------------------------------------------------
