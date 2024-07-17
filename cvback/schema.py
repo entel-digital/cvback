@@ -23,7 +23,7 @@ class Query(graphene.ObjectType):
     #all_key_frames = graphene.List(KeyFrameType)
 
     def resolve_all_events(self, info):
-        return Event.objects.all()
+        return Event.objects.first()
 
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
