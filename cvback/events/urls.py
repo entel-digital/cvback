@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 urlpatterns = [
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
+    #path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
     path('labels/', LabelApiView.as_view(), name="events_label"),
     path('bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
     path('frames/', FrameApiView.as_view(), name='events_frames'),
