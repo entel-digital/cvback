@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from cvback.events.views import BoundingBoxApiView, FrameApiView, InferenceClassificationApiView, InferenceDetectionClassificationApiView, InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView, EventApiView, VideoApiView, KeyFrameApiView, LabelApiView
 from graphene_django.views import GraphQLView
-from cvback.schema import schema
+#from cvback.schema import schema
 from django.views.decorators.csrf import csrf_exempt
 
 
