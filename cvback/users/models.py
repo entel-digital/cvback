@@ -17,9 +17,9 @@ class User(AbstractUser):
     first_name = None  # type: ignore
     last_name = None  # type: ignore
     #channels
-    phone_number =  PhoneNumberField(blank=True)
+    phone_number = PhoneNumberField(blank=True)
     telegram_chat_id = CharField(blank=True)
-    
+
 
 
 
