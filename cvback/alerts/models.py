@@ -19,10 +19,10 @@ class AlertType(models.Model):
 
 class Subscription(models.Model):
     added_date = models.DateTimeField("date created", auto_now_add=True)
-    alert_type= models.ManyToManyField(AlertType)
-    suscribed_events= models.ManyToManyField(SubscribedEvent)
-    user= models.ForeignKey(User, on_delete=models.CASCADE)
-    priority=models.IntegerField()
+    alert_type = models.ManyToManyField(AlertType)
+    suscribed_events = models.ManyToManyField(SubscribedEvent)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="users_from_suscription")
+    priority = models.IntegerField()
     # TODO: ver turnos
 
 
