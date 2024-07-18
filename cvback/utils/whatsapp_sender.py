@@ -27,8 +27,8 @@ class WhatsappSender():
         data = {
             "campaign": {
             "name": "campaña API",
-            "type_campaign_id": os.environ["WHATSAPP_CAMPAIGN_ID"],
-            "type_action": os.environ['WHATSAPP_TYPE_ACTION'],
+            "type_campaign_id": settings.WHATSAPP_CAMPAIGN_ID,
+            "type_action": settings.WHATSAPP_TYPE_ACTION,
             "registers": [
                 {
                     "id": "",
