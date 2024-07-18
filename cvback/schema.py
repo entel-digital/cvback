@@ -24,7 +24,7 @@ class Query(graphene.ObjectType):
     #all_key_frames = graphene.List(KeyFrameType)
     def resolve_all_events(self, info):
         return Event.objects.all()
-    
+
     paginated_events = DjangoFilterConnectionField(
         EventType,
         first=graphene.Int(),
