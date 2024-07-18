@@ -118,6 +118,12 @@ class BoundingBoxType(DjangoObjectType):
         fields = ("__all__")
 
 class EventType(DjangoObjectType):
+    id = graphene.ID(source='pk', required=True)
     class Meta:
         model = Event
         fields = ("__all__")
+        filter_fields = {
+            'id': ['exact', 'range', 'in', 'gte', 'lt'],
+            'informed_date': ['gte', 'lt', 'exact']
+        }
+        interfaces = (graphene.relay.Node,)
