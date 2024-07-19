@@ -63,3 +63,11 @@ INSTALLED_APPS += ["django_extensions"]  # noqa: F405
 # Your stuff...
 # ------------------------------------------------------------------------------
 #GDAL_LIBRARY_PATH = '/usr/local/Cellar/gdal/3.8.1_1/lib/libgdal.dylib'
+
+TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN", None)
+WHATSAPP_CLIENT_ID = env("WHATSAPP_CLIENT_ID", None)
+WHATSAPP_CLIENT_SECRET = env("WHATSAPP_CLIENT_SECRET", None)
+WHATSAPP_AUTHENTICATION_URL = env("WHATSAPP_AUTHENTICATION_URL", None)
+WHATSAPP_SEND_MESSAGES_URL = env("WHATSAPP_SEND_MESSAGES_URL",None)
+WHATSAPP_CAMPAIGN_ID = env("WHATSAPP_CAMPAIGN_ID", None)
+WHATSAPP_TYPE_ACTION = env("WHATSAPP_TYPE_ACTION", None)

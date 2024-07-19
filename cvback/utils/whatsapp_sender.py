@@ -9,7 +9,6 @@ class WhatsappSender():
             auth=(client_id, client_secret),
         )
         json_response = response.json()
-        print(json_response)
         return json_response["access_token"]
 
 
@@ -21,9 +20,8 @@ class WhatsappSender():
         return self.get_access_token(url, cid, csec)
 
 
-    def send_whatsapp(self, phone_numbers,token,username,images,details_link,missing_labels,vehicle_license_plate,date,time):
-
-        url = os.environ["WHATSAPP_SEND_MESSAGES_URL"]
+    def send_whatsapp(self,users_data, event_data, token):
+        url = settings.WHATSAPP_SEND_MESSAGES_URL
         data = {
             "campaign": {
             "name": "campaña API",
@@ -32,22 +30,21 @@ class WhatsappSender():
             "registers": [
                 {
                     "id": "",
-                    "name": username,
-                    "phone": phone_number,
+                    "name": user_data["username"],
+                    "phone": user_data["phone_number"],
                     "email": "",
-                    "fecha": date,
-                    "hora": time,
-                    "placa_vehiculo": vehicle_license_plate,
-                    "elementos_faltantes": missing_labels,
-                    "link_detalles": details_link,
-                    "imagenes": [images]
-                } for phone_number in phone_numbers
+                    "fecha": event_data["date"],
+                    "hora": event_data["time"],
+                    "placa_vehiculo": event_data["vehicle_license_plate"],
+                    "elementos_faltantes": ','.join(event_data["missing_labels"]),
+                    "link_detalles": event_data["details_link"],
+                    "imagenes": event_data["images"]
+                } for user_data in users_data
                 ]
             }
         }
 
         token = f"Bearer {token}"
-
 
         response = requests.post(
             url,
