@@ -8,7 +8,7 @@ export const useGlobalStore = defineStore("global", {
   actions: {
     async FETCH_EVENTS() {
       try {
-        const data = await getAllEvents();
+        const data = await getAllEvents(25, 0);
         data.allEvents.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate);
         });
