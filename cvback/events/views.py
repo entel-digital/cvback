@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.parsers import JSONParser
+from cvback.events.tasks import  create_alert
 from cvback.events.serializers import BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer, InferenceDetectionClassificationSerializer, InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer, VideoSerializer, EventSerializer, KeyFrameSerializer, LabelSerializer
 from cvback.events.models import Frame, Label, KeyFrame,BoundingBox, InferenceClassification, InferenceDetectionClassification, InferenceDetectionClassificationTracker, InferenceOCR, Event, Video
 from rest_framework.generics import ListCreateAPIView
@@ -86,9 +87,26 @@ class LabelApiView(BaseListCreateAPIView):
     model = Label
     serializer_class = LabelSerializer
 
-class EventApiView(BaseListCreateAPIView):
+class EventApiView(ListCreateAPIView):
     model = Event
     serializer_class= EventSerializer
+    permission_classes=[HasAPIKey]
+    @classmethod
+    def __init__(self, *args,**kwargs ):
+        self.queryset = self.model.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        if isinstance(request.data, list):
+            serializer = self.get_serializer(data=request.data, many=True)
+        else:
+            serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            create_alert(Event.objects.get(id=serializer.data["id"]))
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 class VideoApiView(BaseListCreateAPIView):
     model = Video
