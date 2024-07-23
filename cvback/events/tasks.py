@@ -48,10 +48,10 @@ def get_event_info(event):
 
 def select_subscribed_events(event_type, event_label):
     
-    qs_et = SubscribedEvent.objects.filter(event_type=event_type)
+    qs_et = SubscribedEvent.objects.filter(event_type=event_type) 
     
     qs_el = SubscribedEvent.objects.filter(event_label=event_label)
-    qs = qs_et.union(qs_el).all()
+    qs = qs_et.intersection(qs_el).all()
     return qs
 
 def filter_subscriptions(subscribed_events):
