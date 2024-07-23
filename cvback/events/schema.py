@@ -1,5 +1,5 @@
 import graphene
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType 
 from cvback.events.models import (AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, Video,
                                   KeyFrame, KeyVideo, BoundingBox, Inference, InferenceOCR, KeyInferenceOCR,
                                   InferenceDetectionClassification, KeyInferenceDetectionClassification,
@@ -127,3 +127,11 @@ class EventType(DjangoObjectType):
             'informed_date': ['gte', 'lt', 'exact']
         }
         interfaces = (graphene.relay.Node,)
+
+class EventFilterAndPaginationType(graphene.ObjectType):
+    events = graphene.List(EventType)
+    total_number = graphene.Int()
+    offset = graphene.Int(default_value=0)
+    rows_per_page = graphene.Int(default_value=10)
+    filtered = graphene.Boolean()
+    filtered_by = graphene.List(graphene.String)
