@@ -10,7 +10,8 @@ class Area(models.Model):
     name = models.CharField(max_length=255)
     area = Polygon()
     diagram = models.ImageField(null=True, blank=True)
-    #area_location = models.Polygon(default=Point(-70.6761237, -33.56396059, srid=4326))
+    # area_location = models.Polygon(default=Point(-70.6761237, -33.56396059, srid=4326))
+
     def __str__(self):
         return self.name
 
@@ -39,7 +40,6 @@ class InferenceComputer(models.Model):
     enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
     location = models.PointField(default=Point(-70.69441297829056, -33.358564373936446, srid=4326))
-
 
     def __str__(self):
         return self.name

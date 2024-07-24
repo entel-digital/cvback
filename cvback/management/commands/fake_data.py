@@ -5,6 +5,16 @@ import random
 from faker import Faker
 from django.contrib.gis.geos import Polygon
 
+from cvback.devices.models import Area, Camera, InferenceComputer
+from cvback.events.models import (
+    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrame, Video, KeyVideo,
+    BoundingBox, InferenceOCR, KeyInferenceOCR, InferenceDetectionClassification,
+    KeyInferenceDetectionClassification, InferenceDetectionClassificationTracker,
+    KeyInferenceDetectionClassificationTracker, InferenceClassification,
+    KeyInferenceClassification, EventType, Event)
+
+from django.db import IntegrityError
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
 django.setup()
 
@@ -16,20 +26,14 @@ load_dotenv(django_env_path)
 postgres_env_path = os.path.join(envs_path, '.postgres')
 load_dotenv(postgres_env_path, override=True)
 
-from cvback.devices.models import Area, Camera, InferenceComputer
-from cvback.events.models import (
-    AreaOfInterest, LineOfInterest, Algorithm, Label, Frame, KeyFrame, Video, KeyVideo,
-    BoundingBox, InferenceOCR, KeyInferenceOCR, InferenceDetectionClassification,
-    KeyInferenceDetectionClassification, InferenceDetectionClassificationTracker,
-    KeyInferenceDetectionClassificationTracker, InferenceClassification,
-    KeyInferenceClassification, EventType, Event)
-
 fake = Faker()
+
 
 def generate_random_polygon():
     coordinates = [(fake.longitude(), fake.latitude()) for _ in range(4)]
     coordinates.append(coordinates[0])
     return Polygon(coordinates)
+
 
 def create_areas(n):
     for _ in range(n):
@@ -39,14 +43,16 @@ def create_areas(n):
             area=area_polygon
         )
 
+
 def create_cameras(n):
     for _ in range(n):
         Camera.objects.create(
             name=fake.word(),
             enabled=fake.boolean(),
             primary_stream=fake.url(),
-            #area=area_polygon
+            # area=area_polygon
         )
+
 
 def create_inference_computers(n):
     for _ in range(n):
@@ -54,6 +60,7 @@ def create_inference_computers(n):
             name=fake.word(),
             enabled=fake.boolean(),
         )
+
 
 def create_areas_of_interest(n):
     for _ in range(n):
@@ -65,6 +72,7 @@ def create_areas_of_interest(n):
             description=fake.text()
         )
 
+
 def create_lines_of_interest(n):
     for _ in range(n):
         LineOfInterest.objects.create(
@@ -75,6 +83,7 @@ def create_lines_of_interest(n):
             description=fake.text()
         )
 
+
 def create_algorithms(n):
     for _ in range(n):
         Algorithm.objects.create(
@@ -84,12 +93,11 @@ def create_algorithms(n):
             repository=fake.url()
         )
 
-from django.db import IntegrityError
 
 def create_labels(n):
     created_labels = 0
     attempts = 0
-    max_attempts = n * 3 
+    max_attempts = n * 3
     while created_labels < n and attempts < max_attempts:
         try:
             name = fake.unique.word()
@@ -105,12 +113,14 @@ def create_labels(n):
     if created_labels < n:
         print(f"Warning: Only created {created_labels} labels out of {n} requested due to uniqueness constraints.")
 
+
 def create_frames(n):
     for _ in range(n):
         frame = Frame.objects.create(
             image=fake.file_path(extension='jpg')
         )
         frame.cameras.set(Camera.objects.order_by('?')[:random.randint(1, 3)])
+
 
 def create_key_frames(n):
     for _ in range(n):
@@ -119,12 +129,14 @@ def create_key_frames(n):
         )
         key_frame.frames.set(Frame.objects.order_by('?')[:random.randint(1, 5)])
 
+
 def create_videos(n):
     for _ in range(n):
         video = Video.objects.create(
             video=fake.file_path(extension='mp4')
         )
         video.cameras.set(Camera.objects.order_by('?')[:random.randint(1, 3)])
+
 
 def create_key_videos(n):
     for _ in range(n):
@@ -133,15 +145,14 @@ def create_key_videos(n):
         )
         key_video.frames.set(Video.objects.order_by('?')[:random.randint(1, 5)])
 
+
 def create_bounding_boxes(n):
     for _ in range(n):
         BoundingBox.objects.create(
-            inference_computer=InferenceComputer.objects.order_by('?').first(),
-            algorithm=Algorithm.objects.order_by('?').first(),
-            confidence=random.uniform(0, 1),
             top_left=[random.uniform(0, 1), random.uniform(0, 1)],
             bottom_right=[random.uniform(0, 1), random.uniform(0, 1)]
         )
+
 
 def create_inference_ocr(n):
     for _ in range(n):
@@ -153,12 +164,14 @@ def create_inference_ocr(n):
             value=fake.text()
         )
 
+
 def create_key_inference_ocr(n):
     for _ in range(n):
         KeyInferenceOCR.objects.create(
             name=fake.word(),
             inferences=InferenceOCR.objects.order_by('?').first()
         )
+
 
 def create_inference_detection_classification(n):
     for _ in range(n):
@@ -170,12 +183,14 @@ def create_inference_detection_classification(n):
         inference.bounding_boxes.set(BoundingBox.objects.order_by('?')[:random.randint(1, 5)])
         inference.labels.set(Label.objects.order_by('?')[:random.randint(1, 5)])
 
+
 def create_key_inference_detection_classification(n):
     for _ in range(n):
         KeyInferenceDetectionClassification.objects.create(
             name=fake.word(),
             inferences=InferenceDetectionClassification.objects.order_by('?').first()
         )
+
 
 def create_inference_detection_classification_tracker(n):
     for _ in range(n):
@@ -188,12 +203,14 @@ def create_inference_detection_classification_tracker(n):
         inference.bounding_boxes.set(BoundingBox.objects.order_by('?')[:random.randint(1, 5)])
         inference.labels.set(Label.objects.order_by('?')[:random.randint(1, 5)])
 
+
 def create_key_inference_detection_classification_tracker(n):
     for _ in range(n):
         KeyInferenceDetectionClassificationTracker.objects.create(
             name=fake.word(),
             inferences=InferenceDetectionClassificationTracker.objects.order_by('?').first()
         )
+
 
 def create_inference_classification(n):
     for _ in range(n):
@@ -204,12 +221,14 @@ def create_inference_classification(n):
             label=Label.objects.order_by('?').first()
         )
 
+
 def create_key_inference_classification(n):
     for _ in range(n):
         KeyInferenceClassification.objects.create(
             name=fake.word(),
             inferences=InferenceClassification.objects.order_by('?').first()
         )
+
 
 def create_event_types(n):
     for _ in range(n):
@@ -219,14 +238,15 @@ def create_event_types(n):
             documentation=fake.file_path(extension='pdf')
         )
 
+
 def create_events(n):
     for _ in range(n):
         event = Event.objects.create(
             event_type=EventType.objects.order_by('?').first(),
             confidence=random.uniform(0, 1),
-            event_label = Label.objects.order_by('?')[random.randint(1,3)]
+            event_label=Label.objects.order_by('?')[random.randint(1, 3)]
         )
-        
+
         event.cameras.set(Camera.objects.order_by('?')[:random.randint(1, 3)])
         event.frames.set(Frame.objects.order_by('?')[:random.randint(1, 5)])
         event.key_frames.set(KeyFrame.objects.order_by('?')[:random.randint(1, 3)])
@@ -236,22 +256,26 @@ def create_events(n):
         event.labels_missing.set(Label.objects.order_by('?')[:random.randint(1, 5)])
         event.inference_classification.set(InferenceClassification.objects.order_by('?')[:random.randint(1, 3)])
         event.inference_detection_classification = InferenceDetectionClassification.objects.order_by('?').first()
-        event.inference_detection_classification_tracker.set(InferenceDetectionClassificationTracker.objects.order_by('?')[:random.randint(1, 3)])
+        event.inference_detection_classification_tracker.set(
+            InferenceDetectionClassificationTracker.objects.order_by('?')[:random.randint(1, 3)])
         event.inference_ocr.set(InferenceOCR.objects.order_by('?')[:random.randint(1, 3)])
         event.key_inference_classification.set(KeyInferenceClassification.objects.order_by('?')[:random.randint(1, 3)])
-        event.key_inference_detection_classification.set(KeyInferenceDetectionClassification.objects.order_by('?')[:random.randint(1, 3)])
-        event.key_inference_detection_classification_tracker.set(KeyInferenceDetectionClassificationTracker.objects.order_by('?')[:random.randint(1, 3)])
+        event.key_inference_detection_classification.set(
+            KeyInferenceDetectionClassification.objects.order_by('?')[:random.randint(1, 3)])
+        event.key_inference_detection_classification_tracker.set(
+            KeyInferenceDetectionClassificationTracker.objects.order_by('?')[:random.randint(1, 3)])
         event.key_inference_ocr.set(KeyInferenceOCR.objects.order_by('?')[:random.randint(1, 3)])
 
+
 def data_exists():
-    return Camera.objects.exists() or Event.objects.exists()
+    return Camera.objects.exists() and Event.objects.exists()
 
 
 def main():
     if not data_exists():
         print("No data found, generating dummy data...")
 
-        NUM_AREAS = 10
+        # NUM_AREAS = 10
         NUM_CAMERAS = 10
         NUM_INFERENCE_COMPUTERS = 10
         NUM_AREAS_OF_INTEREST = 10
@@ -274,7 +298,7 @@ def main():
         NUM_EVENT_TYPES = 10
         NUM_EVENTS = 10
 
-        #create_areas(NUM_AREAS)
+        # create_areas(NUM_AREAS)
         create_cameras(NUM_CAMERAS)
         create_inference_computers(NUM_INFERENCE_COMPUTERS)
         create_areas_of_interest(NUM_AREAS_OF_INTEREST)
@@ -300,6 +324,7 @@ def main():
         print("Dummy data successfully created.")
     else:
         print("Dummy data already exists.")
+
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@ from .base import env
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG=True
+DEBUG = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
@@ -33,7 +33,7 @@ EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.c
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
 INSTALLED_APPS += ["debug_toolbar", "corsheaders"]  # noqa: F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
-MIDDLEWARE += [
+MIDDLEWARE += [  # noqa: F405
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -62,12 +62,13 @@ INSTALLED_APPS += ["django_extensions"]  # noqa: F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-#GDAL_LIBRARY_PATH = '/usr/local/Cellar/gdal/3.8.1_1/lib/libgdal.dylib'
+# GDAL_LIBRARY_PATH = '/usr/local/Cellar/gdal/3.8.1_1/lib/libgdal.dylib'
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN", None)
 WHATSAPP_CLIENT_ID = env("WHATSAPP_CLIENT_ID", None)
 WHATSAPP_CLIENT_SECRET = env("WHATSAPP_CLIENT_SECRET", None)
 WHATSAPP_AUTHENTICATION_URL = env("WHATSAPP_AUTHENTICATION_URL", None)
-WHATSAPP_SEND_MESSAGES_URL = env("WHATSAPP_SEND_MESSAGES_URL",None)
+WHATSAPP_SEND_MESSAGES_URL = env("WHATSAPP_SEND_MESSAGES_URL", None)
 WHATSAPP_CAMPAIGN_ID = env("WHATSAPP_CAMPAIGN_ID", None)
 WHATSAPP_TYPE_ACTION = env("WHATSAPP_TYPE_ACTION", None)
+GRAPHIQL_GRAPHIC_INTERFACE = True

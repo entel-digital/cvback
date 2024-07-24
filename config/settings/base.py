@@ -3,7 +3,7 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
-from datetime import timedelta
+# from datetime import timedelta
 
 import environ
 
@@ -50,7 +50,8 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-#SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
+# SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),
+# #default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -101,7 +102,6 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework",
-#    "django_better_admin_arrayfield",
     "django_jsonform",
     "drf_spectacular",
     "graphene_django",
@@ -109,6 +109,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_api_key",
     "django_celery_beat",
     "phonenumber_field",
+    # "django_better_admin_arrayfield",
 ]
 
 LOCAL_APPS = [
@@ -178,13 +179,13 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-#STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATIC_ROOT = os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
+# STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'web/static')  # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-#STATICFILES_DIRS = [str(APPS_DIR / "static")]
+# STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
     os.path.join(APPS_DIR, 'static')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -196,7 +197,7 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-#MEDIA_ROOT = str(APPS_DIR / "media")
+# MEDIA_ROOT = str(APPS_DIR / "media")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
@@ -230,7 +231,6 @@ TEMPLATES = [
         },
     }
 ]
-
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer

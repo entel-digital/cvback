@@ -7,13 +7,16 @@ from cvback.devices.serializers import AreaSerializer, CameraSerializer, Inferen
 def index(request):
     return HttpResponse("Hello, world. You're at the devices index.")
 
+
 class AreaViewSet(viewsets.ModelViewSet):
     queryset = Area.objects.all()
     serializer_class = AreaSerializer
 
+
 class CameraViewSet(viewsets.ModelViewSet):
     queryset = Camera.objects.all()
     serializer_class = CameraSerializer
+
 
 class InferenceComputerViewSet(viewsets.ModelViewSet):
     queryset = InferenceComputer.objects.all()
