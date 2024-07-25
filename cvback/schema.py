@@ -53,7 +53,9 @@ class Query(graphene.ObjectType):
         id_greather_than_equal=graphene.Int(default_value=None),
         date_equals_to=graphene.Date(default_value=None),
         date_lower_than=graphene.Date(default_value=None),
-        date_greather_than_equal=graphene.Date(default_value=None))
+        date_greather_than_equal=graphene.Date(default_value=None),
+        label_text_filter = graphene.String()
+        )
 
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
         qs = Event.objects.order_by('-informed_date')
@@ -67,9 +69,15 @@ class Query(graphene.ObjectType):
         date_equals_to = kwargs.get('date_equals_to')
         date_lower_than = kwargs.get('date_lower_than')
         date_greater_than_equal = kwargs.get('date_greater_than_equal')
+        date_greater_than_equal = kwargs.get('filter')
+        label_text_filter = kwargs.get('label_text_filter')
 
         filtered = False
         filtered_by = []
+        if label_text_filter:
+            filtered = True
+            filtered_by.append("label_text")
+            qs.filter(event_label__name__icontains=label_text_filter)
         if id_equals_to:
             filtered = True
             filtered_by.append("id=")

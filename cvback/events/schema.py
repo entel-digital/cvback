@@ -151,3 +151,5 @@ class EventFilterAndPaginationType(graphene.ObjectType):
     rows_per_page = graphene.Int(default_value=10)
     filtered = graphene.Boolean()
     filtered_by = graphene.List(graphene.String)
+    label_text_filter = graphene.String()
+
