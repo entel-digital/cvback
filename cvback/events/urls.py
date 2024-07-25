@@ -2,7 +2,7 @@ from django.urls import path
 from cvback.events.views import (BoundingBoxApiView, FrameApiView, InferenceClassificationApiView,
                                  InferenceDetectionClassificationApiView, EventApiView,
                                  InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView,
-                                 VideoApiView, KeyFrameApiView, LabelApiView)
+                                 VideoApiView, KeyFrameApiView, LabelApiView, KeyVideoApiView)
 from graphene_django.views import GraphQLView
 from cvback.schema import schema
 # from django.views.decorators.csrf import csrf_exempt
@@ -23,4 +23,5 @@ urlpatterns = [
     path('inference_ocr/', InferenceOCRApiView.as_view(), name='events_inference_ocr'),
     path('main_event/', EventApiView.as_view(), name='events_event'),
     path('videos/', VideoApiView.as_view(), name='events_videos'),
+    path('key_videos/', KeyVideoApiView.as_view(), name='events_key_videos'),
 ]

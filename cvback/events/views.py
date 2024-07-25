@@ -4,10 +4,10 @@ from cvback.events.tasks import create_alert
 from cvback.events.serializers import (BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer,
                                        InferenceDetectionClassificationSerializer, VideoSerializer,
                                        InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer,
-                                       EventSerializer, KeyFrameSerializer, LabelSerializer)
+                                       EventSerializer, KeyFrameSerializer, LabelSerializer, KeyVideoSerializer)
 from cvback.events.models import (Frame, Label, KeyFrame, BoundingBox, InferenceClassification,
                                   InferenceDetectionClassification, InferenceDetectionClassificationTracker,
-                                  InferenceOCR, Event, Video)
+                                  InferenceOCR, Event, Video, KeyVideo)
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -117,3 +117,8 @@ class EventApiView(ListCreateAPIView):
 class VideoApiView(BaseListCreateAPIView):
     model = Video
     serializer_class = VideoSerializer
+
+
+class KeyVideoApiView(BaseListCreateAPIView):
+    model = KeyVideo
+    serializer_class = KeyVideoSerializer

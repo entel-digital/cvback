@@ -114,8 +114,8 @@ class Video(models.Model):
 
 
 class KeyVideo(models.Model):
-    name = models.CharField()
-    frames = models.ManyToManyField(Video)
+    name = models.CharField(max_length=255)
+    videos = models.ManyToManyField(Video)
 
 
 class Inference(models.Model):
