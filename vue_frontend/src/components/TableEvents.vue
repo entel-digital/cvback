@@ -242,8 +242,10 @@ export default defineComponent({
       const day =
         dateObj.getDate() < 10 ? `0${dateObj.getDate()}` : dateObj.getDate();
       const year = dateObj.getFullYear();
-      const hour = dateObj.getUTCHours();
-      const minutes = dateObj.getUTCMinutes();
+      const hour = dateObj.getHours() + 1 < 10
+          ? `0${dateObj.getHours() + 1}`
+          : dateObj.getHours() + 1;
+      const minutes = dateObj.getMinutes();
       const newDate = {
         date: `${day}/${month}/${year}`,
         time: `${hour}:${minutes}`,

@@ -14,6 +14,7 @@ urlpatterns = [
     path("devices/", include("cvback.devices.urls")),
     path("events/", include("cvback.events.urls")),
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("about/", TemplateView.as_view(template_name="pages/about.html"), name="about"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

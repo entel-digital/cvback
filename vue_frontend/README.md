@@ -1,39 +1,29 @@
-# CVFRONT (cvfront)
+# vue-frontend
 
-Front end application to visualice events
+This template should help get you started developing with Vue 3 in Vite.
 
-## Install the dependencies
+## Recommended IDE Setup
 
-```bash
-yarn
-# or
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+
+## Customize configuration
+
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Compile and Hot-Reload for Development
 
-```bash
-quasar dev
+```sh
+npm run dev
 ```
 
-### Lint the files
+### Compile and Minify for Production
 
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-### Format the files
-
-```bash
-yarn format
-# or
-npm run format
-```
-
-### Build the app for production
-
-```bash
-quasar build
+```sh
+npm run build
 ```

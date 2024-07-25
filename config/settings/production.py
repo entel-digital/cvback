@@ -21,7 +21,7 @@ WHATSAPP_AUTHENTICATION_URL = env("WHATSAPP_AUTHENTICATION_URL", None)
 
 # DATABASES
 # ------------------------------------------------------------------------------
-# DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa: F405
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # noqa: F405
 
 # CACHES
 # ------------------------------------------------------------------------------
