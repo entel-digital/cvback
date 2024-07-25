@@ -16,13 +16,9 @@ class User(AbstractUser):
     name = CharField(_("Name of User"), blank=True, max_length=255)
     first_name = None  # type: ignore
     last_name = None  # type: ignore
-    #channels
-    phone_number =  PhoneNumberField(blank=True)
+    # channels
+    phone_number = PhoneNumberField(blank=True)
     telegram_chat_id = CharField(blank=True)
-    
-
-
-
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.

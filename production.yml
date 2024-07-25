@@ -1,5 +1,3 @@
-version: '3'
-
 volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
@@ -13,6 +11,8 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
 
     image: cvback_production_django
+    environment:
+      TZ: America/Santiago
     depends_on:
       - postgres
     volumes:

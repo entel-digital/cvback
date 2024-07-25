@@ -8,6 +8,7 @@ from cvback.events.models import (
     KeyInferenceClassification, EventType, Event
 )
 
+
 class Command(BaseCommand):
     help = 'Deletes all fake data'
 

@@ -1,6 +1,7 @@
 import os
 import secrets
 
+
 def main():
     base_dir = os.path.dirname(__file__)  # Ubicación base del script
     env_directory = os.path.join(base_dir, '.envs', '.local')
@@ -26,18 +27,17 @@ def main():
     keys_found_django = {key: False for key in keys_to_check_django}
 
     keys_to_check_postgres = ['POSTGRES_HOST',
-                            'POSTGRES_PORT',
-                            'POSTGRES_DB',
-                            'POSTGRES_USER',
-                            'POSTGRES_PASSWORD']
+                              'POSTGRES_PORT',
+                              'POSTGRES_DB',
+                              'POSTGRES_USER',
+                              'POSTGRES_PASSWORD']
 
     keys_found_postgres = {key: False for key in keys_to_check_postgres}
-
 
     if os.path.exists(env_file_django):
         with open(env_file_django, 'r') as file:
             lines = file.readlines()
-        print(f"Archivo encontrado. Revisando claves...")
+        print("Archivo encontrado. Revisando claves...")
         for key in keys_to_check_django:
             if any(key in line for line in lines):
                 keys_found_django[key] = True
@@ -50,7 +50,7 @@ def main():
     if os.path.exists(env_file_postgres):
         with open(env_file_postgres, 'r') as file:
             lines = file.readlines()
-        print(f"Archivo encontrado. Revisando claves...")
+        print("Archivo encontrado. Revisando claves...")
         for key in keys_to_check_postgres:
             if any(key in line for line in lines):
                 keys_found_postgres[key] = True
@@ -100,6 +100,7 @@ def main():
                 print(f'{key} configurada: {new_key}')
             else:
                 print(f'{key} ya está configurada.')
+
 
 if __name__ == "__main__":
     main()

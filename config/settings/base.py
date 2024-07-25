@@ -3,7 +3,6 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
-from datetime import timedelta
 
 import environ
 
@@ -50,7 +49,6 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-#SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -100,7 +98,6 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "rest_framework",
-#    "django_better_admin_arrayfield",
     "django_jsonform",
     "drf_spectacular",
     "graphene_django",
@@ -141,7 +138,7 @@ LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
-# HEADLESS_ONLY = True
+HEADLESS_ONLY = True
 # PASSWORDS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
@@ -341,7 +338,7 @@ CELERY_TASK_SEND_SENT_EVENT = True
 
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = False
+ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -350,8 +347,12 @@ ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "cvback.users.adapters.AccountAdapter"
-
-
+# https://django-allauth.readthedocs.io/en/latest/forms.html
+ACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSignupForm"}
+# https://django-allauth.readthedocs.io/en/latest/configuration.html
+SOCIALACCOUNT_ADAPTER = "cvback.users.adapters.SocialAccountAdapter"
+# https://django-allauth.readthedocs.io/en/latest/forms.html
+SOCIALACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSocialSignupForm"}
 
 API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
@@ -387,7 +388,6 @@ GRAPHENE = {
 AUTHENTICATION_BACKENDS = [
     "graphql_jwt.backends.JSONWebTokenBackend",
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 LOGIN_REDIRECT_URL = "/"

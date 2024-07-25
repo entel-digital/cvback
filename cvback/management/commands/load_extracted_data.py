@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 from cvback.devices.models import Camera, InferenceComputer, Area
 from cvback.events.models import Label, EventType, BoundingBox, Algorithm
 
+
 class Command(BaseCommand):
     help = 'Load data from extracted_data.json into the database'
 

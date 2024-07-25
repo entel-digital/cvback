@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
-from django.conf import settings
+# from django.conf import settings
 
 
 # TODO: Quizás hacer una nueva aplicación tipo "inferences" para simplificar el archivo ?
@@ -20,7 +20,7 @@ def validate_relative(value):
 
 
 # https://en.wikipedia.org/wiki/Software_versioning#Semantic_versioning
-validate_semantic_versioning = RegexValidator('^\d{1,2}\.\d{1,2}\.\d{1,3}$')
+validate_semantic_versioning = RegexValidator('^\d{1,2}\.\d{1,2}\.\d{1,3}$')  # noqa: W605
 
 
 class AreaOfInterest(models.Model):
@@ -114,8 +114,8 @@ class Video(models.Model):
 
 
 class KeyVideo(models.Model):
-    name = models.CharField()
-    frames = models.ManyToManyField(Video)
+    name = models.CharField(max_length=255)
+    videos = models.ManyToManyField(Video)
 
 
 class Inference(models.Model):
@@ -157,7 +157,7 @@ class KeyInferenceOCR(models.Model):
 class InferenceDetectionClassification(Inference):
     bounding_boxes = models.ManyToManyField(BoundingBox)
     labels = models.ManyToManyField(Label)
-    #frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='detections', null=True)
+    # frame = models.ForeignKey(Frame, on_delete=models.CASCADE, related_name='detections', null=True)
 
     def __str__(self):
         return f"InferenceDetectionClassification ID: {self.id}"
@@ -235,8 +235,8 @@ class Event(models.Model):
     videos = models.ManyToManyField(Video, blank=True)
     key_videos = models.ManyToManyField(KeyVideo, blank=True)
     confidence = models.FloatField(validators=[validate_relative], default=0)
-    labels_detected = models.ManyToManyField(Label, related_name='events_detected',blank=True)
-    labels_missing = models.ManyToManyField(Label, related_name='events_missing',blank=True)
+    labels_detected = models.ManyToManyField(Label, related_name='events_detected', blank=True)
+    labels_missing = models.ManyToManyField(Label, related_name='events_missing', blank=True)
 
     # Inferences
     inference_classification = models.ManyToManyField(InferenceClassification, blank=True)
@@ -247,9 +247,9 @@ class Event(models.Model):
     # Key Inferences
     key_inference_classification = models.ManyToManyField(KeyInferenceClassification, blank=True)
     key_inference_detection_classification = models.ManyToManyField(KeyInferenceDetectionClassification, blank=True)
-    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker, blank=True)
+    key_inference_detection_classification_tracker = models.ManyToManyField(KeyInferenceDetectionClassificationTracker,
+                                                                            blank=True)
     key_inference_ocr = models.ManyToManyField(KeyInferenceOCR, blank=True)
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
-

@@ -8,8 +8,6 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 
 
-
-
 urlpatterns = [
     path("devices/", include("cvback.devices.urls")),
     path("events/", include("cvback.events.urls")),
@@ -57,6 +55,3 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
-
-
-
