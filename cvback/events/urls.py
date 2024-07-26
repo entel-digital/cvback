@@ -1,4 +1,5 @@
 from django.urls import path
+from django.conf import settings
 from cvback.events.views import (BoundingBoxApiView, FrameApiView, InferenceClassificationApiView,
                                  InferenceDetectionClassificationApiView, EventApiView,
                                  InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView,
@@ -9,7 +10,7 @@ from cvback.schema import schema
 
 
 urlpatterns = [
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
+    path('graphql/', GraphQLView.as_view(graphiql=settings.GRAPHIQL_GRAPHIC_INTERFACE, schema=schema)),
     path('labels/', LabelApiView.as_view(), name="events_label"),
     path('bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
     path('frames/', FrameApiView.as_view(), name='events_frames'),
