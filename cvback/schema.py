@@ -1,7 +1,8 @@
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
-from cvback.events.schema import EventType, EventFilterAndPaginationType
-from cvback.events.models import Event
+from cvback.events.schema import EventType, EventFilterAndPaginationType, EventLabelsSummaryType
+from cvback.events.models import Event, EventType as EventTypeModel
+import json
 
 
 class UpdateEventMutation(graphene.Mutation):
@@ -54,7 +55,7 @@ class Query(graphene.ObjectType):
         date_equals_to=graphene.Date(default_value=None),
         date_lower_than=graphene.Date(default_value=None),
         date_greather_than_equal=graphene.Date(default_value=None),
-        label_text_filter = graphene.String()
+        label_text_filter=graphene.String()
         )
 
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
@@ -119,6 +120,22 @@ class Query(graphene.ObjectType):
         )
 
         return result
+
+    event_labels_summary = graphene.Field(
+        EventLabelsSummaryType
+    )
+
+    def resolve_event_labels_summary(self, info, **kwargs):
+        event_types = EventTypeModel.objects.all()
+        total = Event.objects.count()
+        summary = {"total": total}
+
+        for event_type in event_types:
+            summary[event_type.name] = Event.objects.filter(event_type=event_type).count()
+        summary = json.dumps(summary)
+        return EventLabelsSummaryType(
+            summary=summary
+        )
 
 
 class Mutation(graphene.ObjectType):
