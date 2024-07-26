@@ -131,7 +131,9 @@ class Query(graphene.ObjectType):
         summary = {"total": total}
 
         for event_type in event_types:
-            summary[event_type.name] = Event.objects.filter(event_type=event_type).count()
+            event_type_number = Event.objects.filter(event_type=event_type).count()
+            if event_type_number>0:
+                summary[event_type.name] = event_type_number 
         summary = json.dumps(summary)
         return EventPropertySummaryType(
             summary=summary
