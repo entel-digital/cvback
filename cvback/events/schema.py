@@ -154,5 +154,5 @@ class EventFilterAndPaginationType(graphene.ObjectType):
     label_text_filter = graphene.String()
 
 
-class EventLabelsSummaryType(graphene.ObjectType):
+class EventPropertySummaryType(graphene.ObjectType):
     summary = graphene.types.JSONString()

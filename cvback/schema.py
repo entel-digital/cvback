@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
-from cvback.events.schema import EventType, EventFilterAndPaginationType, EventLabelsSummaryType
-from cvback.events.models import Event, EventType as EventTypeModel
+from cvback.events.schema import EventType, EventFilterAndPaginationType, EventPropertySummaryType
+from cvback.events.models import Event, Label, EventType as EventTypeModel
 import json
 
 
@@ -121,11 +121,11 @@ class Query(graphene.ObjectType):
 
         return result
 
-    event_labels_summary = graphene.Field(
-        EventLabelsSummaryType
+    event_types_summary = graphene.Field(
+        EventPropertySummaryType
     )
 
-    def resolve_event_labels_summary(self, info, **kwargs):
+    def resolve_event_types_summary(self, info, **kwargs):
         event_types = EventTypeModel.objects.all()
         total = Event.objects.count()
         summary = {"total": total}
@@ -133,13 +133,32 @@ class Query(graphene.ObjectType):
         for event_type in event_types:
             summary[event_type.name] = Event.objects.filter(event_type=event_type).count()
         summary = json.dumps(summary)
-        return EventLabelsSummaryType(
+        return EventPropertySummaryType(
             summary=summary
         )
 
+    event_labels_summary = graphene.Field(
+        EventPropertySummaryType
+    )
+
+    def resolve_event_labels_summary(self, info, **kwargs):
+        
+        event_labels = Event.event_label.get_queryset().distinct()
+
+        total = Event.objects.count()
+        summary = {"total": total}
+
+        for event_label in event_labels:
+            summary[event_label.name] = Event.objects.filter(event_label=event_label).count()
+        summary = json.dumps(summary)
+        return EventPropertySummaryType(
+            summary=summary
+        )
 
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
+
+"""{eventLabelsSummary {summary}}"""
