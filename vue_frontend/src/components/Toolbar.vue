@@ -1,0 +1,54 @@
+<script setup>
+import { ref, computed } from "vue";
+import { useUserStore } from "@/stores/user.js";
+import { useRouter } from "vue-router";
+
+const logoVision = ref("/static/images/logo_vision_azul.png")
+const userStore = useUserStore();
+
+const signOut = async () => {
+    await userStore.SIGN_OUT();
+    router.push({ name: "login" });
+};
+
+
+
+</script>
+
+<template>
+    <q-toolbar class="bg-info text-primary toolbar-height ifems-center q-px-md">
+      <q-toolbar-title>
+        <div class="fit">
+       <img  :src="logoVision" alt="logo vision" class="logo-vision"/>
+       </div>
+      </q-toolbar-title>
+      <q-btn-dropdown flat  class="text-grey-6 text-bold"
+          push
+          icon="person_outline"
+          dropdown-icon="expand_more">
+      <q-list>
+
+          <q-item class="fit" clickable v-close-popup @click="signOut">
+
+          <q-item-section>
+            <q-item-label>Cerrar sesión</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="logout" color="grey-6" />
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+    </q-toolbar>
+
+</template>
+
+<style lang="scss" scoped>
+.logo-vision {
+  width: 100px;
+  height: auto;
+}
+.toolbar-height {
+  height: 60px;
+}
+</style>

@@ -57,7 +57,7 @@
             />
           </div>
 
-          <div class="row q-px-md" style="max-width: fit-content;">
+          <div class="row q-px-md">
             <q-btn
               push
               round

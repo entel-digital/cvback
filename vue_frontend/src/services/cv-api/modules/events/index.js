@@ -1,12 +1,12 @@
-import { queries } from "src/services/cv-api/graphql/";
-import { Post } from "src/services/utils/post";
+import { queries } from "@/services/cv-api/graphql/";
+import { Post } from "@/services/utils/post";
 
-export const getAllEvents = async (from, skip) => {
-  const path = "events";
+export const getAllEvents = async (skip, rows) => {
   const body = {
     query: queries.allEvents,
-    varibles: {first: from, skip: skip},
+    varibles: {offset: skip, rowsPerPage: rows},
   };
-  const { data } = await Post(path, body);
+  const { data } = await Post(body);
   return data;
 };
+

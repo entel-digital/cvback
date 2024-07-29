@@ -1,11 +1,13 @@
+<script setup>
+import { ref } from 'vue'
+
+
+</script>
+
 <template>
-  <router-view />
+  <RouterView />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<style scoped>
 
-export default defineComponent({
-  name: 'App'
-})
-</script>
+</style>

@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import {resolve} from 'path'
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import {splitVendorChunkPlugin} from 'vite'
+import { quasar, transformAssetUrls } from '@quasar/vite-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,9 +27,14 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    vue({
+      template: { transformAssetUrls }
+    }),
     cssInjectedByJsPlugin({jsAssetsFilterFunction: () => true}),
     splitVendorChunkPlugin(),
+    quasar({
+      sassVariables: 'src/css/quasar-variables.sass'
+    })
   ],
   resolve: {
     alias: {
