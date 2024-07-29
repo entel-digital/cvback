@@ -45,7 +45,7 @@ class LineOfInterest(models.Model):
     enabled = models.BooleanField(default=True)
     name = models.CharField(max_length=255)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
-    geometry = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
+    geometry = ArrayField(models.IntegerField(), size=2)
     description = models.TextField(null=True, blank=True)
 
 

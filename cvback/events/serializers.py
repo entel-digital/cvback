@@ -2,7 +2,8 @@ from rest_framework import serializers
 from cvback.events.models import (BoundingBox, Frame, Video, InferenceDetectionClassificationTracker,
                                   InferenceOCR, Event, InferenceClassification, Label, KeyVideo, KeyFrame,
                                   KeyInferenceDetectionClassification, KeyInferenceDetectionClassificationTracker,
-                                  InferenceDetectionClassification, KeyInferenceClassification, KeyInferenceOCR)
+                                  InferenceDetectionClassification, KeyInferenceClassification, KeyInferenceOCR,
+                                  LineOfInterest)
 # from drf_compound_fields.fields import ListField
 # from cvback.devices.serializers import CameraSerializer
 
@@ -83,6 +84,12 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = ("id",)
+
+
+class LineOfInterestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LineOfInterest
+        fields = "__all__"
 
 
 class KeyFrameSerializer(serializers.ModelSerializer):
