@@ -61,7 +61,7 @@ export default defineComponent({
       },
       {
         name: 'labelType',
-        label: 'Labels',
+        label: 'Label',
         field: 'labelType',
         align: 'center',
         sortable: true,

@@ -92,19 +92,28 @@
                           </q-item-label>
                         </q-item-section>
                       </q-item>
-                      <q-item v-for="label in props.row.labelsDetected" :key="label.id">
-                        <q-item-section avatar>
-                          <q-icon color="positive" name="check_circle" />
-                        </q-item-section>
-
-                        <q-item-section>{{ label.name }}</q-item-section>
+                      <q-item>
+                        <q-item-label>Etiquetas detectadas:</q-item-label>
                       </q-item>
-                      <q-item v-for="label in props.row.labelsMissing" :key="label.id">
-                        <q-item-section avatar>
-                          <q-icon color="negative" name="cancel" />
-                        </q-item-section>
+                      <q-item class="q-pa-none">
+                        <q-item-section class="justify-star">
+                          <q-item v-for="label in props.row.labelsDetected" :key="label.id" >
+                            <q-item-section avatar>
+                              <q-icon color="positive" name="check_circle" />
+                            </q-item-section>
 
-                        <q-item-section>{{ label.name }}</q-item-section>
+                            <q-item-section>{{ label.name }}</q-item-section>
+                          </q-item>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item v-for="label in props.row.labelsMissing" :key="label.id" class="q-px-none">
+                            <q-item-section avatar>
+                              <q-icon color="negative" name="cancel" />
+                            </q-item-section>
+
+                            <q-item-section>{{ label.name }}</q-item-section>
+                          </q-item>
+                        </q-item-section>
                       </q-item>
                     </q-list>
                   </div>
@@ -167,7 +176,6 @@
 <script>
 import { defineComponent, ref, computed, nextTick } from 'vue'
 import { types } from '@/utils/colors'
-import { Loading } from 'quasar'
 
 import CarouselImages from '@/components/CarouselImages.vue'
 
@@ -247,7 +255,6 @@ export default defineComponent({
         return `background-color: ${color}; boder: 2px solid ${color}; `
       }
     }
-
 
     return {
       rowSelected,
