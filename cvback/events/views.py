@@ -4,10 +4,11 @@ from cvback.events.tasks import create_alert
 from cvback.events.serializers import (BoundingBoxSerializer, FrameSerializer, InferenceClassificationSerializer,
                                        InferenceDetectionClassificationSerializer, VideoSerializer,
                                        InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer,
-                                       EventSerializer, KeyFrameSerializer, LabelSerializer, KeyVideoSerializer)
+                                       EventSerializer, KeyFrameSerializer, LabelSerializer, KeyVideoSerializer,
+                                       LineOfInterestSerializer)
 from cvback.events.models import (Frame, Label, KeyFrame, BoundingBox, InferenceClassification,
                                   InferenceDetectionClassification, InferenceDetectionClassificationTracker,
-                                  InferenceOCR, Event, Video, KeyVideo)
+                                  InferenceOCR, Event, Video, KeyVideo, LineOfInterest)
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -90,6 +91,17 @@ class InferenceOCRApiView(BaseListCreateAPIView):
 class LabelApiView(BaseListCreateAPIView):
     model = Label
     serializer_class = LabelSerializer
+
+
+class LineOfInterestApiView(BaseListCreateAPIView):
+    model = LineOfInterest
+    serializer_class = LineOfInterestSerializer
+
+    def list(self, request, *args, **kwargs):
+        instance = self.model.objects.filter(enabled=True).order_by('-added_modified').first()
+        if instance:
+            return Response({'line_position': instance.geometry[0]})
+        return Response({'error': 'No line of interest found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class EventApiView(ListCreateAPIView):

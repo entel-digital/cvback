@@ -2,6 +2,7 @@ import graphene
 from graphene_django.filter import DjangoFilterConnectionField
 from cvback.events.schema import EventType, EventFilterAndPaginationType
 from cvback.events.models import Event
+import json
 
 
 class UpdateEventMutation(graphene.Mutation):
@@ -50,14 +51,16 @@ class Query(graphene.ObjectType):
         rows_per_page=graphene.Int(default_value=10),
         id_equals_to=graphene.Int(default_value=None),
         id_lower_than=graphene.Int(default_value=None),
-        id_greather_than_equal=graphene.Int(default_value=None),
-        date_equals_to=graphene.Date(default_value=None),
-        date_lower_than=graphene.Date(default_value=None),
-        date_greather_than_equal=graphene.Date(default_value=None))
+        id_greater_than_equal=graphene.Int(default_value=None),
+        date_equals_to=graphene.DateTime(default_value=None),
+        date_lower_than=graphene.DateTime(default_value=None),
+        date_greater_than_equal=graphene.DateTime(default_value=None),
+        label_text_filter=graphene.String(),
+        )
 
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
         qs = Event.objects.order_by('-informed_date')
-        total_number = len(qs)
+        global_total_number = len(qs)
 
         rows_per_page = kwargs.get('rows_per_page', 10)
         offset = kwargs.get('offset')
@@ -67,34 +70,63 @@ class Query(graphene.ObjectType):
         date_equals_to = kwargs.get('date_equals_to')
         date_lower_than = kwargs.get('date_lower_than')
         date_greater_than_equal = kwargs.get('date_greater_than_equal')
+        label_text_filter = kwargs.get('label_text_filter')
 
         filtered = False
         filtered_by = []
+        if label_text_filter:
+            filtered = True
+            filtered_by.append("label_text")
+            qs = qs.filter(event_label__name__icontains=label_text_filter)
         if id_equals_to:
             filtered = True
             filtered_by.append("id=")
-            qs.filter(id=id_equals_to)
+            qs = qs.filter(id=id_equals_to)
         if id_lower_than:
             filtered = True
             filtered_by.append("id<")
-            qs.filter(id__lt=id_lower_than)
+            qs = qs.filter(id__lt=id_lower_than)
         if id_greater_than_equal:
             filtered = True
             filtered_by.append("id>=")
-            qs.filter(id__gte=id_greater_than_equal)
+            qs = qs.filter(id__gte=id_greater_than_equal)
 
         if date_equals_to:
             filtered = True
             filtered_by.append("date=")
-            qs.filter(date=date_equals_to)
+            qs = qs.filter(informed_date=date_equals_to)
         if date_lower_than:
             filtered = True
             filtered_by.append("date<")
-            qs.filter(date__lt=date_lower_than)
+            qs = qs.filter(informed_date__lt=date_lower_than)
+
         if date_greater_than_equal:
             filtered = True
             filtered_by.append("date>=")
-            qs.filter(date__gte=date_greater_than_equal)
+            print('QS1')
+            print(qs)
+            qs = qs.filter(informed_date__gte=date_greater_than_equal)
+            print(qs)
+            print('QS2')
+
+        event_labels = Event.event_label.get_queryset().distinct()
+        total = qs.count()
+        labels_summary = {"total": total}
+
+        for event_label in event_labels:
+            event_label_qs = qs.filter(event_label=event_label).count()
+            if event_label_qs > 0:
+                labels_summary[event_label.name] = event_label_qs
+        labels_summary = json.dumps(labels_summary)
+
+        event_types = Event.event_type.get_queryset().distinct()
+
+        types_summary = {"total": total}
+        for event_type in event_types:
+            event_type_qs = qs.filter(event_type=event_type).count()
+            if event_type_qs > 0:
+                types_summary[event_type.name] = event_type_qs
+        types_summary = json.dumps(types_summary)
 
         if offset:
             qs = qs[offset:]
@@ -103,11 +135,14 @@ class Query(graphene.ObjectType):
 
         result = EventFilterAndPaginationType(
             events=qs,
-            total_number=total_number,
+            global_total_number=global_total_number,
             offset=offset,
             rows_per_page=rows_per_page,
             filtered=filtered,
-            filtered_by=filtered_by
+            filtered_by=filtered_by,
+            query_total_number=total,
+            labels_summary=labels_summary,
+            types_summary=types_summary
         )
 
         return result
@@ -118,3 +153,5 @@ class Mutation(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
+
+"""{eventLabelsSummary {summary}}"""

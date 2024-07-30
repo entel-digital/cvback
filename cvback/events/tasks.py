@@ -8,9 +8,9 @@ to_tz = timezone.get_default_timezone()
 
 
 @shared_task(rate_limit='100/m')
-def send_telegram(message, chat_id, images):
+def send_telegram(chat_id, event_data):
     telegram_sender = TelegramSender()
-    telegram_sender.send_telegram(message, chat_id, images)
+    telegram_sender.send_telegram(chat_id, event_data)
 
 
 @shared_task(rate_limit='100/m')
@@ -30,6 +30,7 @@ def get_event_info(event):
     event_data = {}
     informed_date = event.informed_date.astimezone(to_tz).strftime("%Y-%m-%d")
     informed_time = event.informed_date.astimezone(to_tz).strftime("%H:%M:%S")
+    event_data["id"] = event.id
     event_data["date"] = informed_date if event.informed_date else ""
     event_data["time"] = informed_time if event.informed_date else ""
     if event.inference_ocr.all():
@@ -49,6 +50,12 @@ def get_event_info(event):
                   for kframe in event.key_frames.all()] if event.key_frames.all() else []
     event_data["images"] = []
     [[event_data["images"].append(image.url) for image in images] for images in aux_images]
+
+    aux_videos = [[video.video for video in kvideo.videos.all()]
+                  for kvideo in event.key_videos.all()] if event.key_videos.all() else []
+
+    event_data["videos"] = []
+    [[event_data["videos"].append(video.url) for video in videos] for videos in aux_videos]
     return event_data
 
 
@@ -80,7 +87,7 @@ def create_alert(event):
             alert_types = [alert_type.channel for alert_type in subscription.alert_type.all()]
             if subscription.user.telegram_chat_id and "telegram" in alert_types:
                 chat_id = subscription.user.telegram_chat_id
-                send_telegram(message, chat_id, event_data["images"])
+                send_telegram(chat_id, event_data)
             if subscription.user.phone_number and "whatsapp" in alert_types:
                 users_data.append(get_user_info(subscription.user))
             if subscription.user.phone_number and subscription.alert_type.name == "sms":

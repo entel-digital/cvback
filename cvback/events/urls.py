@@ -1,15 +1,17 @@
 from django.urls import path
+from django.conf import settings
 from cvback.events.views import (BoundingBoxApiView, FrameApiView, InferenceClassificationApiView,
                                  InferenceDetectionClassificationApiView, EventApiView,
                                  InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView,
-                                 VideoApiView, KeyFrameApiView, LabelApiView, KeyVideoApiView)
+                                 VideoApiView, KeyFrameApiView, LabelApiView, KeyVideoApiView,
+                                 LineOfInterestApiView)
 from graphene_django.views import GraphQLView
 from cvback.schema import schema
 # from django.views.decorators.csrf import csrf_exempt
 
 
 urlpatterns = [
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
+    path('graphql/', GraphQLView.as_view(graphiql=settings.GRAPHIQL_GRAPHIC_INTERFACE, schema=schema)),
     path('labels/', LabelApiView.as_view(), name="events_label"),
     path('bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
     path('frames/', FrameApiView.as_view(), name='events_frames'),
@@ -24,4 +26,5 @@ urlpatterns = [
     path('main_event/', EventApiView.as_view(), name='events_event'),
     path('videos/', VideoApiView.as_view(), name='events_videos'),
     path('key_videos/', KeyVideoApiView.as_view(), name='events_key_videos'),
+    path('line_of_interest/', LineOfInterestApiView.as_view(), name='events_line_of_interest')
 ]

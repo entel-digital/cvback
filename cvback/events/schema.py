@@ -146,8 +146,12 @@ class EventType(DjangoObjectType):
 
 class EventFilterAndPaginationType(graphene.ObjectType):
     events = graphene.List(EventType)
-    total_number = graphene.Int()
+    global_total_number = graphene.Int()
     offset = graphene.Int(default_value=0)
     rows_per_page = graphene.Int(default_value=10)
     filtered = graphene.Boolean()
     filtered_by = graphene.List(graphene.String)
+    label_text_filter = graphene.String()
+    query_total_number = graphene.Int()
+    labels_summary = graphene.types.JSONString()
+    types_summary = graphene.types.JSONString()
