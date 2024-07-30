@@ -35,7 +35,8 @@ const columns = [
     field: "addedDate",
     align: "center",
     sortable: true,
-    sort: (a, b) => console.log("A", a),
+    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+
   },
   {
     name: "detected",
@@ -43,7 +44,6 @@ const columns = [
     field: "labelsDetected",
     align: "center",
     sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
   },
   {
     name: "missing",

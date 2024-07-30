@@ -12,7 +12,7 @@ export const useEventsStore = defineStore('events', {
   actions: {
     async FETCH_EVENTS() {
       try {
-        const data = await getAllEvents(25, 0);
+        const data = await getAllEvents(25, 0, this.dateSelected);
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate);
         });

@@ -37,8 +37,8 @@ import { useUserStore } from '@/stores/user.js'
 export default defineComponent({
   name: 'SignInIndex',
   setup() {
-    const username = ref('natiacostap')
-    const password = ref('entel1964')
+    const username = ref('')
+    const password = ref('')
     const router = useRouter()
     const userStore = useUserStore()
 
@@ -56,7 +56,7 @@ export default defineComponent({
         username: username.value,
         password: password.value
       })
-      if (userStore.user?.status === 200) {
+      if (userStore.user?.meta.is_authenticated) {
         router.push({ name: 'home' })
         loading.value = false
         clearForm()

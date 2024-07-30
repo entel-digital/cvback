@@ -1,7 +1,14 @@
 <template>
-  <q-expansion-item expand-separator icon="filter_alt" label="Filtros" default-opened class="border-box barlow-bold fs-21-25">
-    <div class="fit row wrap justify-end items-center content-start q-gutter-sm q-py-md">-
-      <q-input dense outlined range v-model="dateToFilter" class="inputs">
+  <q-expansion-item
+    expand-separator
+    :icon="filterIcon"
+    label="Filtros"
+    default-opened
+    :class="filterStyle"
+    class="barlow-bold fs-21-25"
+  >
+    <div class="fit row wrap justify-end items-center content-start q-gutter-sm q-py-md">
+      <q-input dense outlined v-model="displayDate" class="inputs">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -9,6 +16,7 @@
                 minimal
                 today-btn
                 :locale="locale"
+                range
                 navigation-min-year-month="2024/07"
                 :navigation-max-year-month="maxYearMonth"
                 :default-year-month="defaultYearMoth"
@@ -26,6 +34,7 @@
         v-model="timeToFilter"
         :options="optionsTime"
         options-dense
+        :disable="disableTimeToFilter"
         label="Hora"
         class="inputs"
       />
@@ -63,10 +72,9 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, nextTick } from 'vue'
+import { defineComponent, ref, computed, nextTick, watchEffect, watch } from 'vue'
 import { useQuasar, date } from 'quasar'
 import { useEventsStore } from '@/stores/events.js'
-
 
 export default defineComponent({
   name: 'FilterEvents',
@@ -76,15 +84,16 @@ export default defineComponent({
   setup(props, { emit }) {
     const timeToFilter = ref(null)
     const dateToFilter = ref(date.formatDate(new Date(), 'YYYY-MM-DD'))
+
     const labelType = ref(null)
     const eventStore = useEventsStore()
+
     const defaultYearMoth = computed(() => {
       return date.formatDate(new Date(), 'YYYY-MM')
     })
     const maxYearMonth = computed(() => {
-      return date.formatDate(new Date(), "YYYY-MM");
+      return date.formatDate(new Date(), 'YYYY-MM')
     })
-    console.log('defaultYearMoth', defaultYearMoth.value)
 
     const locale = {
       days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
@@ -96,6 +105,29 @@ export default defineComponent({
       monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
       firstDayOfWeek: 1
     }
+
+    const filterStyle = computed(() => {
+      return timeToFilter.value || dateToFilter.value || labelType.value
+        ? 'border-box-filter'
+        : 'border-box'
+    })
+
+    const filterIcon = computed(() => {
+      return timeToFilter.value || dateToFilter.value || labelType.value
+        ? 'filter_alt'
+        : 'filter_alt_off'
+    })
+
+    const displayDate = computed(() => {
+      if (typeof dateToFilter.value === 'object') {
+        return `${dateToFilter.value.from} - ${dateToFilter.value.to}`
+      }
+      return dateToFilter.value
+    })
+
+    const disableTimeToFilter = computed(() => {
+      return typeof dateToFilter.value === 'object'
+    })
 
     const optionsTime = computed(() => [
       { label: '00:00', value: '00:00' },
@@ -135,9 +167,13 @@ export default defineComponent({
     }
 
     const filterEvents = () => {
+      const dateAsObject =
+        typeof dateToFilter.value === 'object'
+          ? dateToFilter.value
+          : { from: dateToFilter.value, to: dateToFilter.value }
       emit('filterData', {
         timeToFilter: timeToFilter.value,
-        dateToFilter: dateToFilter.value,
+        dateToFilter: dateAsObject,
         labelType: labelType.value
       })
     }
@@ -151,7 +187,11 @@ export default defineComponent({
       locale,
       maxYearMonth,
       clearFilter,
-      filterEvents
+      filterEvents,
+      filterStyle,
+      displayDate,
+      filterIcon,
+      disableTimeToFilter
     }
   }
 })
@@ -159,7 +199,18 @@ export default defineComponent({
 
 <style scoped>
 .border-box {
-  border: 1px solid #a0aad0;
+  border-left: 20px solid #5a7fe6;
+  border-top: 1px solid #a0aad0;
+  border-bottom: 1px solid #a0aad0;
+  border-right: 1px solid #a0aad0;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+.border-box-filter {
+  border-left: 20px solid #ff8660;
+  border-top: 1px solid #a0aad0;
+  border-bottom: 1px solid #a0aad0;
+  border-right: 1px solid #a0aad0;
   padding: 0 10px;
   border-radius: 10px;
 }

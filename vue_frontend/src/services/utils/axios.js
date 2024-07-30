@@ -19,7 +19,8 @@ function getCookie(name) {
 api.interceptors.request.use((config) => {
   if (
       config.method?.toLowerCase() === 'post' ||
-      config.method?.toLowerCase() === 'put'
+      config.method?.toLowerCase() === 'put' ||
+        config.method?.toLowerCase() === 'delete'
   ) {
       const csrfToken = getCookie('csrftoken');
       if (csrfToken) {

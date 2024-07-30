@@ -5,7 +5,7 @@ import { useRouter } from "vue-router";
 
 const logoVision = ref("/static/images/logo_vision_azul.png")
 const userStore = useUserStore();
-
+const router = useRouter()
 const signOut = async () => {
     await userStore.SIGN_OUT();
     router.push({ name: "login" });
@@ -22,9 +22,10 @@ const signOut = async () => {
        <img  :src="logoVision" alt="logo vision" class="logo-vision"/>
        </div>
       </q-toolbar-title>
-      <q-btn-dropdown flat  class="text-grey-6 text-bold"
+      <q-btn-dropdown flat  class="text-grey-6 text-bold" width="fit-content"
           push
           icon="person_outline"
+          :label="userStore.user?.data.user.display"
           dropdown-icon="expand_more">
       <q-list>
 

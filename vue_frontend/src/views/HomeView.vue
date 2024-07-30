@@ -57,7 +57,7 @@ export default defineComponent({
         field: 'addedDate',
         align: 'center',
         sortable: true,
-        sort: (a, b) => console.log('A', a)
+        sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
       },
       {
         name: 'labelType',
@@ -65,7 +65,6 @@ export default defineComponent({
         field: 'labelType',
         align: 'center',
         sortable: true,
-        sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
       },
       {
         name: 'action',
@@ -109,7 +108,6 @@ export default defineComponent({
     // });
 
     const filterData = (data) => {
-      console.log('data', data)
       eventStore.dateSelected = data.dateToFilter;
       eventStore.timeSelected = data.timeToFilter;
       eventStore.labelsTypeSelected = data.labelType;

@@ -12,6 +12,7 @@
           :loading="loading"
           v-model:pagination="pagination"
           v-model:expanded="expanded"
+          hide-pagination
         >
           <template v-slot:body="props">
             <q-tr
@@ -49,7 +50,7 @@
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%" class="no-padding">
                 <div class="fit row justify-between q-py-sm" style="min-height: 400px">
-                  <div class="col-6 text-left q-pa-md q-gutter-md">
+                  <div class="col-4 text-left q-pa-md q-gutter-md">
                     <q-list class="fit">
                       <q-item>
                         <q-item-section>
@@ -107,51 +108,17 @@
                       </q-item>
                     </q-list>
                   </div>
-                  <div class="col-6">
+                  <div class="col-8">
                     <CarouselImages :frames="props.row.frames" />
                   </div>
                 </div>
               </q-td>
             </q-tr>
           </template>
-           <!-- <template v-slot:pagination >
-            <div class="fit row wrap justify-end content-center">
-              <div class="row q-px-md">
-                <p class="custom-pt-pagination q-px-md">Filas por página</p>
-                <q-select
-                  dense
-                  borderless
-                  v-model="pagination.rowsPerPage"
-                  :options="optionsRowsPerPage"
-                  @input="selectPagination()"
-                />
-              </div>
-              <div class="row">
-                <q-btn
-                  icon="chevron_left"
-                  color="grey-8"
-                  round
-                  dense
-                  flat
-                  :disable="firstPage"
-                  @click="prevPage(pagination.page)"
-                />
-                <span class="custom-pt-pagination">
-|           {{ pagination.page }} - {{ totalPages }}
-                </span>
-                <q-btn
-                  icon="chevron_right"
-                  color="grey-8"
-                  round
-                  dense
-                  flat
-                  :disable="lastPage"
-                  @click="nextPage(pagination.page)"
-                />
-              </div>
-            </div>
-          </template> -->
         </q-table>
+        <div class="row justify-center q-mt-md">
+          <q-pagination v-model="pagination.page" color="grey-8" :max="pagesNumber" size="sm" />
+        </div>
       </div>
     </div>
 
@@ -174,7 +141,6 @@
               <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
                 {{ row.eventLabel.name }}
               </q-item-label>
-
             </q-item-section>
           </template>
 
@@ -201,7 +167,7 @@
 <script>
 import { defineComponent, ref, computed, nextTick } from 'vue'
 import { types } from '@/utils/colors'
-import { Loading } from 'quasar';
+import { Loading } from 'quasar'
 
 import CarouselImages from '@/components/CarouselImages.vue'
 
@@ -218,7 +184,16 @@ export default defineComponent({
     const slide = ref(1)
     const fullscreen = ref(false)
     const expanded = ref([])
-    // let page = ref(1)
+
+    const pagination = ref({
+      sortBy: 'desc',
+      descending: false,
+      page: 1,
+      rowsPerPage: 50
+      // rowsNumber: xx if getting data from a server
+    })
+
+    const pagesNumber = computed(() => Math.ceil(props.rows.length / pagination.value.rowsPerPage))
 
     const getRowSelected = (row, column, event) => {
       if (rowSelected.value?.id === row.id) {
@@ -229,12 +204,6 @@ export default defineComponent({
         expanded.value = [row.id]
       }
     }
-
-    const pagination = computed(() => {
-      return {
-        rowsPerPage: 10
-      }
-    })
 
     const formatDateEvent = (date) => {
       const dateObj = new Date(date)
@@ -279,22 +248,11 @@ export default defineComponent({
       }
     }
 
-    const nextPage = (page) => {
-      console.log('nextPage')
-
-    }
-
-    const prevPage = (page) => {
-      console.log('prevPage')
-    }
-
-    const selectPagination = () => {
-      console.log('selectPagination')
-    }
 
     return {
       rowSelected,
       pagination,
+      pagesNumber,
       getRowSelected,
       formatDateEvent,
       colorRowSelected,
@@ -303,10 +261,7 @@ export default defineComponent({
       expanded,
       toggleExpand,
       toPercentage,
-      findColor,
-      nextPage,
-      prevPage,
-      selectPagination
+      findColor
     }
   }
 })
