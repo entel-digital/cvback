@@ -57,6 +57,15 @@
                           <q-item-label
                             >Confiabilidad:
                             <span class="barlow-bold">
+
+
+
+
+
+
+
+
+
                               {{ toPercentage(props.row.confidence) }}%
                             </span>
                           </q-item-label>
@@ -67,7 +76,10 @@
                           <q-item-label
                             >Fecha creado:
                             <span class="barlow-bold">
-                              {{ formatDateEvent(props.row.addedDate).date }}%
+                              {{ formatDateEvent(props.row.addedDate).date }}
+                            </span>
+                            <span class="barlow">
+                             | {{ formatDateEvent(props.row.addedDate).time }}
                             </span>
                           </q-item-label>
                         </q-item-section>
@@ -77,7 +89,11 @@
                           <q-item-label
                             >Fecha informado:
                             <span class="barlow-bold">
-                              {{ formatDateEvent(props.row.informateDate).date }}%
+
+                              {{ formatDateEvent(props.row.informedDate).date }}
+                            </span>
+                            <span class="barlow">
+                             | {{ formatDateEvent(props.row.informedDate).time }}
                             </span>
                           </q-item-label>
                         </q-item-section>
@@ -92,27 +108,35 @@
                           </q-item-label>
                         </q-item-section>
                       </q-item>
-                      <q-item>
-                        <q-item-label>Etiquetas detectadas:</q-item-label>
-                      </q-item>
-                      <q-item class="q-pa-none">
-                        <q-item-section class="justify-star">
-                          <q-item v-for="label in props.row.labelsDetected" :key="label.id" >
-                            <q-item-section avatar>
-                              <q-icon color="positive" name="check_circle" />
-                            </q-item-section>
-
-                            <q-item-section>{{ label.name }}</q-item-section>
-                          </q-item>
-                        </q-item-section>
+                      <q-item >
                         <q-item-section>
-                          <q-item v-for="label in props.row.labelsMissing" :key="label.id" class="q-px-none">
-                            <q-item-section avatar>
-                              <q-icon color="negative" name="cancel" />
-                            </q-item-section>
+                          <q-item-label
+                            >Labels:
+                          </q-item-label>
 
-                            <q-item-section>{{ label.name }}</q-item-section>
-                          </q-item>
+                          <q-chip
+                            outline
+                            v-for="label in props.row.labelsDetected"
+                            :key="label.id"
+                            :label="label.name"
+                            icon="check_circle"
+                            color="positive"
+                            style="max-width: fit-content;"
+                            class="q-px-xs"
+
+                          />
+                          <q-chip
+                            outline
+                            v-for="label in props.row.labelsMissing"
+                            :key="label.id"
+                            :label="label.name"
+                            icon="cancel"
+                            color="negative"
+                            style="max-width: fit-content;"
+                            class="q-px-xs"
+
+
+                          />
                         </q-item-section>
                       </q-item>
                     </q-list>
@@ -274,42 +298,47 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass">
-.my-sticky-dynamic
+<style lang="scss" >
+.my-sticky-dynamic{
   /* height or max-height is important */
   height: 60vh
-
+}
 
   .q-table__top,
   .q-table__bottom,
-  thead tr:first-child th /* bg color is important for th; just specify one */
-    background-color: #ffffff
-
-  thead tr th
-    position: sticky
-    z-index: 2
-    color: #4A4A4A
+  thead tr:first-child th {
+    background-color: #ffffff;
+  }
+  .q-table thead tr th{
+    position: sticky;
+    z-index: 2;
+    color: #4A4A4A;
+  }
   /* this will be the loading indicator */
-  thead tr:last-child th
+  thead tr:last-child th{
     /* height of all previous header rows */
-    top: 48px
-    font-size: 16px
-    line-height: 19px
-    font-weight: 600
+    top: 48px;
+    font-size: 16px;
+    line-height: 19px;
+    font-weight: 600;
     color: #4A4A4A
-
-  thead tr:first-child th
-    top: 0
-    padding-left: 50px
+  }
+  thead tr:first-child th{
+    top: 0;
+    padding-left: 50px;
+  }
   /* prevent scrolling behind sticky top row on focus */
-  tbody
+  tbody{
     /* height of all previous header rows */
-    scroll-margin-top: 48px
+    scroll-margin-top: 48px;
     color: #828282
-
-.q-table--horizontal-separator tbody tr > td
+  }
+.q-table--horizontal-separator tbody tr > td {
     padding-left: 50px
-
-tbody tr:nth-child(odd) // Add this selector
+}
+tbody tr:nth-child(odd) {// Add this selector
   background-color: #FAFAFA // Add your desired color here
+}
+
+
 </style>

@@ -8,10 +8,10 @@
     </div>
 
     <div class="fit row wrap justify-between items-center  q-py-lg q-pl-lg q-pr-md">
-      <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/>
-      <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/>
-      <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/>
-      <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/>
+      <CardInfo :numberToShow="'50'" :titleToShow="'Total eventos'"/>
+      <!-- <CardInfo :numberToShow="eventStore.summaryEvents.totalEvents" :titleToShow="'Total eventos'"/> -->
+      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
+      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
     </div>
 
     <div class="q-py-md">
@@ -78,6 +78,7 @@ export default defineComponent({
     const eventStore = useEventsStore();
     const loadingEvents = ref(true);
     const eventsRows = ref(eventStore.allEvents);
+    const eventsSummary = ref(eventStore.summaryEvents);
 
     const router = useRouter()
 
@@ -113,14 +114,14 @@ export default defineComponent({
       eventStore.labelsTypeSelected = data.labelType;
     };
 
-
     return {
       columns,
       signOut,
       filterData,
       loadingEvents,
       eventsRows,
-      eventStore
+      eventStore,
+      eventsSummary
     }
   }
 })

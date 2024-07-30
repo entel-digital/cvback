@@ -5,13 +5,12 @@ import { useRouter } from "vue-router";
 
 const logoVision = ref("/static/images/logo_vision_azul.png")
 const userStore = useUserStore();
-const router = useRouter()
+const router = useRouter();
+
 const signOut = async () => {
     await userStore.SIGN_OUT();
     router.push({ name: "login" });
 };
-
-
 
 </script>
 

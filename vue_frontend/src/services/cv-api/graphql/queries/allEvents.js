@@ -1,56 +1,61 @@
 export default `
 query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
   filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
-    totalNumber
     offset
     rowsPerPage
     filtered
     events {
       addedDate
       confidence
+      id
+      informedDate
       eventLabel {
         colorGroup
         id
         name
       }
       eventType {
+        addedDate
         id
         name
       }
-      id
-      informedDate
+      frames {
+        imageUrl
+        id
+        imageWithBoundingboxesUrl
+      }
+      inferenceDetectionClassification {
+        boundingBoxes {
+          bottomRight
+          topLeft
+          id
+        }
+      }
       labelsMissing {
+        colorGroup
         id
         name
-        colorGroup
       }
       labelsDetected {
         name
         id
         colorGroup
       }
-      inferenceDetectionClassification {
-        boundingBoxes {
-          topLeft
-          bottomRight
-          id
-        }
-      }
       keyFrames {
-        id
-        name
         frames {
+          id
           imageWithBoundingboxesUrl
           imageUrl
-          id
         }
-      }
-      frames {
-        imageUrl
-        imageWithBoundingboxesUrl
         id
+        name
       }
     }
-  }
+    typesSummary
+    globalTotalNumber
+    labelsSummary
+    labelTextFilter
+    queryTotalNumber
 }
-`;
+}
+`
