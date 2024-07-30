@@ -194,10 +194,29 @@ STATICFILES_FINDERS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 #MEDIA_ROOT = str(APPS_DIR / "media")
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+if GS_BUCKET_NAME:
+    # Collectfast
+    # ------------------------------------------------------------------------------
+    # https://github.com/antonagestam/collectfast#installation
+    INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
+    GS_DEFAULT_ACL = "publicRead"
+    MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+
+else:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))  # noqa: F405
+    MEDIA_URL = ""
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL.replace("/", ""))  # noqa: F405
+    
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+
 TIME_ZONE = 'America/Santiago'
 
 # TEMPLATES

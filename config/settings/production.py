@@ -92,21 +92,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 STATIC_URL = "/static/"
 # MEDIA_URL = "/media/"
 DEBUG = True
-GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
-if GS_BUCKET_NAME:
-    # Collectfast
-    # ------------------------------------------------------------------------------
-    # https://github.com/antonagestam/collectfast#installation
-    INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
-    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-    COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
-    GS_DEFAULT_ACL = "publicRead"
 
-else:
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-    STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))  # noqa: F405
-    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL.replace("/", ""))  # noqa: F405
 
 
 # EMAIL
