@@ -6,7 +6,9 @@
           <q-spinner color="primary" size="3em" />
         </div>
         <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md">{{ eventStore.summaryEvents.totalEvents }}</div>
+          <div class="barlow-semibold fs-28-34 q-pa-md">
+            {{ eventStore.summaryEvents.totalEvents }}
+          </div>
         </div>
         <div class="barlow-bold fs-21-25 text-dark">Total eventos</div>
       </q-card-section>
@@ -19,22 +21,11 @@
           <q-spinner color="primary" size="3em" />
         </div>
         <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md">{{ eventStore.summaryEvents.queryTotalEvents }}</div>
+          <div class="barlow-semibold fs-28-34 q-pa-md">
+            {{ eventStore.summaryEvents.queryTotalEvents }}
+          </div>
         </div>
         <div class="barlow-bold fs-21-25 text-dark">Total eventos mostrando</div>
-      </q-card-section>
-
-      <q-separator />
-    </q-card>
-    <q-card class="my-card">
-      <q-card-section class="bg-white">
-        <div v-if="!eventStore.summaryEvents">
-          <q-spinner color="primary" size="3em" />
-        </div>
-        <div v-else>
-          <div v-for="type in parseData(eventStore.summaryEvents.typesSummary)" :key="type" class="barlow-semibold fs-28-34 q-pa-md">{{ label }}</div>
-        </div>
-        <div class="barlow-bold fs-21-25 text-dark">Total eventos</div>
       </q-card-section>
 
       <q-separator />
@@ -61,17 +52,19 @@ export default defineComponent({
   setup(props) {
     const number = props.numberToShow
     const title = props.titleToShow
-    const eventStore = useEventsStore();
+    const eventStore = useEventsStore()
 
     const parseData = (data) => {
-      const replaces = data.replace(/\\\"/g, '\"').slice(1, -1);
-return JSON.parse(replaces);
+      const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
+      return JSON.parse(replaces)
     }
+
     return {
       number,
       title,
       eventStore,
       parseData
+    }
   }
 })
 </script>

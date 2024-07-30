@@ -77,8 +77,6 @@ export default defineComponent({
     const userStore = useUserStore();
     const eventStore = useEventsStore();
     const loadingEvents = ref(true);
-    const eventsRows = ref(eventStore.allEvents);
-    const eventsSummary = ref(eventStore.summaryEvents);
 
     const router = useRouter()
 
@@ -119,9 +117,8 @@ export default defineComponent({
       signOut,
       filterData,
       loadingEvents,
-      eventsRows,
       eventStore,
-      eventsSummary
+
     }
   }
 })
