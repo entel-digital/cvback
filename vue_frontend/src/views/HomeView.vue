@@ -101,23 +101,23 @@ export default defineComponent({
     const filterData = async (data) => {
       eventStore.loadingEvents = true
       eventStore.dateSelected = data.dateToFilter
-      eventStore.labelsTypeSelected = data.labelType
+      eventStore.labelsTypeSelected = data.labelTypeToFilter
 
       switch (true) {
-        case data.dateToFilter && data.labelType:
+        case data.dateToFilter !== null && data.labelTypeToFilter !== null:
           eventStore.funtionToUse = 'bydateandlabel'
           await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
           eventStore.loadingEvents = false
 
           break
-        case data.dateToFilter && !data.labelType:
+        case data.dateToFilter !== null && !data.labelTypeToFilter:
           eventStore.funtionToUse = 'bydate'
 
           await eventStore.FETCH_EVENTS_BY_DATE()
           eventStore.loadingEvents = false
 
           break
-        case !data.dateToFilter && data.labelType:
+        case !data.dateToFilter && data.labelTypeToFilter !== null:
           eventStore.funtionToUse = 'bylabel'
           await eventStore.FETCH_EVENTS_BY_LABEL()
           eventStore.loadingEvents = false

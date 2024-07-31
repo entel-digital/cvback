@@ -128,8 +128,8 @@
                     </q-list>
                   </div>
                   <div class="col-8">
-                    <CarouselImages 
-                      :frames="props.row.frames" 
+                    <CarouselImages
+                      :frames="props.row.frames"
                       :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
                     />
                   </div>
@@ -232,8 +232,9 @@ export default defineComponent({
     const eventStore = useEventsStore()
 
     const pagesNumber = computed(() => {
-      return eventStore.summaryEvents?.totalEvents
-        ? Math.ceil(eventStore.summaryEvents.totalEvents / eventStore.pagination.rowsPerPage)
+      const totalToUse = eventStore.funtionToUse === "allevents" ? eventStore.summaryEvents?.totalEvents : eventStore.summaryEvents?.totalQueryEvents;
+      return totalToUse
+        ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage)
         : 5
     })
     const displayRows = computed(() => {

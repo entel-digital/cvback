@@ -27,7 +27,7 @@ export const useEventsStore = defineStore('events', {
       rowsPerPage: 2
     },
     funtionToUse: 'allevents',
-    labelTypes: null,
+    labelsTypes: null,
     loadingEvents: false
   }),
   actions: {
@@ -50,7 +50,7 @@ export const useEventsStore = defineStore('events', {
         }
 
         console.log('allEvents FETCH_EVENTS', this.allEvents)
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
@@ -82,7 +82,7 @@ export const useEventsStore = defineStore('events', {
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
 
         console.log('allEvents FETCH_EVENTS_BY_DATE', this.allEvents)
@@ -116,7 +116,7 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
         console.log('allEvents FETCH_EVENTS_BY_LABEL', this.allEvents)
         this.allEvents = data.filteredAndPaginatedEvents.events
@@ -149,7 +149,7 @@ export const useEventsStore = defineStore('events', {
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
         console.log('allEvents FETCH_EVENTS_BY_DATE_BY_LABEL', this.allEvents)
         this.allEvents = data.filteredAndPaginatedEvents.events

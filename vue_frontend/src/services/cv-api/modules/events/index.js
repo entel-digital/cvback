@@ -20,7 +20,6 @@ export const getAllEventsByDate = async (
     query: queries.allEventsByDate,
     variables: { offset, rowsPerPage, dateGreaterThanEqual, dateLowerThan }
   }
-  console.log("variable body fetch by date", body.variables);
   const { data } = await Post(body)
   return data
 }
