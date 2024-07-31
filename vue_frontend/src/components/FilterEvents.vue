@@ -41,11 +41,12 @@
           </q-icon>
         </template>
       </q-input>
+
       <q-select
         dense
         outlined
-        v-model="labelType"
-        :options="eventStore.labelsTypes"
+        v-model="labelTypeToFilter"
+        :options="optionsLabelTypes"
         options-dense
         label="Label"
         class="inputs"
@@ -75,8 +76,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue'
-import { date } from 'quasar'
+import { defineComponent, ref, computed, watch } from 'vue'
+import { date, event } from 'quasar'
 import { useEventsStore } from '@/stores/events.js'
 
 export default defineComponent({
@@ -90,7 +91,7 @@ export default defineComponent({
     const timeToFilter = ref({ label: '00:00', value: '00:00' })
     const dateToFilter = ref(null)
 
-    const labelType = ref(null)
+    const labelTypeToFilter = ref(null)
     const eventStore = useEventsStore()
 
     const defaultYearMoth = computed(() => {
@@ -98,7 +99,10 @@ export default defineComponent({
     })
     const maxYearMonth = computed(() => {
       return date.formatDate(new Date(), 'YYYY/MM')
-    })
+    });
+    const optionsLabelTypes = computed(() => {
+      return eventStore.labelsTypes ? eventStore.labelsTypes : []
+    });
 
     const locale = {
       days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
@@ -109,7 +113,7 @@ export default defineComponent({
         ),
       monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
       firstDayOfWeek: 1
-    }
+    };
 
     const displayDate = computed(() => {
       if (dateToFilter.value) {
@@ -119,11 +123,11 @@ export default defineComponent({
         return `${dateToFilter.value} | ${timeToFilter.value.value}`
       }
       return null
-    })
+    });
 
     const disableTimeToFilter = computed(() => {
       return typeof dateToFilter.value === 'object'
-    })
+    });
 
     const getTimeZoneOffset = () => {
       const currentDate = new Date()
@@ -137,7 +141,7 @@ export default defineComponent({
       let formattedOffset =
         sign + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0')
       return formattedOffset
-    }
+    };
 
     const optionsTime = computed(() => [
       { label: '00:00', value: '00:00' },
@@ -164,12 +168,12 @@ export default defineComponent({
       { label: '21:00', value: '21:00' },
       { label: '22:00', value: '22:00' },
       { label: '23:00', value: '23:00' }
-    ])
+    ]);
 
     const clearFilter = () => {
       timeToFilter.value = { label: '00:00', value: '00:00' }
       dateToFilter.value = null
-      labelType.value = null
+      labelTypeToFilter.value = null
       eventStore.dateSelected = null
       eventStore.timeSelected = null
       eventStore.labelsTypeSelected = null
@@ -177,49 +181,60 @@ export default defineComponent({
       iconFilter.value = 'filter_alt_off'
       eventStore.funtionToUse = 'allevents'
       eventStore.FETCH_EVENTS()
-    }
+    };
 
     const filterEvents = () => {
-      const dateAsObject =
-      dateToFilter.value ?
-        typeof dateToFilter.value === 'object'
+      if (typeof dateToFilter.value === 'object') {
+        timeToFilter.value = { label: '00:00', value: '00:00' }
+      }
+      const dateAsObject = dateToFilter.value
+        ? typeof dateToFilter.value === 'object'
           ? {
-              from:
-                date.formatDate(dateToFilter.value.from, 'YYYY-MM-DD') +
+                from:
+                date.formatDate((dateToFilter.value.from), 'YYYY-MM-DD') +
                 'T' +
                 timeToFilter.value.value +
                 ':00' +
                 getTimeZoneOffset(),
               to:
-                date.formatDate(dateToFilter.value.to, 'YYYY-MM-DD') +
-                'T23:59:59'+
+                date.formatDate((dateToFilter.value.to), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value.replace(':00', ':59') +
+                ':59' +
                 getTimeZoneOffset()
             }
           : {
               from:
-                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
-                'T00:00:00' +
+                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value +
+                ':00' +
                 getTimeZoneOffset(),
               to:
-                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
-                'T23:59:59' +
+                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value.replace(':00', ':59') +
+                ':59' +
                 getTimeZoneOffset()
             }
-          : null
+        : null
       colorFilter.value = 'border-box-filter'
       iconFilter.value = 'filter_alt'
 
       emit('filterData', {
         dateToFilter: dateAsObject,
-        labelType: labelType.value
+        labelTypeToFilter: labelTypeToFilter.value
       })
-    }
+    };
+
+
 
     return {
       timeToFilter,
       optionsTime,
+      optionsLabelTypes,
       dateToFilter,
-      labelType,
+      labelTypeToFilter,
       defaultYearMoth,
       locale,
       maxYearMonth,
@@ -229,7 +244,6 @@ export default defineComponent({
       disableTimeToFilter,
       iconFilter,
       colorFilter,
-      eventStore
     }
   }
 })

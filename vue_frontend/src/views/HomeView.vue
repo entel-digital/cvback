@@ -17,7 +17,7 @@
     </div>
 
     <div class="q-py-md">
-      <TableEvents :rows="eventStore.allEvents" :columns="columns" :loading="loadingEvents" />
+      <TableEvents :rows="eventStore.allEvents" :columns="columns" :loading="eventStore.loadingEvents" />
     </div>
   </div>
 </template>
@@ -73,12 +73,10 @@ export default defineComponent({
         field: '',
         align: 'center'
       }
-    ]
+    ];
 
     const userStore = useUserStore()
     const eventStore = useEventsStore()
-    const loadingEvents = ref(true)
-
     const router = useRouter()
 
     const signOut = async () => {
@@ -90,19 +88,9 @@ export default defineComponent({
       await eventStore.FETCH_EVENTS()
     }
     onMounted(() => {
-      console.log("funtionToUse", eventStore.funtionToUse );
       fetchAllEvents()
       // intervalId.value = setInterval(fetchAllEvents, 30000);
     })
-
-    watch(
-      () => eventStore.allEvents,
-      (newVal, oldVal) => {
-        if (newVal.length > 0) {
-          loadingEvents.value = false
-        }
-      }
-    )
 
     // onUnmounted(() => {
     //   if (intervalId.value) {
@@ -110,33 +98,75 @@ export default defineComponent({
     //   }
     // });
 
-    const filterData = (data) => {
+    const filterData = async (data) => {
+      eventStore.loadingEvents = true
       eventStore.dateSelected = data.dateToFilter
-      eventStore.labelsTypeSelected = data.labelType
+      eventStore.labelsTypeSelected = data.labelTypeToFilter
 
       switch (true) {
-        case data.dateToFilter && data.labelType:
+        case data.dateToFilter !== null && data.labelTypeToFilter !== null:
           eventStore.funtionToUse = 'bydateandlabel'
+          await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
+          eventStore.loadingEvents = false
+
           break
-        case data.dateToFilter && !data.labelType:
+        case data.dateToFilter !== null && !data.labelTypeToFilter:
           eventStore.funtionToUse = 'bydate'
+
+          await eventStore.FETCH_EVENTS_BY_DATE()
+          eventStore.loadingEvents = false
+
           break
-        case !data.dateToFilter && data.labelType:
+        case !data.dateToFilter && data.labelTypeToFilter !== null:
           eventStore.funtionToUse = 'bylabel'
+          await eventStore.FETCH_EVENTS_BY_LABEL()
+          eventStore.loadingEvents = false
+
           break
         default:
           eventStore.funtionToUse = 'allevents'
+
+          await fetchAllEvents()
+          eventStore.loadingEvents = false
+
           break
       }
-      console.log("eventStore.funtionToUse", eventStore.funtionToUse);
-      fetchAllEvents()
     }
+
+    watch(
+      () => eventStore.pagination.page,
+      async (newValue) => {
+        console.log("newValue", newValue)
+        if (newValue) {
+          switch (true) {
+            case eventStore.dateSelected && eventStore.labelsTypeSelected:
+              eventStore.funtionToUse = 'bydateandlabel'
+              await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
+              break
+            case eventStore.dateSelected && !eventStore.labelsTypeSelected:
+              eventStore.funtionToUse = 'bydate'
+
+              await eventStore.FETCH_EVENTS_BY_DATE()
+              break
+            case !eventStore.dateSelected && eventStore.labelsTypeSelected:
+              eventStore.funtionToUse = 'bylabel'
+              ;
+              await eventStore.FETCH_EVENTS_BY_LABEL()
+              break
+            default:
+              eventStore.funtionToUse = 'allevents'
+            console.log("entro al switch del eventsotre");
+              await fetchAllEvents()
+              break
+          }
+        }
+      }
+    )
 
     return {
       columns,
       signOut,
       filterData,
-      loadingEvents,
       eventStore
     }
   }

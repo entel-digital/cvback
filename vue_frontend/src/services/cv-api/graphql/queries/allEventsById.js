@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($idEqualsTo: Int) {
-  filteredAndPaginatedEvents( idEqualsTo: $idEqualsTo) {
+query filteredAndPaginatedEvents( $idEqualsTo: Int) {
+  filteredAndPaginatedEvents(idEqualsTo: $idEqualsTo) {
     filtered
     events {
       addedDate
