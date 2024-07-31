@@ -3,7 +3,7 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
-from datetime import timedelta
+# from datetime import timedelta
 
 import environ
 
@@ -20,14 +20,7 @@ if READ_DOT_ENV_FILE:
     env.read_env(str(BASE_DIR / ".envs/.local/.django"))
     env.read_env(str(BASE_DIR / ".envs/.local/.postgres"), override=True)
 
-database_config = {
-         "ENGINE": "django.contrib.gis.db.backends.postgis",
-          "NAME": env("POSTGRES_DB"),
-          "USER": env("POSTGRES_USER"),
-          "PASSWORD": env("POSTGRES_PASSWORD"),
-          "HOST": env("POSTGRES_HOST"),
-          "PORT": env("POSTGRES_PORT")
-          }
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -57,18 +50,27 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-#SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),#default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
+# SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),
+# #default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
-SECRET_KEY = env('SECRET_KEY')
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-#DATABASES = {"default": env.db("DATABASE_URL")}
-#database_config['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
-DATABASES = {'default': database_config}
+database_config = {
+    **env.db("DATABASE_URL"),
+    "ENGINE": "django.contrib.gis.db.backends.postgis",
+} if "DATABASE_URL" in env else {
+    "ENGINE": "django.contrib.gis.db.backends.postgis",
+    "NAME": env("POSTGRES_DB"),
+    "USER": env("POSTGRES_USER"),
+    "PASSWORD": env("POSTGRES_PASSWORD"),
+    "HOST": env("POSTGRES_HOST"),
+    "PORT": env("POSTGRES_PORT")
+}
 
-
+DATABASES = {"default": database_config}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-DEFAULT_AUTO_FIELD
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -100,11 +102,14 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework",
-#    "django_better_admin_arrayfield",
     "django_jsonform",
     "drf_spectacular",
     "graphene_django",
-    "graphql_jwt.refresh_token.apps.RefreshTokenConfig"
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "rest_framework_api_key",
+    "django_celery_beat",
+    "phonenumber_field",
+    # "django_better_admin_arrayfield",
 ]
 
 LOCAL_APPS = [
@@ -137,6 +142,7 @@ LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
+HEADLESS_ONLY = True
 # PASSWORDS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
@@ -173,13 +179,13 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-#STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATIC_ROOT =  os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
+# STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'web/static')  # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-#STATICFILES_DIRS = [str(APPS_DIR / "static")]
+# STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
     os.path.join(APPS_DIR, 'static')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -191,11 +197,12 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-#MEDIA_ROOT = str(APPS_DIR / "media")
+# MEDIA_ROOT = str(APPS_DIR / "media")
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "/media/"
+MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+TIME_ZONE = 'America/Santiago'
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
@@ -226,7 +233,6 @@ TEMPLATES = [
 ]
 
 
-
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
@@ -244,7 +250,7 @@ FIXTURE_DIRS = (str(APPS_DIR / "fixtures"),)
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
 SESSION_COOKIE_HTTPONLY = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
 
@@ -270,6 +276,11 @@ MANAGERS = ADMINS
 # Force the `admin` sign in process to go through the `django-allauth` workflow
 DJANGO_ADMIN_FORCE_ALLAUTH = env.bool("DJANGO_ADMIN_FORCE_ALLAUTH", default=False)
 
+TELEGRAM_BOT_TOKEN = None
+WHATSAPP_CLIENT_ID = None
+WHATSAPP_CLIENT_SECRET = None
+WHATSAPP_AUTHENTICATION_URL = None
+
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
@@ -293,6 +304,40 @@ LOGGING = {
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 
+# Celery
+# ------------------------------------------------------------------------------
+if USE_TZ:
+    # https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-timezone
+    CELERY_TIMEZONE = TIME_ZONE
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-broker_url
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_backend
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#result-extended
+CELERY_RESULT_EXTENDED = True
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#result-backend-always-retry
+# https://github.com/celery/celery/pull/6122
+CELERY_RESULT_BACKEND_ALWAYS_RETRY = True
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#result-backend-max-retries
+CELERY_RESULT_BACKEND_MAX_RETRIES = 10
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-accept_content
+CELERY_ACCEPT_CONTENT = ["json"]
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-task_serializer
+CELERY_TASK_SERIALIZER = "json"
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std:setting-result_serializer
+CELERY_RESULT_SERIALIZER = "json"
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-time-limit
+# TODO: set to whatever value is adequate in your circumstances
+CELERY_TASK_TIME_LIMIT = 5 * 60
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#task-soft-time-limit
+# TODO: set to whatever value is adequate in your circumstances
+CELERY_TASK_SOFT_TIME_LIMIT = 60
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#beat-scheduler
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#worker-send-task-events
+CELERY_WORKER_SEND_TASK_EVENTS = True
+# https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_send_sent_event
+CELERY_TASK_SEND_SENT_EVENT = True
 
 # django-allauth
 # ------------------------------------------------------------------------------
@@ -300,9 +345,9 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_REQUIRED = False
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "cvback.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
@@ -311,6 +356,8 @@ ACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSignupForm"}
 SOCIALACCOUNT_ADAPTER = "cvback.users.adapters.SocialAccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/forms.html
 SOCIALACCOUNT_FORMS = {"signup": "cvback.users.forms.UserSocialSignupForm"}
+
+API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 REST_FRAMEWORK = {
     # YOUR SETTINGS
@@ -324,16 +371,16 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-#============= Configuration JWT Authentication===
-GRAPHQL_JWT = {
-    "JWT_AUTH_HEADER_PREFIX": "Bearer",
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=10),
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
-    "JWT_SECRET_KEY": SECRET_KEY,
-    "JWT_ALGORITHM": "HS256",
-}
+# #============= Configuration JWT Authentication===
+# GRAPHQL_JWT = {
+#     "JWT_AUTH_HEADER_PREFIX": "Bearer",
+#     "JWT_VERIFY_EXPIRATION": True,
+#     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+#     "JWT_EXPIRATION_DELTA": timedelta(minutes=10),
+#     "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+#     "JWT_SECRET_KEY": SECRET_KEY,
+#     "JWT_ALGORITHM": "HS256",
+# }
 
 GRAPHENE = {
     "SCHEMA": "cvback.events.schema.schema",
