@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
+query filteredAndPaginatedEvents($idEqualsTo: Int) {
+  filteredAndPaginatedEvents( idEqualsTo: $idEqualsTo) {
     filtered
     events {
       addedDate

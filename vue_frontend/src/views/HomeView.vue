@@ -1,22 +1,23 @@
-
 <template>
   <div>
     <Toolbar />
 
-    <div class=" q-py-lg q-pr-lg q-pl-sm">
+    <div class="q-py-lg q-pr-lg q-pl-sm">
       <FilterEvents @filterData="filterData" />
     </div>
 
-    <div class="fit row wrap justify-between items-center  q-py-lg q-pl-lg q-pr-md">
-      <CardInfo :numberToShow="'50'" :titleToShow="'Total eventos'"/>
+    <div
+      class="fit row wrap justify-between items-center q-py-lg q-pl-lg q-pr-md"
+      style="max-height: 50vh"
+    >
+      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'Total eventos'"/> -->
       <!-- <CardInfo :numberToShow="eventStore.summaryEvents.totalEvents" :titleToShow="'Total eventos'"/> -->
       <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
       <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
     </div>
 
     <div class="q-py-md">
-
-      <TableEvents :rows="eventStore.allEvents" :columns="columns" :loading="loadingEvents"/>
+      <TableEvents :rows="eventStore.allEvents" :columns="columns" :loading="loadingEvents" />
     </div>
   </div>
 </template>
@@ -64,7 +65,7 @@ export default defineComponent({
         label: 'Label',
         field: 'labelType',
         align: 'center',
-        sortable: true,
+        sortable: true
       },
       {
         name: 'action',
@@ -72,14 +73,13 @@ export default defineComponent({
         field: '',
         align: 'center'
       }
-    ];
+    ]
 
-    const userStore = useUserStore();
-    const eventStore = useEventsStore();
-    const loadingEvents = ref(true);
+    const userStore = useUserStore()
+    const eventStore = useEventsStore()
+    const loadingEvents = ref(true)
 
     const router = useRouter()
-
 
     const signOut = async () => {
       await userStore.SIGN_OUT()
@@ -88,17 +88,21 @@ export default defineComponent({
 
     const fetchAllEvents = async () => {
       await eventStore.FETCH_EVENTS()
-    };
+    }
     onMounted(() => {
+      console.log("funtionToUse", eventStore.funtionToUse );
       fetchAllEvents()
       // intervalId.value = setInterval(fetchAllEvents, 30000);
     })
 
-    watch(() => eventStore.allEvents, (newVal, oldVal) => {
-      if (newVal.length > 0) {
-        loadingEvents.value = false;
+    watch(
+      () => eventStore.allEvents,
+      (newVal, oldVal) => {
+        if (newVal.length > 0) {
+          loadingEvents.value = false
+        }
       }
-    });
+    )
 
     // onUnmounted(() => {
     //   if (intervalId.value) {
@@ -107,18 +111,33 @@ export default defineComponent({
     // });
 
     const filterData = (data) => {
-      eventStore.dateSelected = data.dateToFilter;
-      eventStore.timeSelected = data.timeToFilter;
-      eventStore.labelsTypeSelected = data.labelType;
-    };
+      eventStore.dateSelected = data.dateToFilter
+      eventStore.labelsTypeSelected = data.labelType
+
+      switch (true) {
+        case data.dateToFilter && data.labelType:
+          eventStore.funtionToUse = 'bydateandlabel'
+          break
+        case data.dateToFilter && !data.labelType:
+          eventStore.funtionToUse = 'bydate'
+          break
+        case !data.dateToFilter && data.labelType:
+          eventStore.funtionToUse = 'bylabel'
+          break
+        default:
+          eventStore.funtionToUse = 'allevents'
+          break
+      }
+      console.log("eventStore.funtionToUse", eventStore.funtionToUse);
+      fetchAllEvents()
+    }
 
     return {
       columns,
       signOut,
       filterData,
       loadingEvents,
-      eventStore,
-
+      eventStore
     }
   }
 })

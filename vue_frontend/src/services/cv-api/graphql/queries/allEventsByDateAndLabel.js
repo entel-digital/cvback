@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
+query filteredAndPaginatedEvents($dateGreaterThanEqual: DateTime, $dateLowerThan: DateTime, $labelTextFilter: String) {
+  filteredAndPaginatedEvents( dateGreaterThanEqual: $dateGreaterThanEqual, dateLowerThan: $dateLowerThan, labelTextFilter: $labelTextFilter) {
     filtered
     events {
       addedDate

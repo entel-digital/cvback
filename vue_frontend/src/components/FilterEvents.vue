@@ -1,29 +1,42 @@
 <template>
   <q-expansion-item
     expand-separator
-    :icon="filterIcon"
+    :icon="iconFilter"
     label="Filtros"
     default-opened
-    :class="filterStyle"
+    :class="colorFilter"
     class="barlow-bold fs-21-25"
   >
     <div class="fit row wrap justify-end items-center content-start q-gutter-sm q-py-md">
-      <q-input dense outlined v-model="displayDate" class="inputs">
+      <q-input dense outlined v-model="displayDate" class="inputs" label="Fecha">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date
-                minimal
-                today-btn
-                :locale="locale"
-                range
-                navigation-min-year-month="2024/07"
-                :navigation-max-year-month="maxYearMonth"
-                :default-year-month="defaultYearMoth"
-                v-model="dateToFilter"
-                mask="YYYY-MM-DD"
-              >
-              </q-date>
+              <q-card class="my-card fit column items-center">
+                <q-date
+                  minimal
+                  :locale="locale"
+                  range
+                  navigation-min-year-month="2024/07"
+                  :navigation-max-year-month="maxYearMonth"
+                  :default-year-month="defaultYearMoth"
+                  v-model="dateToFilter"
+                  mask="YYYY-MM-DD"
+                >
+                </q-date>
+                <q-card-section class="fit row justify-start q-pt-none">
+                  <span class="text-dark barlow-bold">Seleccionar hora:</span>
+                  <q-select
+                    dense
+                    :disable="disableTimeToFilter"
+                    outlined
+                    v-model="timeToFilter"
+                    :options="optionsTime"
+                    options-dense
+                    class="inputs"
+                  />
+                </q-card-section>
+              </q-card>
             </q-popup-proxy>
           </q-icon>
         </template>
@@ -31,18 +44,8 @@
       <q-select
         dense
         outlined
-        v-model="timeToFilter"
-        :options="optionsTime"
-        options-dense
-        :disable="disableTimeToFilter"
-        label="Hora"
-        class="inputs"
-      />
-      <q-select
-        dense
-        outlined
         v-model="labelType"
-        :options="optionsTime"
+        :options="eventStore.labelsTypes"
         options-dense
         label="Label"
         class="inputs"
@@ -72,8 +75,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, nextTick, watchEffect, watch } from 'vue'
-import { useQuasar, date } from 'quasar'
+import { defineComponent, ref, computed } from 'vue'
+import { date } from 'quasar'
 import { useEventsStore } from '@/stores/events.js'
 
 export default defineComponent({
@@ -82,17 +85,19 @@ export default defineComponent({
   emits: ['filterData'],
 
   setup(props, { emit }) {
-    const timeToFilter = ref(null)
-    const dateToFilter = ref(date.formatDate(new Date(), 'YYYY-MM-DD'))
+    const colorFilter = ref('border-box')
+    const iconFilter = ref('filter_alt_off')
+    const timeToFilter = ref({ label: '00:00', value: '00:00' })
+    const dateToFilter = ref(null)
 
     const labelType = ref(null)
     const eventStore = useEventsStore()
 
     const defaultYearMoth = computed(() => {
-      return date.formatDate(new Date(), 'YYYY-MM')
+      return date.formatDate(new Date(), 'YYYY/MM')
     })
     const maxYearMonth = computed(() => {
-      return date.formatDate(new Date(), 'YYYY-MM')
+      return date.formatDate(new Date(), 'YYYY/MM')
     })
 
     const locale = {
@@ -106,28 +111,33 @@ export default defineComponent({
       firstDayOfWeek: 1
     }
 
-    const filterStyle = computed(() => {
-      return timeToFilter.value || dateToFilter.value || labelType.value
-        ? 'border-box-filter'
-        : 'border-box'
-    })
-
-    const filterIcon = computed(() => {
-      return timeToFilter.value || dateToFilter.value || labelType.value
-        ? 'filter_alt'
-        : 'filter_alt_off'
-    })
-
     const displayDate = computed(() => {
-      if (typeof dateToFilter.value === 'object') {
-        return `${dateToFilter.value.from} - ${dateToFilter.value.to}`
+      if (dateToFilter.value) {
+        if (typeof dateToFilter.value === 'object') {
+          return `${dateToFilter.value.from} | ${timeToFilter.value.value} - ${dateToFilter.value.to} | ${timeToFilter.value.value}`
+        }
+        return `${dateToFilter.value} | ${timeToFilter.value.value}`
       }
-      return dateToFilter.value
+      return null
     })
 
     const disableTimeToFilter = computed(() => {
       return typeof dateToFilter.value === 'object'
     })
+
+    const getTimeZoneOffset = () => {
+      const currentDate = new Date()
+      const timeZoneOffset = currentDate.getTimezoneOffset()
+
+      let hours = Math.floor(Math.abs(timeZoneOffset) / 60)
+      let minutes = Math.abs(timeZoneOffset) % 60
+
+      // Formatear el offset en el formato ±HH:MM
+      let sign = timeZoneOffset <= 0 ? '+' : '-'
+      let formattedOffset =
+        sign + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0')
+      return formattedOffset
+    }
 
     const optionsTime = computed(() => [
       { label: '00:00', value: '00:00' },
@@ -152,27 +162,54 @@ export default defineComponent({
       { label: '19:00', value: '19:00' },
       { label: '20:00', value: '20:00' },
       { label: '21:00', value: '21:00' },
-      { label: '21:00', value: '21:00' },
       { label: '22:00', value: '22:00' },
       { label: '23:00', value: '23:00' }
     ])
 
     const clearFilter = () => {
-      timeToFilter.value = null
-      dateToFilter.value = date.formatDate(new Date(), 'YYYY-MM-DD')
+      timeToFilter.value = { label: '00:00', value: '00:00' }
+      dateToFilter.value = null
       labelType.value = null
       eventStore.dateSelected = null
       eventStore.timeSelected = null
       eventStore.labelsTypeSelected = null
+      colorFilter.value = 'border-box'
+      iconFilter.value = 'filter_alt_off'
+      eventStore.funtionToUse = 'allevents'
+      eventStore.FETCH_EVENTS()
     }
 
     const filterEvents = () => {
       const dateAsObject =
+      dateToFilter.value ?
         typeof dateToFilter.value === 'object'
-          ? dateToFilter.value
-          : { from: dateToFilter.value, to: dateToFilter.value }
+          ? {
+              from:
+                date.formatDate(dateToFilter.value.from, 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value +
+                ':00' +
+                getTimeZoneOffset(),
+              to:
+                date.formatDate(dateToFilter.value.to, 'YYYY-MM-DD') +
+                'T23:59:59'+
+                getTimeZoneOffset()
+            }
+          : {
+              from:
+                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
+                'T00:00:00' +
+                getTimeZoneOffset(),
+              to:
+                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
+                'T23:59:59' +
+                getTimeZoneOffset()
+            }
+          : null
+      colorFilter.value = 'border-box-filter'
+      iconFilter.value = 'filter_alt'
+
       emit('filterData', {
-        timeToFilter: timeToFilter.value,
         dateToFilter: dateAsObject,
         labelType: labelType.value
       })
@@ -188,10 +225,11 @@ export default defineComponent({
       maxYearMonth,
       clearFilter,
       filterEvents,
-      filterStyle,
       displayDate,
-      filterIcon,
-      disableTimeToFilter
+      disableTimeToFilter,
+      iconFilter,
+      colorFilter,
+      eventStore
     }
   }
 })
