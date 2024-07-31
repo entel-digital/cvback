@@ -179,11 +179,16 @@ MIDDLEWARE = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'web/static')  # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-STATIC_URL = "/static/"
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+
+if GS_BUCKET_NAME:
+    STATIC_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/vue/assets/"
+else:
+    "/static/vue/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 # STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
-    os.path.join(APPS_DIR, 'static')]
+    os.path.join(APPS_DIR, 'static/vue')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
@@ -196,7 +201,7 @@ STATICFILES_FINDERS = [
 # MEDIA_ROOT = str(APPS_DIR / "media")
 
 
-GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+
 PRIVATE_GS_BUCKET_NAME = env("PRIVATE_GS_BUCKET_NAME", default=None)
 if GS_BUCKET_NAME:
     # Collectfast
@@ -211,6 +216,7 @@ if GS_BUCKET_NAME:
     MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
 
 else:
+    GS_EXPIRATION = None
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))  # noqa: F405
     MEDIA_URL = ""
