@@ -184,7 +184,7 @@ GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
 if GS_BUCKET_NAME:
     STATIC_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/vue/assets/"
 else:
-    "/static/vue/"
+    STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 # STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
