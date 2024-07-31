@@ -9,32 +9,26 @@
       v-model="slide"
       ref="carousel"
       infinite
-      height="100%"
-      style="width: 100%; object-fit: contain; border-radius: 5px"
+      :style="{ height: carouselHeight }"
     >
       <q-carousel-slide
         v-for="(frame, index) in newFrames"
         :key="frame.id"
         :name="index + 1"
-        class="q-px-md"
+        class="q-pa-none"
       >
-        <q-img
-          :key="frame.id"
-          :src="getFullImageUrl(frame)"
-          contain
-          :ratio="16 / 9"
-          loading="lazy"
-          spinner-color="primary"
-          style="object-fit: contain"
+        <ImageWithBoundingBoxes
+          :imageUrl="frame.imageUrl"
+          :boundingBoxes="frame.boundingBoxes"
+          :hideBbox="hideBbox"
         />
       </q-carousel-slide>
 
       <template v-slot:control>
         <q-carousel-control
-          position="bottom-left"
+          position="bottom"
           :offset="[0, 0]"
-          class="text-white rounded-borders carousel-control row justify-between items-center"
-          style="height: 55px;"
+          class="text-white carousel-control row justify-between items-center"
         >
           <div class="fit row q-pl-md" style="max-width:200px ;">
             <q-btn
@@ -46,7 +40,7 @@
               @click="$refs.carousel.previous()"
             />
             <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
-              {{ slide }}/{{ frames.length || 0 }}
+              {{ slide }}/{{ newFrames.length }}
             </div>
             <q-btn
               push
@@ -57,17 +51,15 @@
               @click="$refs.carousel.next()"
             />
           </div>
-
           <div class="fit row q-px-lg" style="max-width: fit-content;">
             <q-btn
               dense
               text-color="white"
               no-caps
-              :label="hideBbox ? 'Ocultar Bbox' : 'Mostrar Bbox'"
-              :icon="hideBbox ? 'visibility_off' : 'visibility'"
-              @click="hideBbox = !hideBbox"
+              :label="hideBbox ? 'Mostrar Bbox' : 'Ocultar Bbox'"
+              :icon="hideBbox ? 'visibility' : 'visibility_off'"
+              @click="toggleBbox"
             />
-
             <q-btn
               push
               round
@@ -80,7 +72,7 @@
         </q-carousel-control>
       </template>
     </q-carousel>
-
+    
     <q-dialog v-model="fullscreen">
       <q-carousel
         class="carousel_slides"
@@ -98,27 +90,20 @@
           :name="index + 1"
           id="dialog_carousel-frames"
         >
-          <q-img
-            :key="frame.id"
-            :src="getFullImageUrl(frame)"
-            contain
-            loading="lazy"
-            spinner-color="primary"
-            style="object-fit: contain"
-            :ratio="16 / 9"
-            class="q-mb-xl"
-            @load="initializeCanvas"
+          <ImageWithBoundingBoxes
+            :imageUrl="frame.imageUrl"
+            :boundingBoxes="frame.boundingBoxes"
+            :hideBbox="hideBbox"
           />
         </q-carousel-slide>
-
         <template v-slot:control>
           <q-carousel-control
             position="bottom-left"
             :offset="[0, 0]"
             class="text-white rounded-borders carousel-control row justify-between items-center"
           >
-          <div class="fit row q-pl-md" style="max-width:200px ;">
-            <q-btn
+            <div class="fit row q-pl-md" style="max-width:200px ;">
+              <q-btn
                 push
                 dense
                 size="md"
@@ -127,7 +112,7 @@
                 @click="$refs.carousel.previous()"
               />
               <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
-                {{ slide }}/{{ frames.length }}
+                {{ slide }}/{{ newFrames.length }}
               </div>
               <q-btn
                 push
@@ -138,16 +123,15 @@
                 @click="$refs.carousel.next()"
               />
             </div>
-
             <div class="fit row q-px-lg" style="max-width: fit-content;">
               <q-btn
-              dense
-              text-color="white"
-              no-caps
-              :label="hideBbox ? 'Ocultar Bbox' : 'Mostrar Bbox'"
-              :icon="hideBbox ? 'visibility_off' : 'visibility'"
-              @click="hideBbox = !hideBbox"
-            />
+                dense
+                text-color="white"
+                no-caps
+                :label="hideBbox ? 'Mostrar Bbox' : 'Ocultar Bbox'"
+                :icon="hideBbox ? 'visibility' : 'visibility_off'"
+                @click="toggleBbox"
+              />
               <q-btn
                 push
                 round
@@ -165,29 +149,69 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, computed } from "vue";
+import ImageWithBoundingBoxes from './ImageWithBoundingBoxes.vue';
 
 export default defineComponent({
   name: "CarouselImages",
+  components: {
+    ImageWithBoundingBoxes
+  },
 
-  props: ["frames"],
+  props: {
+    frames: {
+      type: Array,
+      default: () => []
+    },
+    inferenceDetectionClassification: {
+      type: Array,
+      default: () => []
+    }
+  },
 
   setup(props) {
     const slide = ref(1);
     const fullscreen = ref(false);
-    const newFrames = ref(props.frames);
     const hideBbox = ref(true);
+    const carouselHeight = ref('500px');
 
-    const getFullImageUrl = (path) => {
-     return  hideBbox.value ? path.imageUrl : path.imageWithBoundingboxesUrl;
+    const newFrames = computed(() => {
+      if (!props.frames || !props.inferenceDetectionClassification) {
+        return [];
+      }
+      
+      return props.frames.map(frame => {
+        const frameInferences = props.inferenceDetectionClassification.filter(
+          inference => inference.frame.id === frame.id
+        );
+
+        const boundingBoxes = frameInferences.flatMap(inference => 
+          inference.boundingBoxes.map(box => ({
+            ...box,
+            label: inference.labels[0]?.name || '',
+            confidence: inference.confidence
+
+          }))
+        );
+
+        return {
+          ...frame,
+          boundingBoxes
+        };
+      });
+    });
+
+    const toggleBbox = () => {
+      hideBbox.value = !hideBbox.value;
     };
 
     return {
       slide,
       fullscreen,
       newFrames,
-      getFullImageUrl,
       hideBbox,
+      carouselHeight,
+      toggleBbox
     };
   },
 });
@@ -195,9 +219,22 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .carousel-control {
-  background: #000000b3;
-  width: 100%;
+  z-index: 1000;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  padding: 10px;
 }
+
+.carousel_slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+}
+
 .q-img.q-img--menu {
   margin-bottom: 20px;
 }
@@ -213,3 +250,4 @@ export default defineComponent({
   background-color: #363636 !important;
 }
 </style>
+
