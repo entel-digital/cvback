@@ -16,5 +16,5 @@ class MediaGoogleCloudStorage(GoogleCloudStorage):
 
     def __init__(self, *args, **kwargs):
         kwargs["bucket_name"] = getattr(settings, "PRIVATE_GS_BUCKET_NAME")
-        kwargs["bucket_name"] = getattr(settings, "GS_EXPIRATION")
+        kwargs["expiration"] = getattr(settings, "GS_EXPIRATION")
         super(MediaGoogleCloudStorage, self).__init__(*args, **kwargs)

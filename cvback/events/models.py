@@ -112,7 +112,7 @@ class KeyFrame(models.Model):
 class Video(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
-    video = models.FileField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True, storage=MediaGoogleCloudStorage)
     cameras = models.ManyToManyField(Camera)
 
 
