@@ -3,7 +3,7 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
-
+from datetime import timedelta
 import environ
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -175,13 +175,13 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-#STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATIC_ROOT = os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
+# STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'web/static')  # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-#STATICFILES_DIRS = [str(APPS_DIR / "static")]
+# STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
     os.path.join(APPS_DIR, 'static')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -193,11 +193,11 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-#MEDIA_ROOT = str(APPS_DIR / "media")
-
+# MEDIA_ROOT = str(APPS_DIR / "media")
 
 
 GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+PRIVATE_GS_BUCKET_NAME = env("PRIVATE_GS_BUCKET_NAME", default=None)
 if GS_BUCKET_NAME:
     # Collectfast
     # ------------------------------------------------------------------------------
@@ -206,6 +206,7 @@ if GS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
+    GS_EXPIRATION = timedelta(seconds=3600)
     GS_DEFAULT_ACL = "publicRead"
     MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
 
@@ -214,7 +215,7 @@ else:
     STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))  # noqa: F405
     MEDIA_URL = ""
     MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL.replace("/", ""))  # noqa: F405
-    
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 
 TIME_ZONE = 'America/Santiago'
@@ -246,7 +247,6 @@ TEMPLATES = [
         },
     }
 ]
-
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer

@@ -93,8 +93,6 @@ STATIC_URL = "/static/"
 # MEDIA_URL = "/media/"
 DEBUG = True
 
-
-
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email

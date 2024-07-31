@@ -128,7 +128,10 @@
                     </q-list>
                   </div>
                   <div class="col-8">
-                    <CarouselImages :frames="props.row.frames" />
+                    <CarouselImages 
+                      :frames="props.row.frames" 
+                      :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
+                    />
                   </div>
                 </div>
               </q-td>

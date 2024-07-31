@@ -5,6 +5,8 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import URLValidator, FileExtensionValidator, RegexValidator
+from cvback.utils.storages import MediaGoogleCloudStorage
+
 # from django.conf import settings
 
 
@@ -87,8 +89,9 @@ class Frame(models.Model):
     informed_date = models.DateTimeField("date informed", default=timezone.now)
 
     cameras = models.ManyToManyField(Camera)
-    image = models.ImageField(upload_to='frames/', null=True, blank=True)
-    image_with_boundingboxes = models.ImageField(upload_to='frames/', null=True, blank=True)
+    image = models.ImageField(upload_to='frames/', null=True, blank=True, storage=MediaGoogleCloudStorage)
+    image_with_boundingboxes = models.ImageField(upload_to='frames/', null=True, blank=True,
+                                                 storage=MediaGoogleCloudStorage)
 
     def get_image_url(self):
         if self.image:
@@ -109,7 +112,7 @@ class KeyFrame(models.Model):
 class Video(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
-    video = models.FileField(null=True, blank=True)
+    video = models.FileField(null=True, blank=True, storage=MediaGoogleCloudStorage)
     cameras = models.ManyToManyField(Camera)
 
 
