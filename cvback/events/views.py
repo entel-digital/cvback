@@ -50,7 +50,6 @@ class FrameApiView(BaseListCreateAPIView):
     serializer_class = FrameSerializer
 
     def create(self, request, *args, **kwargs):
-        print("CREATE")
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             self.perform_create(serializer)
@@ -59,11 +58,8 @@ class FrameApiView(BaseListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        print("PERFORM CREATE")
         image = self.request.FILES.get('image')
         image_with_boundingboxes = self.request.FILES.get('image_with_boundingboxes')
-        print(image)
-        print(image_with_boundingboxes)
         serializer.save(image=image, image_with_boundingboxes=image_with_boundingboxes)
 
 
