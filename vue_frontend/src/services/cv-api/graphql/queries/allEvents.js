@@ -3,50 +3,80 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
   filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
     filtered
     events {
-      addedDate
-      confidence
       id
+      addedDate
       informedDate
+      confidence
       eventLabel {
-        colorGroup
         id
         name
+        colorGroup
       }
       eventType {
-        addedDate
         id
         name
+        addedDate
       }
       frames {
-        imageUrl
         id
+        imageUrl
         imageWithBoundingboxesUrl
       }
-      inferenceDetectionClassification {
-        boundingBoxes {
-          bottomRight
-          topLeft
-          id
-        }
-      }
-      labelsMissing {
-        colorGroup
-        id
-        name
-      }
-      labelsDetected {
-        name
-        id
-        colorGroup
-      }
       keyFrames {
+        id
+        name
         frames {
           id
-          imageWithBoundingboxesUrl
           imageUrl
+          imageWithBoundingboxesUrl
         }
+      }
+      labelsDetected {
         id
         name
+        colorGroup
+      }
+      labelsMissing {
+        id
+        name
+        colorGroup
+      }
+      inferenceDetectionClassification {
+        id
+        confidence
+        frame {
+          id
+          imageUrl
+        }
+        labels {
+          id
+          name
+        }
+        boundingBoxes {
+          id
+          topLeft
+          bottomRight
+        }
+      }
+      inferenceDetectionClassificationTracker {
+        id
+        confidence
+        trackingIds
+        labels {
+          id
+          name
+        }
+        boundingBoxes {
+          id
+          topLeft
+          bottomRight
+        }
+      }
+      inferenceOcr {
+        id
+        name
+        value
+        confidence
       }
     }
     typesSummary
@@ -54,6 +84,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
     labelsSummary
     labelTextFilter
     queryTotalNumber
-}
+  }
 }
 `
