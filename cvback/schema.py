@@ -103,11 +103,7 @@ class Query(graphene.ObjectType):
         if date_greater_than_equal:
             filtered = True
             filtered_by.append("date>=")
-            print('QS1')
-            print(qs)
             qs = qs.filter(informed_date__gte=date_greater_than_equal)
-            print(qs)
-            print('QS2')
 
         event_labels = Event.event_label.get_queryset().distinct()
         total = qs.count()
