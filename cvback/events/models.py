@@ -90,8 +90,7 @@ class Frame(models.Model):
 
     cameras = models.ManyToManyField(Camera)
     image = models.ImageField(upload_to='frames/', null=True, blank=True, storage=MediaGoogleCloudStorage)
-    image_with_boundingboxes = models.ImageField(upload_to='frames/', null=True, blank=True,
-                                                 storage=MediaGoogleCloudStorage)
+
 
     def get_image_url(self):
         if self.image:
@@ -112,7 +111,7 @@ class KeyFrame(models.Model):
 class Video(models.Model):
     added_date = models.DateTimeField("date created", default=timezone.now)
     informed_date = models.DateTimeField("date informed", default=timezone.now)
-    video = models.FileField(null=True, blank=True, storage=MediaGoogleCloudStorage)
+    video = models.FileField(upload_to='videos/',null=True, blank=True, storage=MediaGoogleCloudStorage)
     cameras = models.ManyToManyField(Camera)
 
 

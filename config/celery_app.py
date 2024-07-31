@@ -3,7 +3,15 @@ import os
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+if (os.getenv('PLATFORM_APPLICATION_NAME') is None):
+    if (os.getenv('CVBACK_PRODUCTION') == 'True'):
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
+    else:
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
+else:
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.platform")
+
+#os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
 
 app = Celery("cvback")
 
