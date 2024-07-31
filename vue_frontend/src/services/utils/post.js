@@ -1,34 +1,31 @@
-import { api } from "src/boot/axios";
-import { getToken } from "src/services/utils/getToken";
+import { api } from '@/services/utils/axios'
 
-export const Post = async (path, body) => {
+export const Post = async (body) => {
   try {
-    // const url = `${process.env.CV_API}/${path}/graphql`;
-    const url = `${window.location.origin}/${path}/graphql/`;
+    const url = `events/graphql/`
 
     const { data, status } = await api.post(url, JSON.stringify(body), {
-      // mode: "cors",
       headers: {
-        "Content-Type": "application/json",
-      },
-    });
+        'Content-Type': 'application/json'
+      }
+    })
     if (Array.isArray(data.errors) && data.errors.length > 0) {
-      const [err] = data.errors;
-      const { message } = err;
-      throw new Error(`invalid error message=${message}`);
+      const [err] = data.errors
+      const { message } = err
+      throw new Error(`invalid error message=${message}`)
     }
 
     if (data.data == null) {
-      throw new Error("invalid null data response");
+      throw new Error('invalid null data response')
     }
 
     if (status !== 200) {
-      throw new Error(`invalid request status=${status}`);
+      throw new Error(`invalid request status=${status}`)
     }
 
-    return data;
+    return data
   } catch (err) {
-    console.log("HERE IN ERROR POST", err);
-    throw err;
+    console.log('HERE IN ERROR POST', err)
+    throw err
   }
-};
+}

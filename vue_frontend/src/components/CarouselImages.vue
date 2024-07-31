@@ -34,8 +34,9 @@
           position="bottom-left"
           :offset="[0, 0]"
           class="text-white rounded-borders carousel-control row justify-between items-center"
+          style="height: 55px;"
         >
-          <div class="row">
+          <div class="fit row q-pl-md" style="max-width:200px ;">
             <q-btn
               push
               dense
@@ -44,7 +45,7 @@
               icon="arrow_left"
               @click="$refs.carousel.previous()"
             />
-            <div class="q-px-sm q-pt-xs font-18-22 text-bold">
+            <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
               {{ slide }}/{{ frames.length || 0 }}
             </div>
             <q-btn
@@ -57,15 +58,16 @@
             />
           </div>
 
-          <div class="row q-px-md">
+          <div class="fit row q-px-lg" style="max-width: fit-content;">
             <q-btn
-              push
-              round
               dense
               text-color="white"
+              no-caps
+              :label="hideBbox ? 'Ocultar Bbox' : 'Mostrar Bbox'"
               :icon="hideBbox ? 'visibility_off' : 'visibility'"
               @click="hideBbox = !hideBbox"
             />
+
             <q-btn
               push
               round
@@ -115,8 +117,8 @@
             :offset="[0, 0]"
             class="text-white rounded-borders carousel-control row justify-between items-center"
           >
-            <div class="row">
-              <q-btn
+          <div class="fit row q-pl-md" style="max-width:200px ;">
+            <q-btn
                 push
                 dense
                 size="md"
@@ -124,7 +126,7 @@
                 icon="arrow_left"
                 @click="$refs.carousel.previous()"
               />
-              <div class="q-px-sm q-pt-xs font-18-22 text-bold">
+              <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
                 {{ slide }}/{{ frames.length }}
               </div>
               <q-btn
@@ -137,15 +139,15 @@
               />
             </div>
 
-            <div class="row q-px-md">
+            <div class="fit row q-px-lg" style="max-width: fit-content;">
               <q-btn
-                push
-                round
-                dense
-                text-color="white"
-                :icon="hideBbox ? 'visibility_off' : 'visibility'"
-                @click="hideBbox = !hideBbox"
-              />
+              dense
+              text-color="white"
+              no-caps
+              :label="hideBbox ? 'Ocultar Bbox' : 'Mostrar Bbox'"
+              :icon="hideBbox ? 'visibility_off' : 'visibility'"
+              @click="hideBbox = !hideBbox"
+            />
               <q-btn
                 push
                 round

@@ -1,43 +1,59 @@
 export default `
-query paginatedEvents(first: 10, skip: 10) {
-    edges {
-      node {
-        eventType {
-          id
-          name
-        }
-        eventLabel {
-          id
-          name
-        }
+query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
+  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
+    filtered
+    events {
+      addedDate
+      confidence
+      id
+      informedDate
+      eventLabel {
+        colorGroup
         id
-        informedDate
+        name
+      }
+      eventType {
         addedDate
-        labelsDetected {
-          colorGroup
+        id
+        name
+      }
+      frames {
+        imageUrl
+        id
+        imageWithBoundingboxesUrl
+      }
+      inferenceDetectionClassification {
+        boundingBoxes {
+          bottomRight
+          topLeft
           id
-          name
-        }
-        labelsMissing {
-          colorGroup
-          id
-          name
-        }
-        keyInferenceDetectionClassification {
-          name
-          id
-        }
-        keyInferenceOcr {
-          id
-          name
-        }
-        frames {
-          id
-          imageUrl
-          imageWithBoundingboxesUrl
         }
       }
+      labelsMissing {
+        colorGroup
+        id
+        name
+      }
+      labelsDetected {
+        name
+        id
+        colorGroup
+      }
+      keyFrames {
+        frames {
+          id
+          imageWithBoundingboxesUrl
+          imageUrl
+        }
+        id
+        name
+      }
     }
-  }
+    typesSummary
+    globalTotalNumber
+    labelsSummary
+    labelTextFilter
+    queryTotalNumber
 }
-`;
+}
+`

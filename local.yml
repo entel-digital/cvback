@@ -91,21 +91,18 @@ services:
       - "9000:9000"
     command: /start-docs
 
-  node:
+  vite:
     build:
       context: .
-      dockerfile: ./compose/local/node/Dockerfile
-    image: cvback_local_node
-    container_name: cvback_local_node
+      dockerfile: ./compose/local/vite/Dockerfile
+    image: cvback_local_vite
+    container_name: vcback_local_vite
     depends_on:
       - django
     volumes:
-      - ./vue_frontend:/app:z
-      - ./cvback/static:/static:z
-      # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
-      - /app/node_modules
-    command: /bin/sh -c "npm i && quasar dev"
+      - .:/app:z
+      - /app/vue_frontend/node_modules
+    command: vite dev
     ports:
-      - "3000:3000"
-      # Expose browsersync UI: https://www.browsersync.io/docs/options/#option-ui
-      - "3001:3001"
+      - '5173:5173'
+

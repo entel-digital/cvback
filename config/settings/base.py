@@ -3,7 +3,6 @@ Base settings to build other settings files upon.
 """
 from pathlib import Path
 import os
-# from datetime import timedelta
 
 import environ
 
@@ -50,8 +49,6 @@ LOCALE_PATHS = [str(BASE_DIR / "locale")]
 
 # ENCRYPTION SETTINGS
 # ------------------------------------------------------------------------------
-# SECRET_KEY=env("DJANGO_ENCRYPTED_FIELD_KEY"),
-# #default="xHgRku6SciKTru96mJHnLMljBOxI99Ip2kNhmkZwrsoNDZ8exR7rUxM0wcYwDYo3")
 DJANGO_ENCRYPTED_FIELD_KEY = bytes(os.environ.get('DJANGO_ENCRYPTED_FIELD_KEY', ''), "utf-8")
 # DATABASES
 # ------------------------------------------------------------------------------
@@ -100,7 +97,6 @@ THIRD_PARTY_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
     "rest_framework",
     "django_jsonform",
     "drf_spectacular",
@@ -109,7 +105,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_api_key",
     "django_celery_beat",
     "phonenumber_field",
-    # "django_better_admin_arrayfield",
+    "django_vue_utilities",
 ]
 
 LOCAL_APPS = [
@@ -142,7 +138,7 @@ LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
 LOGIN_URL = "account_login"
 
-HEADLESS_ONLY = True
+HEADLESS_ONLY = False
 # PASSWORDS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
@@ -179,13 +175,13 @@ MIDDLEWARE = [
 # STATIC
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
-# STATIC_ROOT = str(BASE_DIR / "staticfiles")
-STATIC_ROOT = os.path.join(BASE_DIR, 'web/static')  # Basic configuration when using manage.py collectstatic
+#STATIC_ROOT = str(BASE_DIR / "staticfiles")
+STATIC_ROOT = os.path.join(BASE_DIR, 'web/static') # Basic configuration when using manage.py collectstatic
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-# STATICFILES_DIRS = [str(APPS_DIR / "static")]
+#STATICFILES_DIRS = [str(APPS_DIR / "static")]
 STATICFILES_DIRS = [
     os.path.join(APPS_DIR, 'static')]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -197,11 +193,30 @@ STATICFILES_FINDERS = [
 # MEDIA
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
-# MEDIA_ROOT = str(APPS_DIR / "media")
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#MEDIA_ROOT = str(APPS_DIR / "media")
 
+
+
+GS_BUCKET_NAME = env("GS_BUCKET_NAME", default=None)
+if GS_BUCKET_NAME:
+    # Collectfast
+    # ------------------------------------------------------------------------------
+    # https://github.com/antonagestam/collectfast#installation
+    INSTALLED_APPS = ["collectfast"] + INSTALLED_APPS  # noqa: F405
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+    COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
+    GS_DEFAULT_ACL = "publicRead"
+    MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+
+else:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+    STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL.replace("/", ""))  # noqa: F405
+    MEDIA_URL = ""
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL.replace("/", ""))  # noqa: F405
+    
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
+
 TIME_ZONE = 'America/Santiago'
 
 # TEMPLATES
@@ -231,6 +246,7 @@ TEMPLATES = [
         },
     }
 ]
+
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#form-renderer
