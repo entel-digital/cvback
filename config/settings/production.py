@@ -91,7 +91,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 # MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/"
 STATIC_URL = "/static/"
 # MEDIA_URL = "/media/"
-DEBUG = True
+DEBUG = False
 
 
 
