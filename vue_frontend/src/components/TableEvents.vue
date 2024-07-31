@@ -3,14 +3,13 @@
     <div class="fit row no-wrap justify-between items-start content-start q-py-md">
       <div class="gt-sm fit col-12">
         <q-table
-          class="fit my-sticky-dynamic fs-15-18 "
+          class="fit my-sticky-dynamic fs-15-18"
           flat
           bordered
-          :rows="rows"
+          :rows="displayRows"
           :columns="columns"
           row-key="id"
           :loading="loading"
-          v-model:pagination="eventStore.pagination"
           v-model:expanded="expanded"
           header-class="text-dark"
           hide-pagination
@@ -28,7 +27,7 @@
                 </span>
               </q-td>
               <q-td key="date" :props="props">
-                <span class="barlow-semibold fs-15-18 ">
+                <span class="barlow-semibold fs-15-18">
                   {{ formatDateEvent(props.row.addedDate).date }}
                 </span>
 
@@ -155,7 +154,7 @@
 
     <div class="lt-md">
       <q-list bordered separator class="rounded-borders">
-        <q-expansion-item group="events" bordered v-for="row in rows" :key="row.id">
+        <q-expansion-item group="events" bordered v-for="row in displayRows" :key="row.id">
           <template v-slot:header>
             <q-item-section class="column">
               <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
@@ -184,16 +183,16 @@
               <q-item-label
                 >Fecha creado:
                 <span class="barlow-bold">
-                  {{ formatDateEvent(props.row.addedDate).date }}
+                  {{ formatDateEvent(row.addedDate).date }}
                 </span>
-                <span class="barlow"> | {{ formatDateEvent(props.row.addedDate).time }} </span>
+                <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
               <q-item-label
                 >Fecha creado:
                 <span class="barlow-bold">
-                  {{ formatDateEvent(props.row.addedDate).date }}
+                  {{ formatDateEvent(row.addedDate).date }}
                 </span>
-                <span class="barlow"> | {{ formatDateEvent(props.row.addedDate).time }} </span>
+                <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
             </q-card-section>
             <q-card-section>
@@ -209,7 +208,7 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, nextTick } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { types } from '@/utils/colors'
 import { useEventsStore } from '@/stores/events'
 
@@ -223,7 +222,6 @@ export default defineComponent({
     CarouselImages
   },
   setup(props) {
-    // const nextPage = ref(2)
     const rowSelected = ref(null)
     const slide = ref(1)
     const fullscreen = ref(false)
@@ -231,8 +229,15 @@ export default defineComponent({
     const eventStore = useEventsStore()
 
     const pagesNumber = computed(() => {
-      return Math.ceil(props.rows.length / eventStore.pagination.rowsPerPage)
+      return eventStore.summaryEvents?.totalEvents
+        ? Math.ceil(eventStore.summaryEvents.totalEvents / eventStore.pagination.rowsPerPage)
+        : 5
     })
+    const displayRows = computed(() => {
+      return props.rows
+        ? props.rows
+        : []
+    });
 
     const getRowSelected = (row, column, event) => {
       if (rowSelected.value?.id === row.id) {
@@ -291,8 +296,7 @@ export default defineComponent({
       eventStore.pagination.page = value
       eventStore.pagination.offset =
         eventStore.pagination.page * eventStore.pagination.rowsPerPage -
-        eventStore.summaryEvents.totalEvents5
-      await useEventsStore().FETCH_EVENTS(eventStore.pagination)
+        eventStore.pagination.rowsPerPage
     }
 
     return {
@@ -308,7 +312,8 @@ export default defineComponent({
       toPercentage,
       findColor,
       eventStore,
-      updatePagination
+      updatePagination,
+      displayRows
     }
   }
 })
@@ -356,5 +361,4 @@ tbody tr:nth-child(odd) // Add this selector
 
   :deep(div.q-pagination__middle.row.justify-center)
   max-width: fit-content !important
-
 </style>

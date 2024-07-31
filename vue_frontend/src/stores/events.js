@@ -4,8 +4,7 @@ import {
   getAllEventsByDate,
   getAllEventsByDateAndLabel,
   getAllEventsById,
-  getAllEventsByLabel,
-  getSummary
+  getAllEventsByLabel
 } from '@/services/cv-api/modules/events/index.js'
 
 const parseData = (data) => {
@@ -25,59 +24,57 @@ export const useEventsStore = defineStore('events', {
       descending: false,
       page: 1,
       offset: 0,
-      rowsPerPage: 50
+      rowsPerPage: 2
     },
     funtionToUse: 'allevents',
-    labelTypes: null
+    labelTypes: null,
+    loadingEvents: false
   }),
   actions: {
-    async FETCH_SUMMARY() {
+    async FETCH_EVENTS() {
+      this.loadingEvents = true
+      this.allEvents = []
+
       try {
-        const data = await getSummary()
+        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage)
+
+        data.filteredAndPaginatedEvents.events.sort((a, b) => {
+          return new Date(b.addedDate) - new Date(a.addedDate)
+        })
+
         this.summaryEvents = {
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
           totalQueryEvents: data.filteredAndPaginatedEvents.queryTotalNumber,
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        return data
+
+        console.log('allEvents FETCH_EVENTS', this.allEvents)
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+        this.allEvents = data.filteredAndPaginatedEvents.events
+        this.loadingEvents = false
+        return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_SUMMARY', error)
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE', error)
         this.allEvents = []
+        this.loadingEvents = false
       }
     },
-    async FETCH_EVENTS() {
+    async FETCH_EVENTS_BY_DATE() {
+      this.loadingEvents = true
+      this.allEvents = []
+
       try {
-        let data = []
-        console.log("this.functionToUse stire", this.funtionToUse);
-        if (this.funtionToUse === 'bydateandlabel') {
-          console.log('entro al bydateandlabel')
-          data = await getAllEventsByDateAndLabel(
-            this.dateSelected.from,
-            this.dateSelected.to,
-            this.labelsTypeSelected
-          )
-        }
-        if (this.funtionToUse === 'bydate') {
-          console.log('entro al bydate')
+        const data = await getAllEventsByDate(
+          this.pagination.offset,
+          this.pagination.rowsPerPage,
+          this.dateSelected.from,
+          this.dateSelected.to
+        )
 
-          data = await getAllEventsByDate(this.dateSelected.from, this.dateSelected.to)
-        }
-        if (this.funtionToUse === 'bylabel') {
-          console.log('entro al bylabel')
-
-          data = await getAllEventsByLabel(this.labelsTypeSelected)
-        }
-        if (this.funtionToUse === 'allevents') {
-          console.log('entro al allevents')
-
-          data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage)
-        }
-
-        if (data.filteredAndPaginatedEvents) {
-          data.filteredAndPaginatedEvents.events.sort((a, b) => {
-            return new Date(b.addedDate) - new Date(a.addedDate)
-          })
+        data.filteredAndPaginatedEvents.events.sort((a, b) => {
+          return new Date(b.addedDate) - new Date(a.addedDate)
+        })
 
         this.summaryEvents = {
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
@@ -86,12 +83,81 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
         this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
-      }
-      this.allEvents = data.filteredAndPaginatedEvents.events
-console.log("allEvents store", this.allEvents);
-        return this.allEvents
+
+
+        console.log('allEvents FETCH_EVENTS_BY_DATE', this.allEvents)
+        this.allEvents = data.filteredAndPaginatedEvents.events
+        this.loadingEvents = false
+        return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_EVENTS', error)
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE', error)
+        this.allEvents = []
+        this.loadingEvents = false
+      }
+    },
+    async FETCH_EVENTS_BY_LABEL() {
+      this.allEvents = []
+      this.loadingEvents = true
+      try {
+        const data = await getAllEventsByLabel(
+          this.pagination.offset,
+          this.pagination.rowsPerPage,
+          this.labelsTypeSelected
+        )
+
+        data.filteredAndPaginatedEvents.events.sort((a, b) => {
+          return new Date(b.addedDate) - new Date(a.addedDate)
+        })
+
+        this.summaryEvents = {
+          totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
+          totalQueryEvents: data.filteredAndPaginatedEvents.queryTotalNumber,
+          labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
+          typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
+        }
+
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+
+        console.log('allEvents FETCH_EVENTS_BY_LABEL', this.allEvents)
+        this.allEvents = data.filteredAndPaginatedEvents.events
+        this.loadingEvents = false
+        return
+      } catch (error) {
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_LABEL', error)
+        this.allEvents = []
+      }
+    },
+    async FETCH_EVENTS_BY_DATE_BY_LABEL() {
+      this.allEvents = []
+      this.loadingEvents = true
+      try {
+        const data = await getAllEventsByDateAndLabel(
+          this.pagination.offset,
+          this.pagination.rowsPerPage,
+          this.dateSelected.from,
+          this.dateSelected.to,
+          this.labelsTypeSelected
+        )
+
+        data.filteredAndPaginatedEvents.events.sort((a, b) => {
+          return new Date(b.addedDate) - new Date(a.addedDate)
+        })
+
+        this.summaryEvents = {
+          totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
+          totalQueryEvents: data.filteredAndPaginatedEvents.queryTotalNumber,
+          labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
+          typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
+        }
+        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary))
+
+        console.log('allEvents FETCH_EVENTS_BY_DATE_BY_LABEL', this.allEvents)
+        this.allEvents = data.filteredAndPaginatedEvents.events
+        this.loadingEvents = false
+
+        return
+      } catch (error) {
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE_BY_LABEL', error)
         this.allEvents = []
       }
     }

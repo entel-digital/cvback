@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent , ref} from 'vue'
 import { useEventsStore } from '@/stores/events'
 
 export default defineComponent({
@@ -96,7 +96,7 @@ export default defineComponent({
   setup(props) {
     const number = props.numberToShow
     const title = props.titleToShow
-    const eventStore = useEventsStore()
+    const eventStore = ref(useEventsStore())
 
     const parseData = (data) => {
       const replaces = data.replace(/\\\"/g, '"').slice(1, -1)

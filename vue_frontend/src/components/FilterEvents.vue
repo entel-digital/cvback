@@ -180,32 +180,41 @@ export default defineComponent({
     }
 
     const filterEvents = () => {
-      const dateAsObject =
-      dateToFilter.value ?
-        typeof dateToFilter.value === 'object'
+      if (typeof dateToFilter.value === 'object') {
+        timeToFilter.value = { label: '00:00', value: '00:00' }
+      }
+      const dateAsObject = dateToFilter.value
+        ? typeof dateToFilter.value === 'object'
           ? {
-              from:
-                date.formatDate(dateToFilter.value.from, 'YYYY-MM-DD') +
+                from:
+                date.formatDate((dateToFilter.value.from), 'YYYY-MM-DD') +
                 'T' +
                 timeToFilter.value.value +
                 ':00' +
                 getTimeZoneOffset(),
               to:
-                date.formatDate(dateToFilter.value.to, 'YYYY-MM-DD') +
-                'T23:59:59'+
+                date.formatDate((dateToFilter.value.to), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value.replace(':00', ':59') +
+                ':59' +
                 getTimeZoneOffset()
             }
           : {
               from:
-                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
-                'T00:00:00' +
+                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value +
+                ':00' +
                 getTimeZoneOffset(),
               to:
-                date.formatDate(dateToFilter.value, 'YYYY-MM-DD') +
-                'T23:59:59' +
+                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
+                'T' +
+                timeToFilter.value.value.replace(':00', ':59') +
+                ':59' +
                 getTimeZoneOffset()
             }
-          : null
+        : null
+        console.log("dateobject", dateAsObject);
       colorFilter.value = 'border-box-filter'
       iconFilter.value = 'filter_alt'
 

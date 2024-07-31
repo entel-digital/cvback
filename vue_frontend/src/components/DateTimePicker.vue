@@ -52,7 +52,7 @@ export default defineComponent({
     const hourToFilter = ref({ label: '00', value: '00:00' })
     const minToFilter = ref({ label: '00', value: 0 })
 
-    const eventStore = useEventsStore()
+    const eventStore = ref(useEventsStore())
 
     const defaultYearMoth = computed(() => {
       return date.formatDate(new Date(), 'YYYY/MM')
