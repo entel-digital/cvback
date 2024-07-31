@@ -88,7 +88,6 @@ class Frame(models.Model):
 
     cameras = models.ManyToManyField(Camera)
     image = models.ImageField(upload_to='frames/', null=True, blank=True)
-    image_with_boundingboxes = models.ImageField(upload_to='frames/', null=True, blank=True)
 
     def get_image_url(self):
         if self.image:
