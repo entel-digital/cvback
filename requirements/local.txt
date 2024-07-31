@@ -3,6 +3,7 @@
 Werkzeug[watchdog]==2.3.7 # https://github.com/pallets/werkzeug
 ipdb==0.13.13  # https://github.com/gotcha/ipdb
 psycopg[c]==3.1.9  # https://github.com/psycopg/psycopg
+watchfiles==0.22.0  # https://github.com/samuelcolvin/watchfiles
 
 # Testing
 # ------------------------------------------------------------------------------
@@ -34,7 +35,10 @@ django-debug-toolbar==4.2.0  # https://github.com/jazzband/django-debug-toolbar
 django-extensions==3.2.3  # https://github.com/django-extensions/django-extensions
 django-coverage-plugin==3.1.0  # https://github.com/nedbat/django_coverage_plugin
 pytest-django==4.5.2  # https://github.com/pytest-dev/pytest-django
-django-encrypted-field==1.0.5
 faker
 python-dotenv
-django-cors-headers
+django-storages[google]==1.14  # https://github.com/jschneier/django-storages
+
+
+#
+Collectfast==2.2.0  # https://github.com/antonagestam/collectfast

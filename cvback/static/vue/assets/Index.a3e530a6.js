@@ -1,0 +1,1 @@
+import{_ as e,d as n,l as t,N as o}from"./index.aca000eb.js";const r=n({name:"SettingsIndex",setup(){return{}}});function a(s,c,p,d,i,_){return t(),o("div",null,"configuracion page")}var u=e(r,[["render",a]]);export{u as default};

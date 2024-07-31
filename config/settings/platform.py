@@ -1,9 +1,9 @@
-import logging
+# import logging
 import sys
-import sentry_sdk
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
-from sentry_sdk.integrations.redis import RedisIntegration
+#  import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
+# from sentry_sdk.integrations.logging import LoggingIntegration
+# from sentry_sdk.integrations.redis import RedisIntegration
 
 import os
 import json
@@ -22,8 +22,9 @@ ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '.platformsh.site']
 
 # This variable should always match the primary database relationship name,
 #   configured in .platform.app.yaml.
-PLATFORMSH_DB_RELATIONSHIP="postgresdatabase"
-PLATFORMSH_REDIS_RELATIONSHIP="redis"
+PLATFORMSH_DB_RELATIONSHIP = "postgresdatabase"
+PLATFORMSH_REDIS_RELATIONSHIP = "redis"
+
 
 # Helper function for decoding base64-encoded JSON variables.
 def decode(variable):
@@ -35,20 +36,21 @@ def decode(variable):
     except json.decoder.JSONDecodeError:
         print('Error decoding JSON, code %d', json.decoder.JSONDecodeError)
 
+
 # Import some Platform.sh settings from the environment.
 if (os.getenv('PLATFORM_APPLICATION_NAME') is not None):
     DEBUG = False
     if (os.getenv('PLATFORM_APP_DIR') is not None):
         STATIC_ROOT = os.path.join(os.getenv('PLATFORM_APP_DIR'), 'static')
-        
-    if (os.getenv('PLATFORM_VARIABLES') is not None):    
+
+    if (os.getenv('PLATFORM_VARIABLES') is not None):
         DJANGO_ENCRYPTED_FIELD_KEY = decode(os.getenv('PLATFORM_VARIABLES'))['DJANGO_ENCRYPTED_FIELD_KEY']
         ADMIN_URL = decode(os.getenv('PLATFORM_VARIABLES'))['ADMIN_URL']
-    
+
     if (os.getenv('PLATFORM_PROJECT_ENTROPY') is not None):
         SECRET_KEY = os.getenv('PLATFORM_PROJECT_ENTROPY')
     # Database service configuration, post-build only.
-    
+
     if (os.getenv('PLATFORM_ENVIRONMENT') is not None):
         platformRelationships = decode(os.getenv('PLATFORM_RELATIONSHIPS'))
         db_settings = platformRelationships[PLATFORMSH_DB_RELATIONSHIP][0]
@@ -109,13 +111,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool("DJANGO_SECURE_CONTENT_TYPE_NOSNIFF", def
 # ------------------------------------------------------------------------------
 # https://django-storages.readthedocs.io/en/latest/#installation
 INSTALLED_APPS += ["storages"]  # noqa: F405
-#GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
-#GS_DEFAULT_ACL = "publicRead"
+# GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
+# GS_DEFAULT_ACL = "publicRead"
 
 # STATIC
 # ------------------------
-#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 STATICFILES_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 COLLECTFAST_STRATEGY = "collectfast.strategies.filesystem.FileSystemStrategy"
@@ -138,12 +140,12 @@ EMAIL_SUBJECT_PREFIX = env(
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
-#ADMIN_URL = env("ADMIN_URL")
+# ADMIN_URL = env("ADMIN_URL")
 
 # Anymail
 # ------------------------------------------------------------------------------
 # https://anymail.readthedocs.io/en/stable/installation/#installing-anymail
-#INSTALLED_APPS += ["anymail"]  # noqa: F405
+# INSTALLED_APPS += ["anymail"]  # noqa: F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 # https://anymail.readthedocs.io/en/stable/installation/#anymail-settings-reference
 # https://anymail.readthedocs.io/en/stable/esps/mailgun/
@@ -199,23 +201,21 @@ LOGGING = {
 
 # Sentry
 # ------------------------------------------------------------------------------
-#SENTRY_DSN = env("SENTRY_DSN")
-#SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
+# SENTRY_DSN = env("SENTRY_DSN")
+# SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
-#sentry_logging = LoggingIntegration(
+# sentry_logging = LoggingIntegration(
 #    level=SENTRY_LOG_LEVEL,  # Capture info and above as breadcrumbs
 #    event_level=logging.ERROR,  # Send errors as events
-#)
-#integrations = [sentry_logging, DjangoIntegration(), RedisIntegration()]
-#sentry_sdk.init(
+# )
+# integrations = [sentry_logging, DjangoIntegration(), RedisIntegration()]
+# sentry_sdk.init(
 #    dsn=SENTRY_DSN,
 #    integrations=integrations,
 #    environment=env("SENTRY_ENVIRONMENT", default="production"),
 #    traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
-#)
+# )
 
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-
-

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "plugins": {
+    "autoprefixer": {}
+    // Other plugins if any
+},
+  "exclude": ["node_modules", "dist"]
+}

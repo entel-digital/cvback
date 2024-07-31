@@ -5,7 +5,7 @@ from pathlib import Path
 
 if __name__ == "__main__":
     if (os.getenv('PLATFORM_APPLICATION_NAME') is None):
-        if(os.getenv('CVBACK_PRODUCTION') == 'True'):
+        if (os.getenv('CVBACK_PRODUCTION') == 'True'):
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
         else:
             os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.local")
