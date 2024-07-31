@@ -5,7 +5,7 @@ from datetime import datetime
 
 class TelegramSender():
 
-    token = "1" #  settings.TELEGRAM_BOT_TOKEN
+    token = settings.TELEGRAM_BOT_TOKEN
 
     def send_telegram(self, chat_id, event_data):
 
