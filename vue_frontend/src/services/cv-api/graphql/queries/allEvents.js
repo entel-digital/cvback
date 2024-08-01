@@ -31,14 +31,14 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
       }
       videos {
         id
-        video
+        videoUrl
       }
       keyVideos {
         id
         name
         videos {
           id
-          video
+          videoUrl
         }
       }
       labelsDetected {
