@@ -59,8 +59,7 @@ class FrameApiView(BaseListCreateAPIView):
 
     def perform_create(self, serializer):
         image = self.request.FILES.get('image')
-        image_with_boundingboxes = self.request.FILES.get('image_with_boundingboxes')
-        serializer.save(image=image, image_with_boundingboxes=image_with_boundingboxes)
+        serializer.save(image=image)
 
 
 class KeyFrameApiView(BaseListCreateAPIView):

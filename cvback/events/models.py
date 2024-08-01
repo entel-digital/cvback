@@ -97,11 +97,6 @@ class Frame(models.Model):
             return self.image.url
         return None
 
-    def get_image_with_boundingboxes_url(self):
-        if self.image_with_boundingboxes:
-            return self.image_with_boundingboxes.url
-        return None
-
 
 class KeyFrame(models.Model):
     name = models.CharField()

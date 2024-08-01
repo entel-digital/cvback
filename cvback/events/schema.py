@@ -29,16 +29,13 @@ class AlgorithmType(DjangoObjectType):
 class FrameType(DjangoObjectType):
     class Meta:
         model = Frame
-        fields = ("id", "image", "image_url", "image_with_boundingboxes", "image_with_boundingboxes_url")
+        fields = ("id", "image", "image_url")
 
     image_url = graphene.String()
-    image_with_boundingboxes_url = graphene.String()
 
     def resolve_image_url(self, info):
         return self.get_image_url()
 
-    def resolve_image_with_boundingboxes_url(self, info):
-        return self.get_image_with_boundingboxes_url()
 
 
 class KeyFrameType(DjangoObjectType):
