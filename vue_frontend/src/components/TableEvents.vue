@@ -131,6 +131,7 @@
                     <CarouselImages
                       :frames="props.row.frames"
                       :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
+                      :videos="props.row.videos"
                     />
                   </div>
                 </div>
@@ -276,13 +277,10 @@ export default defineComponent({
     }
     const toggleExpand = (row, event) => {
       event.stopPropagation()
-      this.getRowSelected(row, event)
+      getRowSelected(row, event)
     }
 
     const toPercentage = (value) => {
-      // if ((value * 100).lenght > 4) {
-      //   return Math.round(value * 100)
-      // }
       return value * 100
     }
 

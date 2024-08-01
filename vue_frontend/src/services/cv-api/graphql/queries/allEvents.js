@@ -31,6 +31,20 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
           imageWithBoundingboxesUrl
         }
       }
+      videos {
+        id
+        video
+        addedDate
+        informedDate
+      }
+      keyVideos {
+        id
+        name
+        videos {
+          id
+          video
+        }
+      }
       labelsDetected {
         id
         name
