@@ -56,12 +56,12 @@
           </q-icon>
         </template>
       </q-input>
-
       <q-select
         dense
         outlined
         v-model="labelTypeToFilter"
         :options="optionsLabelTypes"
+        :options-label="opt => opt.key"
         options-dense
         label="Etiqueta"
         class="inputs"

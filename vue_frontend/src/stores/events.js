@@ -49,7 +49,6 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        console.log('allEvents FETCH_EVENTS', this.allEvents)
         this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -85,7 +84,6 @@ export const useEventsStore = defineStore('events', {
         this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
 
-        console.log('allEvents FETCH_EVENTS_BY_DATE', this.allEvents)
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
@@ -118,7 +116,6 @@ export const useEventsStore = defineStore('events', {
 
         this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
-        console.log('allEvents FETCH_EVENTS_BY_LABEL', this.allEvents)
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
@@ -151,7 +148,6 @@ export const useEventsStore = defineStore('events', {
         }
         this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
 
-        console.log('allEvents FETCH_EVENTS_BY_DATE_BY_LABEL', this.allEvents)
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
 

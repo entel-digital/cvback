@@ -1,6 +1,6 @@
 <script setup>
 import { baseStorageUrl } from '@/services/utils/globals.js'
-
+import { useUserStore } from '@/stores/user.js'
 import SingIn from '@/components/SingIn.vue'
 
 
@@ -13,6 +13,10 @@ const logoEntelDigitalWhite = `${baseStorageUrl}/images/entel_digital_blanco.png
 const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
 const styleBg = `background-image: url(${pathImageBg}); background-size: cover; background-repeat: no-repeat; background-position: center;  height: 100vh;
   width: 100%;`
+
+const checkSession = async() => {
+  await useUserStore().GET_SESSION()
+}
 
 </script>
 

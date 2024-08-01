@@ -206,7 +206,11 @@
               </q-item-label>
             </q-card-section>
             <q-card-section>
-              <CarouselImages :frames="row.frames" />
+              <CarouselImages
+                :frames="row.frames"
+                :inferenceDetectionClassification="row.inferenceDetectionClassification"
+                :videos="row.videos"
+              />
             </q-card-section>
           </q-card>
         </q-expansion-item>
@@ -217,8 +221,9 @@
   </div>
 </template>
 
+
 <script>
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch, onMounted } from 'vue'
 import { types } from '@/utils/colors'
 import { useEventsStore } from '@/stores/events'
 
@@ -238,6 +243,32 @@ export default defineComponent({
     const expanded = ref([])
     const eventStore = useEventsStore()
 
+    // Función de utilidad para loggear las props de CarouselImages
+    const logCarouselProps = (row, event = 'update') => {
+      if (row) {
+        console.log(`CarouselImages props ${event}:`, {
+          frames: row.frames?.length ?? 0,
+          inferenceDetectionClassification: row.inferenceDetectionClassification?.length ?? 0,
+          videos: row.videos?.length ?? 0
+        })
+        console.log('Frames:', row.frames)
+        console.log('Inference Detection:', row.inferenceDetectionClassification)
+        console.log('Videos:', row.videos)
+      } else {
+        console.log(`CarouselImages props ${event}: No row selected`)
+      }
+    }
+
+    // Log inicial
+    onMounted(() => {
+      logCarouselProps(rowSelected.value, 'initial')
+    })
+
+    // Observar cambios en rowSelected
+    watch(rowSelected, (newValue, oldValue) => {
+      logCarouselProps(newValue, 'rowSelected changed')
+    })
+
     const pagesNumber = computed(() => {
       const totalToUse =
         eventStore.funtionToUse === 'allevents'
@@ -245,6 +276,7 @@ export default defineComponent({
           : eventStore.summaryEvents?.totalQueryEvents
       return totalToUse ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage) : 1
     })
+
     const displayRows = computed(() => {
       return props.rows ? props.rows : []
     })
@@ -257,6 +289,8 @@ export default defineComponent({
         rowSelected.value = row
         expanded.value = [row.id]
       }
+      // Log después de cambiar rowSelected
+      logCarouselProps(rowSelected.value, 'after getRowSelected')
     }
 
     const formatDateEvent = (date) => {
@@ -280,6 +314,7 @@ export default defineComponent({
         return 'bg-blue-3'
       }
     }
+
     const toggleExpand = (row, event) => {
       event.stopPropagation()
       getRowSelected(row, event)
@@ -293,9 +328,9 @@ export default defineComponent({
       const color = types[value.colorGroup.toLowerCase()]
 
       if (color == '#000000') {
-        return `background-color: ${color}; boder: 2px solid ${color}; color: white`
+        return `background-color: ${color}; border: 2px solid ${color}; color: white`
       } else {
-        return `background-color: ${color}; boder: 2px solid ${color}; `
+        return `background-color: ${color}; border: 2px solid ${color};`
       }
     }
 
@@ -359,13 +394,13 @@ export default defineComponent({
     scroll-margin-top: 48px
     color: #828282
 
-.q-table--horizontal-separator tbody tr > td
+  .q-table--horizontal-separator tbody tr > td
     padding-left: 50px
 
-tbody tr:nth-child(odd) // Add this selector
-  background-color: #FAFAFA // Add your desired color here
+  tbody tr:nth-child(odd) // Add this selector
+    background-color: #FAFAFA // Add your desired color here
 
 
-  :deep(div.q-pagination__middle.row.justify-center)
+:deep(div.q-pagination__middle.row.justify-center)
   max-width: fit-content !important
 </style>
