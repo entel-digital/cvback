@@ -10,17 +10,15 @@ License: MIT
 ## TODO
 
 - Front
-  - scss
-  - event list
   - camera list
+  - LoI / AoI editor
+  - Pass recovery
+  - inte
 - Authentication (native)
-- storage: what we want to do?
-- Alerts (app)
-  - Telegram
-  - Whatsapp
-- Inference computers: add what data?
-  - IP address?
-  - Specs? (GPU, ram, etc)
+  - Social
+  - Active directory?
+- acgi
+- 
 - 
 
 ## Some criteria
