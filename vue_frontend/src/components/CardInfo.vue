@@ -1,94 +1,61 @@
 <template>
-  <div class="fit row q-gutter-md">
-    <!-- <q-card class="card-small">
+  <div class="row wrap justify-center q-gutter-lg">
+    <q-card class="card-small row">
+      <q-card-section class="bg-white text-center">
+        <div class="barlow-bold fs-16-19 text-dark">Total eventos</div>
+
+        <div v-if="!eventStore.summaryEvents">
+          <q-spinner color="primary" size="3em" />
+        </div>
+        <div v-else>
+          <div class="barlow-semibold fs-44-46 q-pa-md text-primary">
+            {{ eventStore.summaryEvents.totalQueryEvents }}
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+
+    <q-card class="card-small row">
       <q-card-section class="bg-white">
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
+
         <div v-if="!eventStore.summaryEvents">
           <q-spinner color="primary" size="3em" />
         </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-primary">
-            {{ eventStore.summaryEvents.totalEvents }}
+        <div v-else class="overflow-y-scroll q-gutter-sm" >
+          <div v-for="label in eventStore.summaryEvents.labelsSummary" :key="label">
+            <q-chip  square outline color="primary">
+              <q-avatar color="primary" text-color="white" class="barlow-bold fs-16-19">{{ label.value }}</q-avatar>
+             <span class="barlow-bold fs-16-19"> {{ label.key }}</span>
+            </q-chip>
           </div>
         </div>
-        <div class="barlow-bold fs-16-19 text-primary">Total eventos</div>
       </q-card-section>
-    </q-card> -->
+    </q-card>
 
-    <q-card class="card-small">
+    <q-card class="card-small row">
       <q-card-section class="bg-white">
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
+
         <div v-if="!eventStore.summaryEvents">
           <q-spinner color="primary" size="3em" />
         </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-primary">
-            {{ eventStore.summaryEvents.totalQueryEvents }}
+        <div v-else class="overflow-y-scroll q-gutter-sm" >
+          <div v-for="label in eventStore.summaryEvents.typesSummary" :key="label">
+            <q-chip  square outline color="primary">
+              <q-avatar color="primary" text-color="white" class="barlow-bold fs-16-19">{{ label.value }}</q-avatar>
+             <span class="barlow-bold fs-16-19"> {{ label.key }}</span>
+            </q-chip>
           </div>
         </div>
-        <div class="barlow-bold fs-16-19 text-primary">Total eventos</div>
       </q-card-section>
     </q-card>
 
-    <q-card class="card-large row">
-      <q-card-section class="bg-white" style="max-width: 150px">
-        <div v-if="!eventStore.summaryEvents">
-          <q-spinner color="primary" size="3em" />
-        </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-positive">
-            {{
-              eventStore.summaryEvents.labelsSummary.total -
-              eventStore.summaryEvents.labelsSummary.no_cumple
-            }}
-          </div>
-
-        </div>
-        <div class="barlow-bold fs-16-19 text-positive">Cumple</div>
-      </q-card-section>
-      <q-card-section class="bg-white" style="max-width: 150px">
-        <div v-if="!eventStore.summaryEvents">
-          <q-spinner color="primary" size="3em" />
-        </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-negative">
-            {{ eventStore.summaryEvents.totalQueryEvents }}
-          </div>
-        </div>
-        <div class="barlow-bold fs-16-19 text-negative">No cumple</div>
-      </q-card-section>
-    </q-card>
-
-    <q-card class="card-large row">
-      <q-card-section class="bg-white" style="max-width: 150px">
-        <div v-if="!eventStore.summaryEvents">
-          <q-spinner color="primary" size="3em" />
-        </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-positive">
-            {{
-              eventStore.summaryEvents.labelsSummary.total -
-              eventStore.summaryEvents.labelsSummary.no_cumple
-            }}
-          </div>
-        </div>
-        <div class="barlow-bold fs-16-19 text-positive">Total Cumple mostrando</div>
-      </q-card-section>
-      <q-card-section class="bg-white" style="max-width: 150px">
-        <div v-if="!eventStore.summaryEvents">
-          <q-spinner color="primary" size="3em" />
-        </div>
-        <div v-else>
-          <div class="barlow-semibold fs-28-34 q-pa-md text-negative">
-            {{ eventStore.summaryEvents.totalQueryEvents }}
-          </div>
-        </div>
-        <div class="barlow-bold fs-16-19 text-negative">Total No cumple mostrando</div>
-      </q-card-section>
-    </q-card>
   </div>
 </template>
 
 <script>
-import { defineComponent , ref} from 'vue'
+import { defineComponent, ref } from 'vue'
 import { useEventsStore } from '@/stores/events'
 
 export default defineComponent({
@@ -116,7 +83,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .card-small {
   width: 100%;
-  max-width: 200px;
+  min-width: 200px;
+  max-width: 350px ;
+  // max-width: fit-content;
 }
 .card-large {
   width: 100%;
