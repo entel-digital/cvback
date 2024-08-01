@@ -25,16 +25,31 @@
                 >
                 </q-date>
                 <q-card-section class="fit row justify-start q-pt-none">
-                  <span class="text-dark barlow-bold">Seleccionar hora:</span>
+                  <div class="fit row">
+
+                  <span class="text-dark barlow-bold">Seleccionar hora inicio:</span>
                   <q-select
                     dense
                     :disable="disableTimeToFilter"
                     outlined
-                    v-model="timeToFilter"
+                    v-model="timeStart"
                     :options="optionsTime"
                     options-dense
                     class="inputs"
                   />
+
+                  <span class="text-dark barlow-bold">Seleccionar hora final:</span>
+                  <q-select
+                    dense
+                    :disable="disableTimeToFilter"
+                    outlined
+                    v-model="timeEnd"
+                    :options="optionsTime"
+                    options-dense
+                    class="inputs"
+                  />
+                </div>
+
                 </q-card-section>
               </q-card>
             </q-popup-proxy>
@@ -48,7 +63,7 @@
         v-model="labelTypeToFilter"
         :options="optionsLabelTypes"
         options-dense
-        label="Label"
+        label="Etiqueta"
         class="inputs"
       />
 
@@ -88,7 +103,9 @@ export default defineComponent({
   setup(props, { emit }) {
     const colorFilter = ref('border-box')
     const iconFilter = ref('filter_alt_off')
-    const timeToFilter = ref({ label: '00:00', value: '00:00' })
+    const timeStart = ref({ label: '00:00', value: '00:00' })
+    const timeEnd = ref({ label: '00:00', value: '00:00' })
+
     const dateToFilter = ref(null)
 
     const labelTypeToFilter = ref(null)
@@ -118,9 +135,9 @@ export default defineComponent({
     const displayDate = computed(() => {
       if (dateToFilter.value) {
         if (typeof dateToFilter.value === 'object') {
-          return `${dateToFilter.value.from} | ${timeToFilter.value.value} - ${dateToFilter.value.to} | ${timeToFilter.value.value}`
+          return `${dateToFilter.value.from} | ${timeStart.value.value} - ${dateToFilter.value.to} | ${timeEnd.value.value}`
         }
-        return `${dateToFilter.value} | ${timeToFilter.value.value}`
+        return `${dateToFilter.value} | ${timeStart.value.value} - ${timeEnd.value.value}`
       }
       return null
     });
@@ -171,7 +188,8 @@ export default defineComponent({
     ]);
 
     const clearFilter = () => {
-      timeToFilter.value = { label: '00:00', value: '00:00' }
+      timeStart.value = { label: '00:00', value: '00:00' }
+      timeEnd.value = { label: '00:00', value: '00:00' }
       dateToFilter.value = null
       labelTypeToFilter.value = null
       eventStore.dateSelected = null
@@ -185,7 +203,9 @@ export default defineComponent({
 
     const filterEvents = () => {
       if (typeof dateToFilter.value === 'object') {
-        timeToFilter.value = { label: '00:00', value: '00:00' }
+        timeStart.value = { label: '00:00', value: '00:00' }
+        timeEnd.value = { label: '00:00', value: '00:00' }
+
       }
       const dateAsObject = dateToFilter.value
         ? typeof dateToFilter.value === 'object'
@@ -193,28 +213,27 @@ export default defineComponent({
                 from:
                 date.formatDate((dateToFilter.value.from), 'YYYY-MM-DD') +
                 'T' +
-                timeToFilter.value.value +
+                timeStart.value.value +
                 ':00' +
                 getTimeZoneOffset(),
               to:
                 date.formatDate((dateToFilter.value.to), 'YYYY-MM-DD') +
                 'T' +
-                timeToFilter.value.value.replace(':00', ':59') +
-                ':59' +
+                timeEnd.value.value +
+                ':00' +
                 getTimeZoneOffset()
             }
           : {
               from:
                 date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
                 'T' +
-                timeToFilter.value.value +
+                timeStart.value.value +
                 ':00' +
                 getTimeZoneOffset(),
               to:
                 date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
                 'T' +
-                timeToFilter.value.value.replace(':00', ':59') +
-                ':59' +
+                timeEnd.value.value+':00'+
                 getTimeZoneOffset()
             }
         : null
@@ -230,7 +249,8 @@ export default defineComponent({
 
 
     return {
-      timeToFilter,
+      timeStart,
+      timeEnd,
       optionsTime,
       optionsLabelTypes,
       dateToFilter,

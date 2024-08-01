@@ -94,14 +94,14 @@
                           <q-item-label
                             >Patente:
                             <span class="barlow-bold">
-                              {{ toPercentage(props.row.confidence) }}%
+                              {{ props.row.inferenceOcr.value }}
                             </span>
                           </q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item>
                         <q-item-section>
-                          <q-item-label>Labels: </q-item-label>
+                          <q-item-label>Etiquetas: </q-item-label>
 
                           <q-chip
                             outline
@@ -131,6 +131,7 @@
                     <CarouselImages
                       :frames="props.row.frames"
                       :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
+                      :videos="props.row.videos"
                     />
                   </div>
                 </div>
@@ -197,6 +198,12 @@
                 </span>
                 <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
+              <q-item-label
+                >Patente:
+                <span class="barlow-bold">
+                  {{ row.inferenceOcr }}
+                </span>
+              </q-item-label>
             </q-card-section>
             <q-card-section>
               <CarouselImages :frames="row.frames" />
@@ -232,16 +239,15 @@ export default defineComponent({
     const eventStore = useEventsStore()
 
     const pagesNumber = computed(() => {
-      const totalToUse = eventStore.funtionToUse === "allevents" ? eventStore.summaryEvents?.totalEvents : eventStore.summaryEvents?.totalQueryEvents;
-      return totalToUse
-        ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage)
-        : 5
+      const totalToUse =
+        eventStore.funtionToUse === 'allevents'
+          ? eventStore.summaryEvents?.totalEvents
+          : eventStore.summaryEvents?.totalQueryEvents
+      return totalToUse ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage) : 1
     })
     const displayRows = computed(() => {
-      return props.rows
-        ? props.rows
-        : []
-    });
+      return props.rows ? props.rows : []
+    })
 
     const getRowSelected = (row, column, event) => {
       if (rowSelected.value?.id === row.id) {
@@ -276,13 +282,10 @@ export default defineComponent({
     }
     const toggleExpand = (row, event) => {
       event.stopPropagation()
-      this.getRowSelected(row, event)
+      getRowSelected(row, event)
     }
 
     const toPercentage = (value) => {
-      // if ((value * 100).lenght > 4) {
-      //   return Math.round(value * 100)
-      // }
       return value * 100
     }
 

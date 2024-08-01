@@ -6,18 +6,16 @@
       <FilterEvents @filterData="filterData" />
     </div>
 
-    <div
-      class="fit row wrap justify-between items-center q-py-lg q-pl-lg q-pr-md"
-      style="max-height: 50vh"
-    >
-      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'Total eventos'"/> -->
-      <!-- <CardInfo :numberToShow="eventStore.summaryEvents.totalEvents" :titleToShow="'Total eventos'"/> -->
-      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
-      <!-- <CardInfo :numberToShow="'50'" :titleToShow="'total eventos'"/> -->
+    <div class="fit row wrap justify-center items-center q-py-lg q-pl-lg q-pr-md">
+      <CardInfo />
     </div>
 
     <div class="q-py-md">
-      <TableEvents :rows="eventStore.allEvents" :columns="columns" :loading="eventStore.loadingEvents" />
+      <TableEvents
+        :rows="eventStore.allEvents"
+        :columns="columns"
+        :loading="eventStore.loadingEvents"
+      />
     </div>
   </div>
 </template>
@@ -73,7 +71,7 @@ export default defineComponent({
         field: '',
         align: 'center'
       }
-    ];
+    ]
 
     const userStore = useUserStore()
     const eventStore = useEventsStore()
@@ -136,7 +134,6 @@ export default defineComponent({
     watch(
       () => eventStore.pagination.page,
       async (newValue) => {
-        console.log("newValue", newValue)
         if (newValue) {
           switch (true) {
             case eventStore.dateSelected && eventStore.labelsTypeSelected:
@@ -150,12 +147,10 @@ export default defineComponent({
               break
             case !eventStore.dateSelected && eventStore.labelsTypeSelected:
               eventStore.funtionToUse = 'bylabel'
-              ;
               await eventStore.FETCH_EVENTS_BY_LABEL()
               break
             default:
               eventStore.funtionToUse = 'allevents'
-            console.log("entro al switch del eventsotre");
               await fetchAllEvents()
               break
           }
