@@ -6,186 +6,200 @@
 </template>
 
 <script>
-import { nextTick } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 
-export default {
+export default defineComponent({
+  name: 'ImageWithBoundingBoxes',
   props: ['imageUrl', 'boundingBoxes', 'hideBbox'],
-  data() {
-    return {
-      labelCategories: {
-        "buses": "vehicle",
-        "baliza": "epp",
-        "banderín": "epp",
-        "camioneta": "vehicle",
-        "camión": "vehicle",
-        "placa_patente": "id",
-        "vehículos": "vehicle",
-        "chapulín": "epp",
-        "camiones": "vehicle",
-        "pértiga": "epp"
-      },
-      categoryColors: {
-        'person': [0, 255, 224],
-        'animal': [255, 127, 0],
-        'vehicle': [44, 255, 0],
-        'id': [211, 145, 249],
-        'epp': [255, 255, 0],
-        'other': [0, 0, 0]
-      },
-      hoveredBox: null,
-      selectedBox: null,
-      labelCoords: [],
-      canvasReady: false,
-      scale: 1
-    }
-  },
-  watch: {
-    hideBbox() {
-      this.drawImage();
-    },
-    boundingBoxes: {
-      handler() {
-        this.initLabelCoords();
-        this.$nextTick(() => {
-          if (this.canvasReady) {
-            this.drawImage();
-          }
-        });
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    initLabelCoords() {
-      this.labelCoords = this.boundingBoxes.map(() => ({ x: 0, y: 0, width: 0, height: 0 }));
-    },
-    onImageLoad() {
-      this.canvasReady = true;
-      this.$nextTick(() => {
-        this.drawImage();
-      });
-    },
-    drawImage() {
-      const canvas = this.$refs.canvas;
-      const img = this.$refs.img;
-      if (!canvas || !img) return;
+  setup(props) {
+    const img = ref(null);
+    const canvas = ref(null);
+    const hoveredBox = ref(null);
+    const selectedBox = ref(null);
+    const labelCoords = ref([]);
+    const canvasReady = ref(false);
+    const scale = ref(1);
 
-      const ctx = canvas.getContext('2d');
+    const labelCategories = computed(() => ({
+      "buses": "vehicle",
+      "baliza": "epp",
+      "banderín": "epp",
+      "camioneta": "vehicle",
+      "camión": "vehicle",
+      "placa_patente": "id",
+      "vehículos": "vehicle",
+      "chapulín": "epp",
+      "camiones": "vehicle",
+      "pértiga": "epp"
+    }));
+
+    const categoryColors = computed(() => ({
+      'person': [0, 255, 224],
+      'animal': [255, 127, 0],
+      'vehicle': [44, 255, 0],
+      'id': [211, 145, 249],
+      'epp': [255, 255, 0],
+      'other': [0, 0, 0]
+    }));
+
+    const initLabelCoords = () => {
+      labelCoords.value = props.boundingBoxes.map(() => ({ x: 0, y: 0, width: 0, height: 0 }));
+    };
+
+    const onImageLoad = () => {
+      canvasReady.value = true;
+      drawImage();
+    };
+
+    const drawImage = () => {
+      if (!canvas.value || !img.value) return;
+
+      const ctx = canvas.value.getContext('2d');
       if (!ctx) return;
 
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      this.scale = canvas.offsetWidth / img.naturalWidth;
+      canvas.value.width = img.value.naturalWidth;
+      canvas.value.height = img.value.naturalHeight;
+      scale.value = canvas.value.offsetWidth / img.value.naturalWidth;
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img.value, 0, 0, canvas.value.width, canvas.value.height);
 
-      if (!this.hideBbox) {
-        this.drawBoundingBoxes(ctx);
+      if (!props.hideBbox) {
+        drawBoundingBoxes(ctx);
       }
-    },
-    drawBoundingBoxes(ctx) {
-      if (!this.boundingBoxes || !ctx) return;
+    };
 
-      this.boundingBoxes.forEach((box, index) => {
+    const drawBoundingBoxes = (ctx) => {
+      if (!props.boundingBoxes || !ctx) return;
+
+      props.boundingBoxes.forEach((box, index) => {
         const x1 = box.topLeft[0] * ctx.canvas.width;
         const y1 = box.topLeft[1] * ctx.canvas.height;
         const x2 = box.bottomRight[0] * ctx.canvas.width;
         const y2 = box.bottomRight[1] * ctx.canvas.height;
 
-        const label = box.label.toLowerCase();
-        const category = this.labelCategories[label] || 'other';
-        const color = this.categoryColors[category] || this.categoryColors['other'];
-
-        // Dibujar el bounding box
-        ctx.strokeStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-        ctx.lineWidth = this.hoveredBox === index ? 4 : 2; // Línea más gruesa al hacer hover
-        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-
-        // Resaltar el bounding box al hacer hover
-        if (this.hoveredBox === index) {
-          ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`;
-          ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
-        }
-
-        let labelText = box.label;
-        if (typeof box.confidence === 'number' && !isNaN(box.confidence)) {
-          labelText += ` ${(box.confidence * 100).toFixed(2)}%`;
-        }
-
-        const isHovered = this.hoveredBox === index;
-        const fontSize = isHovered ? 34 : 30; // Aumentar el tamaño de la fuente al hacer hover
-        ctx.font = `${fontSize}px 'Roboto', sans-serif`;
-        
-        const textWidth = ctx.measureText(labelText).width;
-        const textHeight = isHovered ? 38 : 34; // Aumentar la altura del fondo al hacer hover
-
-        let labelX, labelY;
-        if (label === 'pértiga') {
-          labelX = x1 - textWidth - 8 - (isHovered ? 4 : 0);
-          labelY = y1 - textHeight - (isHovered ? 4 : 0);
-        } else if (label === 'chapulín') {
-          labelX = x2 + (isHovered ? 4 : 0);
-          labelY = y1 - textHeight - (isHovered ? 4 : 0);
-        } else if (label === 'banderín') {
-          labelX = x2 + (isHovered ? 4 : 0);
-          labelY = y2 + (isHovered ? 4 : 0);
-        } else {
-          labelX = x1;
-          labelY = y1 - textHeight - (isHovered ? 4 : 0);
-        }
-
-        // Dibujar el fondo de la etiqueta
-        ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
-        ctx.fillRect(labelX, labelY, textWidth + 8, textHeight);
-
-        // Dibujar el texto de la etiqueta
-        ctx.fillStyle = 'black';
-        ctx.fillText(labelText, labelX + 4, labelY + textHeight - 6);
-
-        this.labelCoords[index] = {x: labelX, y: labelY, width: textWidth + 8, height: textHeight};
+        drawBox(ctx, x1, y1, x2, y2, box, index);
+        drawLabel(ctx, x1, y1, x2, y2, box, index);
       });
-    },
-    onMouseMove(event) {
-      if (!this.labelCoords.length) return;
+    };
 
-      const rect = this.$refs.canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / this.scale;
-      const y = (event.clientY - rect.top) / this.scale;
+    const drawBox = (ctx, x1, y1, x2, y2, box, index) => {
+      const label = box.label.toLowerCase();
+      const category = labelCategories.value[label] || 'other';
+      const color = categoryColors.value[category] || categoryColors.value['other'];
 
-      const hoveredIndex = this.labelCoords.findIndex(coords => {
+      ctx.strokeStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+      ctx.lineWidth = hoveredBox.value === index ? 4 : 2;
+      ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+
+      if (hoveredBox.value === index) {
+        ctx.fillStyle = `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.2)`;
+        ctx.fillRect(x1, y1, x2 - x1, y2 - y1);
+      }
+    };
+
+    const drawLabel = (ctx, x1, y1, x2, y2, box, index) => {
+      const label = box.label.toLowerCase();
+      const category = labelCategories.value[label] || 'other';
+      const color = categoryColors.value[category] || categoryColors.value['other'];
+
+      let labelText = box.label;
+      if (typeof box.confidence === 'number' && !isNaN(box.confidence)) {
+        labelText += ` ${(box.confidence * 100).toFixed(2)}%`;
+      }
+
+      const isHovered = hoveredBox.value === index;
+      const fontSize = isHovered ? 34 : 30;
+      ctx.font = `${fontSize}px 'Roboto', sans-serif`;
+      
+      const textWidth = ctx.measureText(labelText).width;
+      const textHeight = isHovered ? 38 : 34;
+
+      const [labelX, labelY] = getLabelPosition(label, x1, y1, x2, y2, textWidth, textHeight, isHovered);
+
+      ctx.fillStyle = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+      ctx.fillRect(labelX, labelY, textWidth + 8, textHeight);
+
+      ctx.fillStyle = 'black';
+      ctx.fillText(labelText, labelX + 4, labelY + textHeight - 6);
+
+      labelCoords.value[index] = {x: labelX, y: labelY, width: textWidth + 8, height: textHeight};
+    };
+
+    const getLabelPosition = (label, x1, y1, x2, y2, textWidth, textHeight, isHovered) => {
+      const offset = isHovered ? 4 : 0;
+      switch(label) {
+        case 'pértiga':
+          return [x1 - textWidth - 8 - offset, y1 - textHeight - offset];
+        case 'chapulín':
+          return [x2 + offset, y1 - textHeight - offset];
+        case 'banderín':
+          return [x2 + offset, y2 + offset];
+        default:
+          return [x1, y1 - textHeight - offset];
+      }
+    };
+
+    const onMouseMove = (event) => {
+      if (!labelCoords.value.length) return;
+
+      const rect = canvas.value.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / scale.value;
+      const y = (event.clientY - rect.top) / scale.value;
+
+      const hoveredIndex = labelCoords.value.findIndex(coords => {
         return coords && x >= coords.x && x <= coords.x + coords.width &&
                y >= coords.y && y <= coords.y + coords.height;
       });
 
-      if (hoveredIndex !== this.hoveredBox) {
-        this.hoveredBox = hoveredIndex;
-        this.drawImage();
+      if (hoveredIndex !== hoveredBox.value) {
+        hoveredBox.value = hoveredIndex;
+        drawImage();
       }
-    },
-    onMouseOut() {
-      this.hoveredBox = null;
-      this.drawImage();
-    },
-    onClick(event) {
-      if (!this.labelCoords.length) return;
+    };
 
-      const rect = this.$refs.canvas.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / this.scale;
-      const y = (event.clientY - rect.top) / this.scale;
+    const onMouseOut = () => {
+      hoveredBox.value = null;
+      drawImage();
+    };
 
-      const clickedIndex = this.labelCoords.findIndex(coords => {
+    const onClick = (event) => {
+      if (!labelCoords.value.length) return;
+
+      const rect = canvas.value.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / scale.value;
+      const y = (event.clientY - rect.top) / scale.value;
+
+      const clickedIndex = labelCoords.value.findIndex(coords => {
         return coords && x >= coords.x && x <= coords.x + coords.width &&
                y >= coords.y && y <= coords.y + coords.height;
       });
 
       if (clickedIndex !== -1) {
-        this.selectedBox = this.selectedBox === clickedIndex ? null : clickedIndex;
-        this.drawImage();
-        console.log('Clicked on label:', this.boundingBoxes[clickedIndex].label);
+        selectedBox.value = selectedBox.value === clickedIndex ? null : clickedIndex;
+        drawImage();
+        console.log('Clicked on label:', props.boundingBoxes[clickedIndex].label);
       }
-    }
+    };
+
+    watch(() => props.boundingBoxes, () => {
+      initLabelCoords();
+      if (canvasReady.value) {
+        drawImage();
+      }
+    }, { immediate: true });
+
+    watch(() => props.hideBbox, drawImage);
+
+    return {
+      img,
+      canvas,
+      onImageLoad,
+      onMouseMove,
+      onMouseOut,
+      onClick
+    };
   }
-}
+});
 </script>
 
 <style scoped>
@@ -197,7 +211,6 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 }
 
 canvas {
