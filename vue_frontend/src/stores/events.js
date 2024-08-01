@@ -9,7 +9,7 @@ import {
 
 const parseData = (data) => {
   const replaces = data.replace(/\\\"/g, '"').slice(1, -1).replace('no cumple', 'no_cumple')
-  return JSON.parse(replaces)
+  return Object.entries(JSON.parse(replaces)).map(([key, value]) => ({ key, value })).filter(itm => itm.key !== 'total');
 }
 
 export const useEventsStore = defineStore('events', {

@@ -9,7 +9,6 @@
       v-model="slide"
       ref="carousel"
       infinite
-      :style="{ height: carouselHeight }"
     >
       <q-carousel-slide
         v-for="(frame, index) in newFrames"
@@ -17,11 +16,16 @@
         :name="index + 1"
         class="q-pa-none"
       >
-        <ImageWithBoundingBoxes
-          :imageUrl="frame.imageUrl"
-          :boundingBoxes="frame.boundingBoxes"
-          :hideBbox="hideBbox"
-        />
+        <template v-if="frame.type === 'image'">
+          <ImageWithBoundingBoxes
+            :imageUrl="frame.imageUrl"
+            :boundingBoxes="frame.boundingBoxes"
+            :hideBbox="hideBbox"
+          />
+        </template>
+        <template v-else-if="frame.type === 'video'">
+          <VideoPlayer :videoUrl="frame.videoUrl" />
+        </template>
       </q-carousel-slide>
 
       <template v-slot:control>
@@ -73,16 +77,14 @@
       </template>
     </q-carousel>
     
-    <q-dialog v-model="fullscreen">
+    <q-dialog v-model="fullscreen" full-width full-height>
       <q-carousel
-        class="carousel_slides"
+        class="carousel_slides fullscreen"
         swipeable
         animated
         v-model="slide"
         ref="carousel"
         infinite
-        height="100%"
-        style="width: 100%; max-width: 80vw; object-fit: contain"
       >
         <q-carousel-slide
           v-for="(frame, index) in newFrames"
@@ -90,11 +92,16 @@
           :name="index + 1"
           id="dialog_carousel-frames"
         >
-          <ImageWithBoundingBoxes
-            :imageUrl="frame.imageUrl"
-            :boundingBoxes="frame.boundingBoxes"
-            :hideBbox="hideBbox"
-          />
+          <template v-if="frame.type === 'image'">
+            <ImageWithBoundingBoxes
+              :imageUrl="frame.imageUrl"
+              :boundingBoxes="frame.boundingBoxes"
+              :hideBbox="hideBbox"
+            />
+          </template>
+          <template v-else-if="frame.type === 'video'">
+            <VideoPlayer :videoUrl="frame.videoUrl" />
+          </template>
         </q-carousel-slide>
         <template v-slot:control>
           <q-carousel-control
@@ -149,13 +156,15 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import ImageWithBoundingBoxes from './ImageWithBoundingBoxes.vue';
+import VideoPlayer from './VideoPlayer.vue';
 
 export default defineComponent({
   name: "CarouselImages",
   components: {
-    ImageWithBoundingBoxes
+    ImageWithBoundingBoxes,
+    VideoPlayer
   },
 
   props: {
@@ -166,6 +175,10 @@ export default defineComponent({
     inferenceDetectionClassification: {
       type: Array,
       default: () => []
+    },
+    videos: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -173,32 +186,33 @@ export default defineComponent({
     const slide = ref(1);
     const fullscreen = ref(false);
     const hideBbox = ref(true);
-    const carouselHeight = ref('500px');
 
     const newFrames = computed(() => {
       if (!props.frames || !props.inferenceDetectionClassification) {
         return [];
       }
       
-      return props.frames.map(frame => {
-        const frameInferences = props.inferenceDetectionClassification.filter(
-          inference => inference.frame.id === frame.id
-        );
+      const imageFrames = props.frames.map(frame => ({
+        ...frame,
+        type: 'image',
+        boundingBoxes: props.inferenceDetectionClassification
+          .filter(inference => inference.frame.id === frame.id)
+          .flatMap(inference => 
+            inference.boundingBoxes.map(box => ({
+              ...box,
+              label: inference.labels[0]?.name || '',
+              confidence: inference.confidence
+            }))
+          )
+      }));
 
-        const boundingBoxes = frameInferences.flatMap(inference => 
-          inference.boundingBoxes.map(box => ({
-            ...box,
-            label: inference.labels[0]?.name || '',
-            confidence: inference.confidence
+      const videoFrames = props.videos.map(video => ({
+        id: video.id,
+        type: 'video',
+        videoUrl: video.video
+      }));
 
-          }))
-        );
-
-        return {
-          ...frame,
-          boundingBoxes
-        };
-      });
+      return [...imageFrames, ...videoFrames];
     });
 
     const toggleBbox = () => {
@@ -210,7 +224,6 @@ export default defineComponent({
       fullscreen,
       newFrames,
       hideBbox,
-      carouselHeight,
       toggleBbox
     };
   },
@@ -233,21 +246,31 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   min-height: 400px;
-}
 
-.q-img.q-img--menu {
-  margin-bottom: 20px;
-}
-
-#dialog_carousel-frames {
-  padding: 0em 7em 0em 7em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  &.fullscreen {
+    width: 100vw;
+    height: 100vh;
+  }
 }
 
 .q-carousel {
   background-color: #363636 !important;
+  width: 100%;
+}
+
+:deep(.q-carousel__slide) {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+:deep(img), :deep(video) {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
 }
 </style>
-
