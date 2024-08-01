@@ -76,7 +76,7 @@
         </q-carousel-control>
       </template>
     </q-carousel>
-    
+
     <q-dialog v-model="fullscreen" full-width full-height>
       <q-carousel
         class="carousel_slides fullscreen"
@@ -191,13 +191,13 @@ export default defineComponent({
       if (!props.frames || !props.inferenceDetectionClassification) {
         return [];
       }
-      
+
       const imageFrames = props.frames.map(frame => ({
         ...frame,
         type: 'image',
         boundingBoxes: props.inferenceDetectionClassification
           .filter(inference => inference.frame.id === frame.id)
-          .flatMap(inference => 
+          .flatMap(inference =>
             inference.boundingBoxes.map(box => ({
               ...box,
               label: inference.labels[0]?.name || '',
@@ -209,7 +209,7 @@ export default defineComponent({
       const videoFrames = props.videos.map(video => ({
         id: video.id,
         type: 'video',
-        videoUrl: video.video
+        videoUrl: video.videoUrl
       }));
 
       return [...imageFrames, ...videoFrames];
