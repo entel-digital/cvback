@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import { baseStorageUrl } from '@/services/utils/globals.js'
 
 import SingIn from '@/components/SingIn.vue'

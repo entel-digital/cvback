@@ -20,7 +20,6 @@ query filteredAndPaginatedEvents( $idEqualsTo: Int) {
       frames {
         imageUrl
         id
-        imageWithBoundingboxesUrl
       }
       inferenceDetectionClassification {
         boundingBoxes {
@@ -42,7 +41,6 @@ query filteredAndPaginatedEvents( $idEqualsTo: Int) {
       keyFrames {
         frames {
           id
-          imageWithBoundingboxesUrl
           imageUrl
         }
         id

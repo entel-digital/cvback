@@ -20,7 +20,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
       frames {
         id
         imageUrl
-        imageWithBoundingboxesUrl
       }
       keyFrames {
         id
@@ -28,7 +27,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
         frames {
           id
           imageUrl
-          imageWithBoundingboxesUrl
         }
       }
       videos {

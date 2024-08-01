@@ -1,9 +1,9 @@
 <script setup>
-import { ref, computed } from "vue";
 import { useUserStore } from "@/stores/user.js";
 import { useRouter } from "vue-router";
+import { baseStorageUrl } from '@/services/utils/globals.js'
 
-const logoVision = ref("/static/images/logo_vision_azul.png")
+const logoVision = `${baseStorageUrl}/images/logo_vision_azul.png`
 const userStore = useUserStore();
 const router = useRouter();
 

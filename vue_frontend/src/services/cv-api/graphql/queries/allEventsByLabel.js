@@ -20,7 +20,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelTextFilte
       frames {
         imageUrl
         id
-        imageWithBoundingboxesUrl
       }
       inferenceDetectionClassification {
         boundingBoxes {
@@ -42,7 +41,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelTextFilte
       keyFrames {
         frames {
           id
-          imageWithBoundingboxesUrl
           imageUrl
         }
         id
