@@ -32,8 +32,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
       videos {
         id
         video
-        addedDate
-        informedDate
       }
       keyVideos {
         id
