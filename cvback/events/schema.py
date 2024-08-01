@@ -47,8 +47,12 @@ class KeyFrameType(DjangoObjectType):
 class VideoType(DjangoObjectType):
     class Meta:
         model = Video
-        fields = "__all__"
+        fields = ("id", "video", "video_url")
 
+    video_url = graphene.String()
+
+    def resolve_video_url(self, info):
+        return self.get_video_url()
 
 class KeyVideoType(DjangoObjectType):
     class Meta:
