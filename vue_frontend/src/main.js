@@ -7,6 +7,8 @@ import router from './router'
 import { Quasar } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
 import { api } from '@/services/utils/axios';
+import { baseStorageUrl } from '@/services/utils/globals';
+
 
 import 'quasar/src/css/index.sass'
 
@@ -14,6 +16,7 @@ const app = createApp(App).use(Quasar, quasarUserOptions)
 
 app.use(createPinia())
 app.use(api)
+app.use(baseStorageUrl)
 app.use(router)
 
 app.mount('#app')
