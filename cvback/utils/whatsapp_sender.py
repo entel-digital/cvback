@@ -25,7 +25,7 @@ class WhatsappSender():
         data = {
                     "campaign":
                     {
-                        "name": "campaña API",
+                        "name": "campaña API",  
                         "type_campaign_id": settings.WHATSAPP_CAMPAIGN_ID,
                         "type_action": settings.WHATSAPP_TYPE_ACTION,
                         "registers":
@@ -40,7 +40,8 @@ class WhatsappSender():
                                     "placa_vehiculo": event_data["vehicle_license_plate"],
                                     "elementos_faltantes": ','.join(event_data["missing_labels"]),
                                     "link_detalles": event_data["details_link"],
-                                    "imagenes": event_data["images"]
+                                    "imagenes": event_data["images"],
+                                    "videos": event_data["videos"]
                                 } for user_data in users_data
                             ]
                     }
