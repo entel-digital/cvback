@@ -9,7 +9,9 @@ import {
 
 const parseData = (data) => {
   const replaces = data.replace(/\\\"/g, '"').slice(1, -1).replace('no cumple', 'no_cumple')
-  return Object.entries(JSON.parse(replaces)).map(([key, value]) => ({ key, value })).filter(itm => itm.key !== 'total');
+  return Object.entries(JSON.parse(replaces))
+    .map(([key, value]) => ({ key, value }))
+    .filter((itm) => itm.key !== 'total')
 }
 
 export const useEventsStore = defineStore('events', {
@@ -49,7 +51,11 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary)
+          .filter((itm) => itm !== 'total')
+          .map((itm) => itm.key)
+
+
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
@@ -81,8 +87,9 @@ export const useEventsStore = defineStore('events', {
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
-
+        this.labelsTypes = Object.keys(
+          parseData(data.filteredAndPaginatedEvents.labelsSummary)
+        ).filter((itm) => itm !== 'total')
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -114,7 +121,9 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
+        this.labelsTypes = Object.keys(
+          parseData(data.filteredAndPaginatedEvents.labelsSummary)
+        ).filter((itm) => itm !== 'total')
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -146,7 +155,11 @@ export const useEventsStore = defineStore('events', {
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        this.labelsTypes = Object.keys(parseData(data.filteredAndPaginatedEvents.labelsSummary)).filter(itm => itm !== 'total')
+
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary)
+          .filter((itm) => itm !== 'total')
+          .map((itm) => itm.key)
+
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false

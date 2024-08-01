@@ -211,7 +211,6 @@ export default defineComponent({
         type: 'video',
         videoUrl: video.videoUrl
       }));
-      console.log("imgs and videos carousel", [...imageFrames, ...videoFrames])
       return [...imageFrames, ...videoFrames];
     });
 

@@ -92,10 +92,13 @@
                       <q-item>
                         <q-item-section>
                           <q-item-label
-                            >Patente:
-                            <span class="barlow-bold">
-                              {{ props.row.inferenceOcr.value }}
-                            </span>
+                            >OCR:
+                            <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                              props.row.inferenceOcr?.name || 'No identificado'
+                            }}</q-chip>
+                            <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                              props.row.inferenceOcr?.value || 'No identificado'
+                            }}</q-chip>
                           </q-item-label>
                         </q-item-section>
                       </q-item>
@@ -199,10 +202,13 @@
                 <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
               <q-item-label
-                >Patente:
-                <span class="barlow-bold">
-                  {{ row.inferenceOcr }}
-                </span>
+                >OCR:
+                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                  props.row.inferenceOcr?.name || 'No identificado'
+                }}</q-chip>
+                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                  props.row.inferenceOcr?.value || 'No identificado'
+                }}</q-chip>
               </q-item-label>
             </q-card-section>
             <q-card-section>
@@ -220,7 +226,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import { defineComponent, ref, computed, watch, onMounted } from 'vue'
@@ -243,32 +248,6 @@ export default defineComponent({
     const expanded = ref([])
     const eventStore = useEventsStore()
 
-    // Función de utilidad para loggear las props de CarouselImages
-    const logCarouselProps = (row, event = 'update') => {
-      if (row) {
-        console.log(`CarouselImages props ${event}:`, {
-          frames: row.frames?.length ?? 0,
-          inferenceDetectionClassification: row.inferenceDetectionClassification?.length ?? 0,
-          videos: row.videos?.length ?? 0
-        })
-        console.log('Frames:', row.frames)
-        console.log('Inference Detection:', row.inferenceDetectionClassification)
-        console.log('Videos:', row.videos)
-      } else {
-        console.log(`CarouselImages props ${event}: No row selected`)
-      }
-    }
-
-    // Log inicial
-    onMounted(() => {
-      logCarouselProps(rowSelected.value, 'initial')
-    })
-
-    // Observar cambios en rowSelected
-    watch(rowSelected, (newValue, oldValue) => {
-      logCarouselProps(newValue, 'rowSelected changed')
-    })
-
     const pagesNumber = computed(() => {
       const totalToUse =
         eventStore.funtionToUse === 'allevents'
@@ -289,12 +268,11 @@ export default defineComponent({
         rowSelected.value = row
         expanded.value = [row.id]
       }
-      // Log después de cambiar rowSelected
-      logCarouselProps(rowSelected.value, 'after getRowSelected')
     }
 
     const formatDateEvent = (date) => {
-      const dateObj = new Date(date)
+      const dateObj = new Date(date) // Log después de cambiar rowSelected
+
       const month =
         dateObj.getMonth() + 1 < 10 ? `0${dateObj.getMonth() + 1}` : dateObj.getMonth() + 1
       const day = dateObj.getDate() < 10 ? `0${dateObj.getDate()}` : dateObj.getDate()
