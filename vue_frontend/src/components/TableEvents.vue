@@ -11,6 +11,7 @@
           row-key="id"
           :loading="loading"
           v-model:expanded="expanded"
+          :pagination.sync="eventStore.pagination"
           header-class="text-dark"
           hide-pagination
         >
@@ -148,7 +149,7 @@
             direction-links
             ellipses
             :max="pagesNumber"
-            :max-pages="5"
+            :max-pages="0"
             text-color="dark"
             active-text-color="white"
             color="dark"
@@ -204,10 +205,10 @@
               <q-item-label
                 >OCR:
                 <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                  props.row.inferenceOcr?.name || 'No identificado'
+                  row.inferenceOcr?.name || 'No identificado'
                 }}</q-chip>
                 <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                  props.row.inferenceOcr?.value || 'No identificado'
+                  row.inferenceOcr?.value || 'No identificado'
                 }}</q-chip>
               </q-item-label>
             </q-card-section>
@@ -279,7 +280,9 @@ export default defineComponent({
       const year = dateObj.getFullYear()
       const hour =
         dateObj.getHours() + 1 < 10 ? `0${dateObj.getHours() + 1}` : dateObj.getHours() + 1
-      const minutes = dateObj.getMinutes()
+      const minutes =
+        dateObj.getMinutes() + 1 < 10 ? `0${dateObj.getMinutes() + 1}` : dateObj.getMinutes() + 1
+
       const newDate = {
         date: `${day}/${month}/${year}`,
         time: `${hour}:${minutes}`
