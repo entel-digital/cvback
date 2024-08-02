@@ -1,8 +1,9 @@
 <script setup>
 import { baseStorageUrl } from '@/services/utils/globals.js'
-import { useUserStore } from '@/stores/user.js'
 import SingIn from '@/components/SingIn.vue'
-
+import { onMounted } from 'vue'
+import { useUserStore } from '@/stores/user.js'
+import { useRouter } from 'vue-router'
 
 const logoVisionBlue = `${baseStorageUrl}/images/logo_vision_azul.png`
 const logoEntelDigitalBlue = `${baseStorageUrl}/images/entel_digital_azul.png`
@@ -14,10 +15,14 @@ const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
 const styleBg = `background-image: url(${pathImageBg}); background-size: cover; background-repeat: no-repeat; background-position: center;  height: 100vh;
   width: 100%;`
 
-const checkSession = async() => {
-  await useUserStore().GET_SESSION()
-}
+const router = useRouter()
 
+onMounted(async () => {
+  const statusSession = await useUserStore().GET_SESSION()
+  if (statusSession?.is_authenticated) {
+    router.push({ name: 'home' })
+  }
+})
 </script>
 
 <template>
@@ -28,7 +33,12 @@ const checkSession = async() => {
           <img id="logo-vision-b" :src="logoVisionBlue" alt="vision-logo" style="width: 70%" />
         </div>
         <div class="mt-minus-15 flex justify-center">
-          <img id="logo-edigital-b" :src="logoEntelDigitalBlue" alt="entel-digital-logo" style="width: 20%" />
+          <img
+            id="logo-edigital-b"
+            :src="logoEntelDigitalBlue"
+            alt="entel-digital-logo"
+            style="width: 20%"
+          />
         </div>
       </div>
       <div class="col-6">
@@ -54,7 +64,6 @@ const checkSession = async() => {
 </template>
 
 <style scoped>
-
 .mt-minus-15 {
   margin-top: -15vh;
 }
