@@ -60,7 +60,7 @@ class Query(graphene.ObjectType):
 
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
         qs = Event.objects.order_by('-informed_date')
-        global_total_number = len(qs)
+        global_total_number = qs.count()
 
         rows_per_page = kwargs.get('rows_per_page', 10)
         offset = kwargs.get('offset')
