@@ -26,7 +26,7 @@ export const useEventsStore = defineStore('events', {
       descending: false,
       page: 1,
       offset: 0,
-      rowsPerPage: 50
+      rowsPerPage: 2
     },
     funtionToUse: 'allevents',
     labelsTypes: null,

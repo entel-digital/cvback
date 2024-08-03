@@ -43,7 +43,7 @@
               icon="arrow_left"
               @click="$refs.carousel.previous()"
             />
-            <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
+            <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 4px">
               {{ slide }}/{{ newFrames.length }}
             </div>
             <q-btn
@@ -60,7 +60,6 @@
               dense
               text-color="white"
               no-caps
-              :label="hideBbox ? 'Mostrar Bbox' : 'Ocultar Bbox'"
               :icon="hideBbox ? 'visibility' : 'visibility_off'"
               @click="toggleBbox"
             />
@@ -118,7 +117,7 @@
                 icon="arrow_left"
                 @click="$refs.carousel.previous()"
               />
-              <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 12px">
+              <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 4px">
                 {{ slide }}/{{ newFrames.length }}
               </div>
               <q-btn
@@ -135,7 +134,6 @@
                 dense
                 text-color="white"
                 no-caps
-                :label="hideBbox ? 'Mostrar Bbox' : 'Ocultar Bbox'"
                 :icon="hideBbox ? 'visibility' : 'visibility_off'"
                 @click="toggleBbox"
               />
