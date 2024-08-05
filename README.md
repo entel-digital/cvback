@@ -16,10 +16,12 @@ License: MIT
   - inte
 - Authentication (native)
   - Social
+  - 2fa
   - Active directory?
 - acgi
 - export to csv
 - regex warning
+- default mailout
 
 ## Some criteria
 

@@ -131,7 +131,7 @@ class Inference(models.Model):
     informed_date = models.DateTimeField("date informed", default=timezone.now)
     inference_computer = models.ForeignKey(InferenceComputer, on_delete=models.DO_NOTHING)
     algorithm = models.ForeignKey(Algorithm, on_delete=models.CASCADE, null=True, blank=True)
-    confidence = models.FloatField(validators=[validate_relative])
+    confidence = models.FloatField(validators=[validate_relative], null=True)
     frame = models.ForeignKey(Frame, on_delete=models.CASCADE, null=True, related_name="%(class)s_inferences")
 
     class Meta:
@@ -242,7 +242,7 @@ class Event(models.Model):
     key_frames = models.ManyToManyField(KeyFrame)
     videos = models.ManyToManyField(Video, blank=True)
     key_videos = models.ManyToManyField(KeyVideo, blank=True)
-    confidence = models.FloatField(validators=[validate_relative], default=0)
+    confidence = models.FloatField(validators=[validate_relative], blank=True)
     labels_detected = models.ManyToManyField(Label, related_name='events_detected', blank=True)
     labels_missing = models.ManyToManyField(Label, related_name='events_missing', blank=True)
 
