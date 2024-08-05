@@ -50,6 +50,9 @@ class LineOfInterest(models.Model):
     geometry = ArrayField(models.FloatField(validators=[validate_relative]), size=2)
     description = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.camera.name}: {self.name}"
+
 
 class Algorithm(models.Model):
     ALGORITHM_CHOICES = [
@@ -65,6 +68,10 @@ class Algorithm(models.Model):
     name = models.CharField(max_length=30)
     version = models.CharField(max_length=30, validators=[validate_semantic_versioning])
     repository = models.CharField(max_length=30, validators=[URLValidator])
+
+    def __str__(self):
+        return f"{self.name} {self.version}"
+
 
 
 class Label(models.Model):

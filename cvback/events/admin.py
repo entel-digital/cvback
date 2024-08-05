@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (AreaOfInterest, LineOfInterest, BoundingBox, Event, Algorithm, Label, Frame,
-                     Video, KeyFrame, KeyVideo, EventType, InferenceClassification, InferenceDetectionClassification)
+                     Video, KeyFrame, KeyVideo, EventType, InferenceClassification, InferenceDetectionClassification,
+                     InferenceDetectionClassificationTracker)
 
 # Register your models here.
 admin.site.register(AreaOfInterest)
@@ -20,3 +21,4 @@ admin.site.register(EventType)
 
 admin.site.register(InferenceDetectionClassification)
 admin.site.register(InferenceClassification)
+admin.site.register(InferenceDetectionClassificationTracker)
