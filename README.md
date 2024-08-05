@@ -22,6 +22,7 @@ License: MIT
 - export to csv
 - regex warning
 - default mailout
+- rest 500
 
 ## Some criteria
 
