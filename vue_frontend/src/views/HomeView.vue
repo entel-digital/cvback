@@ -77,7 +77,6 @@ export default defineComponent({
     const eventStore = useEventsStore()
     const router = useRouter()
 
-    const intervalId = ref(null)
 
     const signOut = async () => {
       await userStore.SIGN_OUT()
@@ -89,14 +88,9 @@ export default defineComponent({
     }
     onMounted(() => {
       fetchAllEvents()
-      intervalId.value = setInterval(fetchAllEvents, 30000);
     })
 
-    onUnmounted(() => {
-      if (intervalId.value) {
-        clearInterval(intervalId);
-      }
-    });
+
 
     const filterData = async (data) => {
       eventStore.loadingEvents = true
