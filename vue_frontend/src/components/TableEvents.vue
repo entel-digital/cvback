@@ -54,7 +54,7 @@
                 <div class="fit row justify-between q-py-sm" style="min-height: 400px">
                   <div class="col-4 text-left q-pa-md q-gutter-md">
                     <q-list class="fit">
-                      <q-item>
+                      <q-item v-if="props.row.confidence">
                         <q-item-section>
                           <q-item-label
                             >Confiabilidad:
@@ -184,7 +184,7 @@
 
           <q-card>
             <q-card-section>
-              <q-item-label class="text-dark fs-14-19 q-py-sm"
+              <q-item-label  v-if="row.confidence" class="text-dark fs-14-19 q-py-sm"
                 >Confiabilidad:
                 <span class="barlow-bold fs-15-18"> {{ toPercentage(row.confidence) }}% </span>
               </q-item-label>
