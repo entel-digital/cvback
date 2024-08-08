@@ -188,12 +188,20 @@ ANYMAIL = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
-INSTALLED_APPS += ["corsheaders", "django_extensions"]  # noqa: F405
+INSTALLED_APPS += ["corsheaders", "django_extensions","debug_toolbar"]  # noqa: F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
 MIDDLEWARE += [  # noqa: F405
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
-    "django.middleware.common.CommonMiddleware"
+    "django.middleware.common.CommonMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware"
     ]  # noqa: F405
 
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': 'config.settings.production.show_toolbar',
+}
+
+def show_toolbar(request):
+    return request.user.is_authenticated and request.user.is_staff
 CORS_ORIGIN_ALLOW_ALL = True
+

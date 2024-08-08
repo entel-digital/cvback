@@ -1,19 +1,18 @@
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
-from graphene_django.utils import camelize
-from graphene_django_optimizer import query, OptimizedDjangoObjectType, resolver_hints
-from cvback.events.models import Event, EventType, Label
-from django.db.models import Count
+import graphene_django_optimizer as gql_optimizer
+from cvback.events.models import Event, EventType, Label, InferenceDetectionClassification
 import json
 from asyncio import iscoroutinefunction
 from cvback.events.schema import FrameType
+from django.db.models import Prefetch
 
 def optional_query(func):
     if iscoroutinefunction(func):
-        return query(func)
+        return gql_optimizer.query(func)
     return func
 
-class OptimizedEventType(OptimizedDjangoObjectType):
+class OptimizedEventType(gql_optimizer.OptimizedDjangoObjectType):
     class Meta:
         model = Event
         fields = "__all__"
@@ -27,41 +26,45 @@ class OptimizedEventType(OptimizedDjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        return queryset.select_related(
+        return gql_optimizer.query(queryset.select_related(
             'event_type', 
             'event_label'
         ).prefetch_related(
             'frames', 
+            'videos',
+            'key_frames',
+            'key_videos',
             'labels_detected', 
             'labels_missing',
-            'inference_detection_classification',
             'inference_ocr',
-            'inference_detection_classification__labels',
-            'inference_detection_classification__bounding_boxes',
-        )
+            Prefetch('inference_detection_classification', 
+                    queryset=InferenceDetectionClassification.objects.select_related('frame')
+                                                                    .prefetch_related('labels', 'bounding_boxes'))
+        ), info)
 
-    @resolver_hints(
+    @gql_optimizer.resolver_hints(
         model_field='frames',
-        prefetch_related='frames',
     )
     def resolve_frames(self, info):
         return self.frames.all()
     
     def resolve_id(self, info):
-        return self.pk    
+        return self.pk
 
 class UpdateEventMutation(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
         tag = graphene.String()
 
-    event = graphene.Field(OptimizedEventType)
+    class Meta:
+        output = OptimizedEventType
 
-    def mutate(self, info, id, tag):
+    @classmethod
+    def mutate(cls, root, info, id, tag):
         event = Event.objects.get(pk=id)
         event.tag = tag
         event.save()
-        return UpdateEventMutation(event=event)
+        return gql_optimizer.query(Event.objects.filter(pk=event.pk), info).first()
 
 class EventFilterAndPaginationType(graphene.ObjectType):
     events = graphene.List(OptimizedEventType)
@@ -81,7 +84,7 @@ class Query(graphene.ObjectType):
 
     @optional_query
     def resolve_all_events(self, info):
-        return OptimizedEventType.get_queryset(Event.objects.all(), info)
+        return Event.objects.all()
 
     paginated_events = DjangoFilterConnectionField(
         OptimizedEventType,
@@ -116,7 +119,7 @@ class Query(graphene.ObjectType):
     @optional_query
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
         qs = Event.objects.order_by('-informed_date')
-        global_total_number = qs.count()
+        global_total_number = Event.objects.count()
 
         rows_per_page = kwargs.get('rows_per_page', 10)
         offset = kwargs.get('offset')
@@ -181,7 +184,7 @@ class Query(graphene.ObjectType):
             qs = qs[:rows_per_page]
 
         result = EventFilterAndPaginationType(
-            events=qs,
+            events=gql_optimizer.query(qs, info),
             global_total_number=global_total_number,
             offset=offset,
             rows_per_page=rows_per_page,
