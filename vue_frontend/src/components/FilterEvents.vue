@@ -3,7 +3,6 @@
     expand-separator
     :icon="iconFilter"
     label="Filtros"
-    default-opened
     :class="colorFilter"
     class="barlow-bold fs-21-25"
   >
@@ -17,6 +16,7 @@
                   minimal
                   :locale="locale"
                   range
+                  :options="date => date <= currentDate"
                   navigation-min-year-month="2024/07"
                   :navigation-max-year-month="maxYearMonth"
                   :default-year-month="defaultYearMoth"
@@ -26,30 +26,28 @@
                 </q-date>
                 <q-card-section class="fit row justify-start q-pt-none">
                   <div class="fit row">
+                    <span class="text-dark barlow-bold">Seleccionar hora inicio:</span>
+                    <q-select
+                      dense
+                      :disable="disableTimeToFilter"
+                      outlined
+                      v-model="timeStart"
+                      :options="optionsTime"
+                      options-dense
+                      class="inputs"
+                    />
 
-                  <span class="text-dark barlow-bold">Seleccionar hora inicio:</span>
-                  <q-select
-                    dense
-                    :disable="disableTimeToFilter"
-                    outlined
-                    v-model="timeStart"
-                    :options="optionsTime"
-                    options-dense
-                    class="inputs"
-                  />
-
-                  <span class="text-dark barlow-bold">Seleccionar hora final:</span>
-                  <q-select
-                    dense
-                    :disable="disableTimeToFilter"
-                    outlined
-                    v-model="timeEnd"
-                    :options="optionsTime"
-                    options-dense
-                    class="inputs"
-                  />
-                </div>
-
+                    <span class="text-dark barlow-bold">Seleccionar hora final:</span>
+                    <q-select
+                      dense
+                      :disable="disableTimeToFilter"
+                      outlined
+                      v-model="timeEnd"
+                      :options="optionsTime"
+                      options-dense
+                      class="inputs"
+                    />
+                  </div>
                 </q-card-section>
               </q-card>
             </q-popup-proxy>
@@ -61,9 +59,10 @@
         outlined
         v-model="labelTypeToFilter"
         :options="optionsLabelTypes"
-        :options-label="opt => opt.key"
+        :options-label="(opt) => opt.key"
         options-dense
         label="Etiqueta"
+        :disable="optionsLabelTypes.length === 0"
         class="inputs"
       />
 
@@ -105,7 +104,7 @@ export default defineComponent({
     const iconFilter = ref('filter_alt_off')
     const timeStart = ref({ label: '00:00', value: '00:00' })
     const timeEnd = ref({ label: '00:00', value: '00:00' })
-
+    const currentDate = date.formatDate(new Date(), 'YYYY/MM/DD')
     const dateToFilter = ref(null)
 
     const labelTypeToFilter = ref(null)
@@ -116,10 +115,10 @@ export default defineComponent({
     })
     const maxYearMonth = computed(() => {
       return date.formatDate(new Date(), 'YYYY/MM')
-    });
+    })
     const optionsLabelTypes = computed(() => {
       return eventStore.labelsTypes ? eventStore.labelsTypes : []
-    });
+    })
 
     const locale = {
       days: 'Domingo_Lunes_Martes_Miércoles_Jueves_Viernes_Sábado'.split('_'),
@@ -130,7 +129,7 @@ export default defineComponent({
         ),
       monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dic'.split('_'),
       firstDayOfWeek: 1
-    };
+    }
 
     const displayDate = computed(() => {
       if (dateToFilter.value) {
@@ -140,11 +139,11 @@ export default defineComponent({
         return `${dateToFilter.value} | ${timeStart.value.value} - ${timeEnd.value.value}`
       }
       return null
-    });
+    })
 
     const disableTimeToFilter = computed(() => {
       return typeof dateToFilter.value === 'object'
-    });
+    })
 
     const getTimeZoneOffset = () => {
       const currentDate = new Date()
@@ -158,7 +157,7 @@ export default defineComponent({
       let formattedOffset =
         sign + String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0')
       return formattedOffset
-    };
+    }
 
     const optionsTime = computed(() => [
       { label: '00:00', value: '00:00' },
@@ -185,7 +184,7 @@ export default defineComponent({
       { label: '21:00', value: '21:00' },
       { label: '22:00', value: '22:00' },
       { label: '23:00', value: '23:00' }
-    ]);
+    ])
 
     const clearFilter = () => {
       timeStart.value = { label: '00:00', value: '00:00' }
@@ -199,44 +198,33 @@ export default defineComponent({
       iconFilter.value = 'filter_alt_off'
       eventStore.funtionToUse = 'allevents'
       eventStore.FETCH_EVENTS()
-    };
+    }
 
     const filterEvents = () => {
-      if (typeof dateToFilter.value === 'object') {
-        timeStart.value = { label: '00:00', value: '00:00' }
-        timeEnd.value = { label: '00:00', value: '00:00' }
+      let fromDateTime, toDateTime, dateAsObject
 
+      if (dateToFilter.value) {
+        if (dateToFilter.value?.from) {
+          timeStart.value = { label: '00:00', value: '00:00' }
+          timeEnd.value = { label: '00:00', value: '00:00' }
+          fromDateTime = new Date(dateToFilter.value.from + 'T' + timeStart.value.value+getTimeZoneOffset())
+          toDateTime = new Date((dateToFilter.value.to)+ 'T' + timeEnd.value.value+getTimeZoneOffset())
+          toDateTime = date.addToDate(toDateTime, { days: 1 })
+
+        } else {
+          fromDateTime = new Date(dateToFilter.value + 'T' + timeStart.value.value+getTimeZoneOffset())
+          toDateTime = new Date(dateToFilter.value + 'T' + timeEnd.value.value+getTimeZoneOffset())
+        }
+
+        dateAsObject ={
+
+          from: fromDateTime.toISOString(),
+          to: toDateTime.toISOString()
+        }
+      } else {
+        dateAsObject = null
       }
-      const dateAsObject = dateToFilter.value
-        ? typeof dateToFilter.value === 'object'
-          ? {
-                from:
-                date.formatDate((dateToFilter.value.from), 'YYYY-MM-DD') +
-                'T' +
-                timeStart.value.value +
-                ':00' +
-                getTimeZoneOffset(),
-              to:
-                date.formatDate((dateToFilter.value.to), 'YYYY-MM-DD') +
-                'T' +
-                timeEnd.value.value +
-                ':00' +
-                getTimeZoneOffset()
-            }
-          : {
-              from:
-                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
-                'T' +
-                timeStart.value.value +
-                ':00' +
-                getTimeZoneOffset(),
-              to:
-                date.formatDate(new Date(dateToFilter.value), 'YYYY-MM-DD') +
-                'T' +
-                timeEnd.value.value+':00'+
-                getTimeZoneOffset()
-            }
-        : null
+
       colorFilter.value = 'border-box-filter'
       iconFilter.value = 'filter_alt'
 
@@ -244,9 +232,7 @@ export default defineComponent({
         dateToFilter: dateAsObject,
         labelTypeToFilter: labelTypeToFilter.value
       })
-    };
-
-
+    }
 
     return {
       timeStart,
@@ -264,6 +250,7 @@ export default defineComponent({
       disableTimeToFilter,
       iconFilter,
       colorFilter,
+      currentDate
     }
   }
 })

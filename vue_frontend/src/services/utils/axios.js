@@ -30,4 +30,4 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export { api, axios };
+export { api };

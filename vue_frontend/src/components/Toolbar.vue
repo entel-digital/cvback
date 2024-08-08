@@ -14,7 +14,7 @@ const signOut = async () => {
 </script>
 
 <template>
-  <q-toolbar class="bg-info text-primary toolbar-height ifems-center q-px-md">
+  <q-toolbar class="bg-info text-primary toolbar-height justify-between items-center q-px-md">
     <q-toolbar-title style="max-width: 750px">
       <div class="fit q-px-md">
         <img :src="logoVision" alt="logo vision" class="logo-vision" />

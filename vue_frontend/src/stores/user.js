@@ -16,7 +16,7 @@ export const useUserStore = defineStore('user', {
         this.user = user.data
         return user
       } catch (error) {
-        console.log('HERE IN ERROR SIGN_IN', error)
+        console.log('HERE IN ERROR SIGN_IN')
       }
     },
     async SIGN_OUT() {
@@ -35,6 +35,17 @@ export const useUserStore = defineStore('user', {
         console.log('HERE IN ERROR SESSION')
         // return error
       }
+    },
+    async RESET_PASSWORD() {
+      try {
+        const session = await api.get('_allauth/browser/v1/auth/session')
+        return session.data.meta
+      } catch (error) {
+        console.log('HERE IN ERROR SESSION')
+        // return error
+      }
     }
+
+
   }
 })

@@ -2,15 +2,15 @@
   <div>
     <Toolbar />
 
-    <div class="q-py-lg q-pr-lg q-pl-sm">
+    <div class="q-py-md q-pr-lg q-pl-sm">
       <FilterEvents @filterData="filterData" />
     </div>
 
-    <div class="fit row wrap justify-center items-center q-py-lg q-pl-lg q-pr-md">
+    <div class="fit row wrap justify-center items-center q-py-md q-pl-lg q-pr-md">
       <CardInfo />
     </div>
 
-    <div class="q-py-md">
+    <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"
         :columns="columns"
@@ -60,7 +60,7 @@ export default defineComponent({
       },
       {
         name: 'labelType',
-        label: 'Label',
+        label: 'Etiqueta',
         field: 'labelType',
         align: 'center',
         sortable: true
@@ -77,7 +77,6 @@ export default defineComponent({
     const eventStore = useEventsStore()
     const router = useRouter()
 
-
     const signOut = async () => {
       await userStore.SIGN_OUT()
       router.push({ name: 'login' })
@@ -89,8 +88,6 @@ export default defineComponent({
     onMounted(() => {
       fetchAllEvents()
     })
-
-
 
     const filterData = async (data) => {
       eventStore.loadingEvents = true
@@ -117,12 +114,9 @@ export default defineComponent({
           eventStore.loadingEvents = false
 
           break
-        default:
+        case !eventStore.dateSelected && !eventStore.labelsTypeSelected:
           eventStore.funtionToUse = 'allevents'
-
           await fetchAllEvents()
-          eventStore.loadingEvents = false
-
           break
       }
     }
@@ -145,7 +139,7 @@ export default defineComponent({
               eventStore.funtionToUse = 'bylabel'
               await eventStore.FETCH_EVENTS_BY_LABEL()
               break
-            default:
+            case !eventStore.dateSelected && !eventStore.labelsTypeSelected:
               eventStore.funtionToUse = 'allevents'
               await fetchAllEvents()
               break

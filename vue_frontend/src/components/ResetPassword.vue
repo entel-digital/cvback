@@ -3,19 +3,17 @@ createWebHashHistory
   <div class="flex flex-center">
     <div class="bg-blue-5 border-radius flex flex-center column q-pa-lg" style="height: 50vh">
       <div class="column">
-        <p class="q-py-lg text-center text-white barlow-bold">Iniciar sesión</p>
+        <p class="q-py-lg text-center text-white barlow-bold">Cambiar contraseña</p>
         <form
-          @submit.prevent="signInVision()"
+          @submit.prevent="resetPassword()"
           class="q-gutter-md text-center q-pa-md"
           style="min-width: 300px"
         >
-          <q-input dark standard v-model="username" label="Usuario" lazy-rules color="white" />
+          <q-input dark standard v-model="email" label="Email" lazy-rules color="white" />
 
-          <q-input dark standard type="password" v-model="password" label="Contraseña" lazy-rules />
-
-          <div class="q-py-lg">
+          <div class="q-py-md">
             <q-btn
-              label="Ingresar"
+              label="Cambiar contraseña"
               no-caps
               type="submit"
               color="accent"
@@ -23,8 +21,8 @@ createWebHashHistory
               :loading="loading"
             />
 
-          </div>
 
+          </div>
         </form>
       </div>
     </div>
@@ -38,7 +36,7 @@ import { useQuasar } from 'quasar'
 import { useUserStore } from '@/stores/user.js'
 
 export default defineComponent({
-  name: 'SignInIndex',
+  name: 'ResetPasswordIndex',
   setup() {
     const username = ref('')
     const password = ref('')
