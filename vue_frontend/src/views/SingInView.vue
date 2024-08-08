@@ -57,7 +57,7 @@ const showRequestPassword = ref(false);
               color="white"
               class="full-width"
               style="text-decoration: underline"
-              :click="showRequestPassword = true"
+              @click="showRequestPassword = true"
             />
           </div>
         </div>
@@ -71,7 +71,7 @@ const showRequestPassword = ref(false);
               color="white"
               class="full-width"
               style="text-decoration: underline"
-              :click="showRequestPassword = false"
+              @click="showRequestPassword = false"
             />
           </div>
         </div>

@@ -38,8 +38,7 @@ import { useUserStore } from '@/stores/user.js'
 export default defineComponent({
   name: 'ResetPasswordIndex',
   setup() {
-    const username = ref('')
-    const password = ref('')
+    const email = ref('')
     const router = useRouter()
     const userStore = useUserStore()
 
@@ -47,36 +46,35 @@ export default defineComponent({
     const loading = ref(false)
 
     const clearForm = () => {
-      username.value = ''
-      password.value = ''
+      email.value = ''
     }
 
-    const signInVision = async () => {
+    const resetPassword = async () => {
       loading.value = true
-      await userStore.SIGN_IN({
-        username: username.value,
-        password: password.value
+     const request = await userStore.REQUEST_PASSWORD({
+        email: email.value,
       })
-      if (userStore.user?.meta.is_authenticated) {
-        router.push({ name: 'home' })
-        loading.value = false
-        clearForm()
-      } else {
-        loading.value = false
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'report_problem',
-          message: 'Usuario o contraseña incorrectos'
-        })
-        clearForm()
-      }
+
+      console.log("request", request);
+      // if (userStore.user?.meta.is_authenticated) {
+      //   router.push({ name: 'home' })
+      //   loading.value = false
+      //   clearForm()
+      // } else {
+      //   loading.value = false
+      //   $q.notify({
+      //     color: 'red-5',
+      //     textColor: 'white',
+      //     icon: 'report_problem',
+      //     message: 'Usuario o contraseña incorrectos'
+      //   })
+      //   clearForm()
+      // }
     }
 
     return {
-      username,
-      password,
-      signInVision,
+      email,
+      resetPassword,
       loading
     }
   }
