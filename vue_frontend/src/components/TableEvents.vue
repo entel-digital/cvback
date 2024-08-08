@@ -287,13 +287,11 @@ export default defineComponent({
       const minutes =
         dateObj.getMinutes()  < 10 ? `0${dateObj.getMinutes() }` : dateObj.getMinutes()
 
-      console.log("dateObj",dateObj);
 
       const newDate = {
         date: `${day}/${month}/${year}`,
         time: `${hour}:${minutes}`
       }
-      console.log("newDate",newDate);
       return newDate
     }
 
