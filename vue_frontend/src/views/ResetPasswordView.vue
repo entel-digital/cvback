@@ -1,7 +1,7 @@
 <script setup>
 import { baseStorageUrl } from '@/services/utils/globals.js'
 import SingIn from '@/components/SingIn.vue'
-import RequestResetPassword from '@/components/RequestResetPassword.vue'
+import ResetPass from '@/components/ResetPass.vue'
 
 import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user.js'
@@ -47,8 +47,7 @@ const showRequestPassword = ref(false);
       </div>
       <div class="col-6">
         <div  class="flex flex-center column" :style="styleBg">
-          <div v-if ="!showRequestPassword">
-            <SingIn />
+          <ResetPass />
           <div class="q-py-md">
             <q-btn
               flat
@@ -61,23 +60,8 @@ const showRequestPassword = ref(false);
               @click="showRequestPassword = true"
             />
           </div>
-          </div>
-          <div v-else>
-            <RequestResetPassword />
-          <div class="q-py-md">
-            <q-btn
-              flat
-              label="Volver"
-              no-caps
-              color="white"
-              class="full-width"
-              style="text-decoration: underline"
-              @click="showRequestPassword = false"
-            />
-          </div>
-          </div>
-
         </div>
+
       </div>
     </div>
 

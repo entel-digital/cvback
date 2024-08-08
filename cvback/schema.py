@@ -1,40 +1,98 @@
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
-from cvback.events.schema import EventType, EventFilterAndPaginationType
-from cvback.events.models import Event
+import graphene_django_optimizer as gql_optimizer
+from cvback.events.models import Event, EventType, Label, InferenceDetectionClassification
 import json
+from asyncio import iscoroutinefunction
+from cvback.events.schema import FrameType
+from django.db.models import Prefetch
 
+def optional_query(func):
+    if iscoroutinefunction(func):
+        return gql_optimizer.query(func)
+    return func
+
+class OptimizedEventType(gql_optimizer.OptimizedDjangoObjectType):
+    class Meta:
+        model = Event
+        fields = "__all__"
+        filter_fields = {
+            'id': ['exact', 'range', 'in', 'gte', 'lt'],
+            'informed_date': ['gte', 'lt', 'exact']
+        }
+        interfaces = (graphene.relay.Node,)
+
+    id = graphene.ID(source='pk', required=True)
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        return gql_optimizer.query(queryset.select_related(
+            'event_type', 
+            'event_label'
+        ).prefetch_related(
+            'frames', 
+            'videos',
+            'key_frames',
+            'key_videos',
+            'labels_detected', 
+            'labels_missing',
+            'inference_ocr',
+            Prefetch('inference_detection_classification', 
+                    queryset=InferenceDetectionClassification.objects.select_related('frame')
+                                                                    .prefetch_related('labels', 'bounding_boxes'))
+        ), info)
+
+    @gql_optimizer.resolver_hints(
+        model_field='frames',
+    )
+    def resolve_frames(self, info):
+        return self.frames.all()
+    
+    def resolve_id(self, info):
+        return self.pk
 
 class UpdateEventMutation(graphene.Mutation):
     class Arguments:
         id = graphene.ID(required=True)
         tag = graphene.String()
 
-    event = graphene.Field(EventType)
+    class Meta:
+        output = OptimizedEventType
 
-    def mutate(self, info, id, tag):
+    @classmethod
+    def mutate(cls, root, info, id, tag):
         event = Event.objects.get(pk=id)
         event.tag = tag
         event.save()
-        return UpdateEventMutation(event=event)
+        return gql_optimizer.query(Event.objects.filter(pk=event.pk), info).first()
 
+class EventFilterAndPaginationType(graphene.ObjectType):
+    events = graphene.List(OptimizedEventType)
+    global_total_number = graphene.Int()
+    offset = graphene.Int(default_value=0)
+    rows_per_page = graphene.Int(default_value=10)
+    filtered = graphene.Boolean()
+    filtered_by = graphene.List(graphene.String)
+    label_text_filter = graphene.String()
+    query_total_number = graphene.Int()
+    labels_summary = graphene.JSONString()
+    types_summary = graphene.JSONString()
+    unique_labels_count = graphene.Int()
 
 class Query(graphene.ObjectType):
-    all_events = graphene.List(EventType)
-    # event_type = graphene.Field(EventTypeType)
-    # all_labels = graphene.List(LabelType)
-    # all_bounding_boxes = graphene.List(BoundingBoxType)
-    # all_key_frames = graphene.List(KeyFrameType)
+    all_events = graphene.List(OptimizedEventType)
 
+    @optional_query
     def resolve_all_events(self, info):
         return Event.objects.all()
 
     paginated_events = DjangoFilterConnectionField(
-        EventType,
+        OptimizedEventType,
         first=graphene.Int(),
         skip=graphene.Int()
     )
 
+    @optional_query
     def resolve_paginated_events(self, info, **kwargs):
         qs = Event.objects.all()
         skip = kwargs.get('skip')
@@ -56,11 +114,12 @@ class Query(graphene.ObjectType):
         date_lower_than=graphene.DateTime(default_value=None),
         date_greater_than_equal=graphene.DateTime(default_value=None),
         label_text_filter=graphene.String(),
-        )
+    )
 
+    @optional_query
     def resolve_filtered_and_paginated_events(self, info, **kwargs):
         qs = Event.objects.order_by('-informed_date')
-        global_total_number = qs.count()
+        global_total_number = Event.objects.count()
 
         rows_per_page = kwargs.get('rows_per_page', 10)
         offset = kwargs.get('offset')
@@ -74,6 +133,7 @@ class Query(graphene.ObjectType):
 
         filtered = False
         filtered_by = []
+
         if label_text_filter:
             filtered = True
             filtered_by.append("label_text")
@@ -90,7 +150,6 @@ class Query(graphene.ObjectType):
             filtered = True
             filtered_by.append("id>=")
             qs = qs.filter(id__gte=id_greater_than_equal)
-
         if date_equals_to:
             filtered = True
             filtered_by.append("date=")
@@ -99,30 +158,25 @@ class Query(graphene.ObjectType):
             filtered = True
             filtered_by.append("date<")
             qs = qs.filter(informed_date__lt=date_lower_than)
-
         if date_greater_than_equal:
             filtered = True
             filtered_by.append("date>=")
             qs = qs.filter(informed_date__gte=date_greater_than_equal)
 
-        event_labels = Event.event_label.get_queryset().distinct()
+        qs = OptimizedEventType.get_queryset(qs, info)
+                
         total = qs.count()
-        labels_summary = {"total": total}
 
-        for event_label in event_labels:
-            event_label_qs = qs.filter(event_label=event_label).count()
-            if event_label_qs > 0:
-                labels_summary[event_label.name] = event_label_qs
-        labels_summary = json.dumps(labels_summary)
+        # Calculate summaries
+        all_labels = Label.objects.all()
+        labels_summary = {label.name: count for label in all_labels if (count := qs.filter(event_label=label).count()) > 0}
+        labels_summary['total'] = total
 
-        event_types = Event.event_type.get_queryset().distinct()
+        all_types = EventType.objects.all()
+        types_summary = {event_type.name: count for event_type in all_types if (count := qs.filter(event_type=event_type).count()) > 0}
+        types_summary['total'] = total
 
-        types_summary = {"total": total}
-        for event_type in event_types:
-            event_type_qs = qs.filter(event_type=event_type).count()
-            if event_type_qs > 0:
-                types_summary[event_type.name] = event_type_qs
-        types_summary = json.dumps(types_summary)
+        unique_labels_count = sum(1 for count in labels_summary.values() if count > 0) - 1
 
         if offset:
             qs = qs[offset:]
@@ -130,24 +184,21 @@ class Query(graphene.ObjectType):
             qs = qs[:rows_per_page]
 
         result = EventFilterAndPaginationType(
-            events=qs,
+            events=gql_optimizer.query(qs, info),
             global_total_number=global_total_number,
             offset=offset,
             rows_per_page=rows_per_page,
             filtered=filtered,
             filtered_by=filtered_by,
             query_total_number=total,
-            labels_summary=labels_summary,
-            types_summary=types_summary
+            labels_summary=json.dumps(labels_summary),
+            types_summary=json.dumps(types_summary),
+            unique_labels_count=unique_labels_count
         )
 
         return result
 
-
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
 
-
 schema = graphene.Schema(query=Query, mutation=Mutation)
-
-"""{eventLabelsSummary {summary}}"""

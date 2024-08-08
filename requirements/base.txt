@@ -43,3 +43,5 @@ djangorestframework-api-key
 
 # phone number
 django-phonenumber-field[phonenumbers]
+
+graphene-django-optimizer

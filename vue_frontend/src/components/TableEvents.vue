@@ -54,7 +54,7 @@
                 <div class="fit row justify-between q-py-sm" style="min-height: 400px">
                   <div class="col-4 text-left q-pa-md q-gutter-md">
                     <q-list class="fit">
-                      <q-item>
+                      <q-item v-if="props.row.confidence">
                         <q-item-section>
                           <q-item-label
                             >Confiabilidad:
@@ -149,7 +149,7 @@
             direction-links
             ellipses
             :max="pagesNumber"
-            :max-pages="0"
+            :max-pages="5"
             text-color="dark"
             active-text-color="white"
             color="dark"
@@ -184,7 +184,7 @@
 
           <q-card>
             <q-card-section>
-              <q-item-label class="text-dark fs-14-19 q-py-sm"
+              <q-item-label  v-if="row.confidence" class="text-dark fs-14-19 q-py-sm"
                 >Confiabilidad:
                 <span class="barlow-bold fs-15-18"> {{ toPercentage(row.confidence) }}% </span>
               </q-item-label>
@@ -342,46 +342,55 @@ export default defineComponent({
 })
 </script>
 
-<style lang="sass">
-.my-sticky-dynamic
+<style lang="scss">
+.my-sticky-dynamic {
   /* height or max-height is important */
-  height: 60vh
-
+  height: 60vh;
 
   .q-table__top,
   .q-table__bottom,
-  thead tr:first-child th /* bg color is important for th; just specify one */
-    background-color: #ffffff
+  thead tr:first-child th /* bg color is important for th; just specify one */ {
+    background-color: #ffffff;
+  }
 
-  thead tr th
-    position: sticky
-    z-index: 2
-    color: #4A4A4A
+  thead tr th {
+    position: sticky;
+    z-index: 2;
+    color: #4A4A4A;
+  }
+
   /* this will be the loading indicator */
-  thead tr:last-child th
+  thead tr:last-child th {
     /* height of all previous header rows */
-    top: 48px
-    font-size: 16px
-    line-height: 19px
-    font-weight: 600
-    color: #4A4A4A
+    top: 48px;
+    font-size: 16px;
+    line-height: 19px;
+    font-weight: 600;
+    color: #4A4A4A;
+  }
 
-  thead tr:first-child th
-    top: 0
-    padding-left: 50px
+  thead tr:first-child th {
+    top: 0;
+    padding-left: 50px;
+  }
+
   /* prevent scrolling behind sticky top row on focus */
-  tbody
+  tbody {
     /* height of all previous header rows */
-    scroll-margin-top: 48px
-    color: #828282
+    scroll-margin-top: 48px;
+    color: #828282;
+  }
 
-  .q-table--horizontal-separator tbody tr > td
-    padding-left: 50px
+  .q-table--horizontal-separator tbody tr > td {
+    padding-left: 50px;
+  }
 
-  tbody tr:nth-child(odd) // Add this selector
-    background-color: #FAFAFA // Add your desired color here
+  tbody tr:nth-child(odd) { // Add this selector
+    background-color: #FAFAFA; // Add your desired color here
+  }
+}
 
-
-:deep(div.q-pagination__middle.row.justify-center)
-  max-width: fit-content !important
+:deep(.q-pagination__middle.row.justify-center ) {
+  max-width: fit-content !important;
+}
 </style>
