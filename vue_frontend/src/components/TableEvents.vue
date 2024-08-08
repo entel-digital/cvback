@@ -14,7 +14,6 @@
           :pagination.sync="eventStore.pagination"
           header-class="text-dark"
           hide-pagination
-          style="max-height: 40vh"
         >
           <template v-slot:body="props">
             <q-tr
