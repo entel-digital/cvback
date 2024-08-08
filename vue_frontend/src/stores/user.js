@@ -36,10 +36,10 @@ export const useUserStore = defineStore('user', {
         // return error
       }
     },
-    async REQUEST_PASSWORD() {
+    async REQUEST_PASSWORD(email) {
       try {
-        const response = await api.get('_allauth/browser/v1/auth/password/request')
-        return response
+        const response = await api.post('_allauth/browser/v1/auth/password/request', {email: email})
+        return response.data.status
       } catch (error) {
         console.log('HERE IN ERROR REQUEST PASSWORD', error)
         // return error

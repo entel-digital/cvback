@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 
+import ResetPasswordView from '@/views/ResetPasswordView.vue'
 import SingIngView from '@/views/SingInView.vue'
 import HomeView from '@/views/HomeView.vue'
 
@@ -11,6 +12,11 @@ const router = createRouter({
       path: '/',
       name: 'login',
       component: SingIngView
+    },
+    {
+      path: '/restaurar_contraseña',
+      name: 'reset',
+      component: ResetPasswordView
     },
     {
       path: '/dashboard',

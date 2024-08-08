@@ -51,9 +51,9 @@ export default defineComponent({
 
     const resetPassword = async () => {
       loading.value = true
-     const request = await userStore.REQUEST_PASSWORD({
-        email: email.value,
-      })
+     const request = await userStore.REQUEST_PASSWORD(
+        email.value,
+      )
 
       console.log("request", request);
       // if (userStore.user?.meta.is_authenticated) {
