@@ -11,13 +11,18 @@ const signOut = async () => {
   await userStore.SIGN_OUT()
   router.push({ name: 'login' })
 }
+const goHome = () => {
+  router.push({ path: '/' })
+}
 </script>
 
 <template>
-  <q-toolbar class="bg-info text-primary toolbar-height ifems-center q-px-md">
+  <q-toolbar class="bg-info text-primary toolbar-height justify-between items-center q-px-md">
     <q-toolbar-title style="max-width: 750px">
       <div class="fit q-px-md">
+        <q-btn flat  @click="goHome" >
         <img :src="logoVision" alt="logo vision" class="logo-vision" />
+      </q-btn>
       </div>
 
     </q-toolbar-title>
@@ -29,7 +34,7 @@ const signOut = async () => {
       icon="person_outline"
       :label="userStore.user?.data.user.display"
       dropdown-icon="expand_more"
-      style="width: 100px;"
+      style="width: 100px; margin-right: 60px"
     >
       <q-list>
         <q-item class="fit" clickable v-close-popup @click="signOut">

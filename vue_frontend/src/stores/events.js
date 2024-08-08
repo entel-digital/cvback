@@ -26,7 +26,7 @@ export const useEventsStore = defineStore('events', {
       descending: false,
       page: 1,
       offset: 0,
-      rowsPerPage: 25
+      rowsPerPage: 50
     },
     funtionToUse: 'allevents',
     labelsTypes: null,
@@ -51,16 +51,13 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary)
-          .filter((itm) => itm !== 'total')
-          .map((itm) => itm.key)
-
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE', error)
+        console.log('HERE IN ERROR FETCH EVENTS')
         this.allEvents = []
         this.loadingEvents = false
       }
@@ -87,15 +84,14 @@ export const useEventsStore = defineStore('events', {
           labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
-        this.labelsTypes = Object.keys(
-          parseData(data.filteredAndPaginatedEvents.labelsSummary)
-        ).filter((itm) => itm !== 'total')
+
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE', error)
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE')
         this.allEvents = []
         this.loadingEvents = false
       }
@@ -121,15 +117,13 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = Object.keys(
-          parseData(data.filteredAndPaginatedEvents.labelsSummary)
-        ).filter((itm) => itm !== 'total')
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
         return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_EVENTS_BY_LABEL', error)
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_LABEL')
         this.allEvents = []
       }
     },
@@ -156,17 +150,14 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary)
-          .filter((itm) => itm !== 'total')
-          .map((itm) => itm.key)
-
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
 
         return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE_BY_LABEL', error)
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE_BY_LABEL')
         this.allEvents = []
       }
     }

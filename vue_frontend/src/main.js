@@ -15,8 +15,6 @@ import 'quasar/src/css/index.sass'
 const app = createApp(App).use(Quasar, quasarUserOptions)
 
 app.use(createPinia())
-app.use(api)
-app.use(baseStorageUrl)
 app.use(router)
 
 app.mount('#app')

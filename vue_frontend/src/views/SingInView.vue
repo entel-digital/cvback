@@ -1,7 +1,9 @@
 <script setup>
 import { baseStorageUrl } from '@/services/utils/globals.js'
 import SingIn from '@/components/SingIn.vue'
-import { onMounted } from 'vue'
+import ResetPassword from '@/components/ResetPassword.vue'
+
+import { onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user.js'
 import { useRouter } from 'vue-router'
 
@@ -14,7 +16,6 @@ const logoEntelDigitalWhite = `${baseStorageUrl}/images/entel_digital_blanco.png
 const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
 const styleBg = `background-image: url(${pathImageBg}); background-size: cover; background-repeat: no-repeat; background-position: center;  height: 100vh;
   width: 100%;`
-
 const router = useRouter()
 
 onMounted(async () => {
@@ -23,6 +24,9 @@ onMounted(async () => {
     router.push({ name: 'home' })
   }
 })
+const showRequestPassword = ref(false);
+
+
 </script>
 
 <template>
@@ -42,8 +46,34 @@ onMounted(async () => {
         </div>
       </div>
       <div class="col-6">
-        <div class="flex flex-center" :style="styleBg">
+        <div v-if ="!showRequestPassword" class="flex flex-center column" :style="styleBg">
           <SingIn />
+          <!-- <div class="q-py-md">
+            <q-btn
+              flat
+              label="Recuperar contraseña"
+              no-caps
+              type="submit"
+              color="white"
+              class="full-width"
+              style="text-decoration: underline"
+              @click="showRequestPassword = true"
+            />
+          </div> -->
+        </div>
+        <div v-else class="flex flex-center column" :style="styleBg">
+          <ResetPassword />
+          <div class="q-py-md">
+            <q-btn
+              flat
+              label="Volver"
+              no-caps
+              color="white"
+              class="full-width"
+              style="text-decoration: underline"
+              @click="showRequestPassword = false"
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-createWebHashHistory<template>
+createWebHashHistory
+<template>
   <div class="flex flex-center">
     <div class="bg-blue-5 border-radius flex flex-center column q-pa-lg" style="height: 50vh">
       <div class="column">
@@ -21,7 +22,9 @@ createWebHashHistory<template>
               class="full-width"
               :loading="loading"
             />
+
           </div>
+
         </form>
       </div>
     </div>
