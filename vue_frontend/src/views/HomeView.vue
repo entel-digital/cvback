@@ -93,6 +93,8 @@ export default defineComponent({
       eventStore.loadingEvents = true
       eventStore.dateSelected = data.dateToFilter
       eventStore.labelsTypeSelected = data.labelTypeToFilter
+      eventStore.pagination.page = 1
+      eventStore.pagination.offset = 0
 
       switch (true) {
         case data.dateToFilter !== null && data.labelTypeToFilter !== null:
