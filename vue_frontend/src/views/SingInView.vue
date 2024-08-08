@@ -48,7 +48,7 @@ const showRequestPassword = ref(false);
       <div class="col-6">
         <div v-if ="!showRequestPassword" class="flex flex-center column" :style="styleBg">
           <SingIn />
-          <!-- <div class="q-py-md">
+          <div class="q-py-md">
             <q-btn
               flat
               label="Recuperar contraseña"
@@ -59,7 +59,7 @@ const showRequestPassword = ref(false);
               style="text-decoration: underline"
               @click="showRequestPassword = true"
             />
-          </div> -->
+          </div>
         </div>
         <div v-else class="flex flex-center column" :style="styleBg">
           <ResetPassword />
