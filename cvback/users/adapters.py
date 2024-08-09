@@ -20,7 +20,7 @@ class AccountAdapter(DefaultAccountAdapter):
     
     def render_mail(self, template_prefix, email, context, headers=None):
         if template_prefix == "account/email/password_reset_key":
-            context["password_reset_url"] = context["password_reset_url"].replace("/accounts/", "#/account/") 
+            context["password_reset_url"] = context["password_reset_url"].replace("/accounts/", "/#/account/") 
         return super().render_mail(template_prefix,email,context,headers=headers)
 
 
