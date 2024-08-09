@@ -56,7 +56,7 @@ export default defineComponent({
         field: 'addedDate',
         align: 'center',
         sortable: true,
-        sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
+        sort: (a, b) => new Date(a) - new Date(b)
       },
       {
         name: 'labelType',
@@ -95,57 +95,34 @@ export default defineComponent({
       eventStore.labelsTypeSelected = data.labelTypeToFilter
       eventStore.pagination.page = 1
       eventStore.pagination.offset = 0
+      updateData(data.dateToFilter, data.labelTypeToFilter)
+    }
 
-      switch (true) {
-        case data.dateToFilter !== null && data.labelTypeToFilter !== null:
-          eventStore.funtionToUse = 'bydateandlabel'
-          await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
-          eventStore.loadingEvents = false
-
-          break
-        case data.dateToFilter !== null && !data.labelTypeToFilter:
-          eventStore.funtionToUse = 'bydate'
-
-          await eventStore.FETCH_EVENTS_BY_DATE()
-          eventStore.loadingEvents = false
-
-          break
-        case !data.dateToFilter && data.labelTypeToFilter !== null:
-          eventStore.funtionToUse = 'bylabel'
-          await eventStore.FETCH_EVENTS_BY_LABEL()
-          eventStore.loadingEvents = false
-
-          break
-        case !eventStore.dateSelected && !eventStore.labelsTypeSelected:
-          eventStore.funtionToUse = 'allevents'
-          await fetchAllEvents()
-          break
+    const updateData = async (date, label) => {
+      eventStore.loadingEvents = true
+      if (date !== null && label !== null) {
+        eventStore.funtionToUse = 'bydateandlabel'
+        await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
+        eventStore.loadingEvents = false
+      } else if (date !== null && !label) {
+        eventStore.funtionToUse = 'bydate'
+        await eventStore.FETCH_EVENTS_BY_DATE()
+        eventStore.loadingEvents = false
+      } else if (!date && label !== null) {
+        eventStore.funtionToUse = 'bylabel'
+        await eventStore.FETCH_EVENTS_BY_LABEL()
+        eventStore.loadingEvents = false
+      } else if (!date && !label) {
+        eventStore.funtionToUse = 'allevents'
+        await fetchAllEvents()
       }
     }
 
     watch(
       () => eventStore.pagination.page,
-      async (newValue) => {
-        if (newValue) {
-          switch (true) {
-            case eventStore.dateSelected && eventStore.labelsTypeSelected:
-              eventStore.funtionToUse = 'bydateandlabel'
-              await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
-              break
-            case eventStore.dateSelected && !eventStore.labelsTypeSelected:
-              eventStore.funtionToUse = 'bydate'
-
-              await eventStore.FETCH_EVENTS_BY_DATE()
-              break
-            case !eventStore.dateSelected && eventStore.labelsTypeSelected:
-              eventStore.funtionToUse = 'bylabel'
-              await eventStore.FETCH_EVENTS_BY_LABEL()
-              break
-            case !eventStore.dateSelected && !eventStore.labelsTypeSelected:
-              eventStore.funtionToUse = 'allevents'
-              await fetchAllEvents()
-              break
-          }
+      async (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          updateData(eventStore.dateSelected, eventStore.labelsTypeSelected)
         }
       }
     )

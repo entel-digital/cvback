@@ -8,7 +8,7 @@ import {
 } from '@/services/cv-api/modules/events/index.js'
 
 const parseData = (data) => {
-  const replaces = data.replace(/\\\"/g, '"').slice(1, -1).replace('no cumple', 'no_cumple')
+  const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
   return Object.entries(JSON.parse(replaces))
     .map(([key, value]) => ({ key, value }))
     .filter((itm) => itm.key !== 'total')

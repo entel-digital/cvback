@@ -94,12 +94,14 @@
                         <q-item-section>
                           <q-item-label
                             >OCR:
-                            <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                              props.row.inferenceOcr?.name || 'No identificado'
-                            }}</q-chip>
-                            <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                              props.row.inferenceOcr?.value || 'No identificado'
-                            }}</q-chip>
+                            <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
+                              <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                                ocr.name || 'No identificado'
+                              }}</q-chip>
+                              <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                                ocr.value || 'No identificado'
+                              }}</q-chip>
+                            </div>
                           </q-item-label>
                         </q-item-section>
                       </q-item>
@@ -184,7 +186,7 @@
 
           <q-card>
             <q-card-section>
-              <q-item-label  v-if="row.confidence" class="text-dark fs-14-19 q-py-sm"
+              <q-item-label v-if="row.confidence" class="text-dark fs-14-19 q-py-sm"
                 >Confiabilidad:
                 <span class="barlow-bold fs-15-18"> {{ toPercentage(row.confidence) }}% </span>
               </q-item-label>
@@ -204,12 +206,14 @@
               </q-item-label>
               <q-item-label
                 >OCR:
-                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                  row.inferenceOcr?.name || 'No identificado'
-                }}</q-chip>
-                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                  row.inferenceOcr?.value || 'No identificado'
-                }}</q-chip>
+                <div v-for="ocr in row.inferenceOcr" :key="ocr.id">
+                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                    ocr.name || 'No identificado'
+                  }}</q-chip>
+                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                    ocr.value || 'No identificado'
+                  }}</q-chip>
+                </div>
               </q-item-label>
             </q-card-section>
             <q-card-section>
@@ -279,9 +283,10 @@ export default defineComponent({
       const day = dateObj.getDate() < 10 ? `0${dateObj.getDate()}` : dateObj.getDate()
       const year = dateObj.getFullYear()
       const hour =
-        dateObj.getHours() + 1 < 10 ? `0${dateObj.getHours() + 1}` : dateObj.getHours() + 1
+        dateObj.getHours() < 10 ? `0${dateObj.getHours() }` : dateObj.getHours()
       const minutes =
-        dateObj.getMinutes() + 1 < 10 ? `0${dateObj.getMinutes() + 1}` : dateObj.getMinutes() + 1
+        dateObj.getMinutes()  < 10 ? `0${dateObj.getMinutes() }` : dateObj.getMinutes()
+
 
       const newDate = {
         date: `${day}/${month}/${year}`,
@@ -356,7 +361,7 @@ export default defineComponent({
   thead tr th {
     position: sticky;
     z-index: 2;
-    color: #4A4A4A;
+    color: #4a4a4a;
   }
 
   /* this will be the loading indicator */
@@ -366,7 +371,7 @@ export default defineComponent({
     font-size: 16px;
     line-height: 19px;
     font-weight: 600;
-    color: #4A4A4A;
+    color: #4a4a4a;
   }
 
   thead tr:first-child th {
@@ -385,12 +390,13 @@ export default defineComponent({
     padding-left: 50px;
   }
 
-  tbody tr:nth-child(odd) { // Add this selector
-    background-color: #FAFAFA; // Add your desired color here
+  tbody tr:nth-child(odd) {
+    // Add this selector
+    background-color: #fafafa; // Add your desired color here
   }
 }
 
-:deep(.q-pagination__middle.row.justify-center ) {
+:deep(.q-pagination__middle.row.justify-center) {
   max-width: fit-content !important;
 }
 </style>
