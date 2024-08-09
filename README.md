@@ -1,6 +1,6 @@
 # CVBack
 
-A back end for computer vision.
+A back end for [computer vision cvutils](https://github.com/entel-digital/cvutils).
 
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
@@ -13,20 +13,17 @@ License: MIT
   - camera list
   - LoI / AoI editor
   - Pass recovery
-  - inte
 - Authentication (native)
   - Social
   - 2fa
-  - Active directory?
 - acgi
 - export to csv
 - regex warning
 - default mailout
 - rest 500
-
-## Some criteria
-
-- [REST for devices and graphQL for events](https://www.baeldung.com/graphql-vs-rest)
+- move UI remotes to local
+- documentation
+- i18
 
 ## Settings
 
