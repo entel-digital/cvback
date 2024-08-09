@@ -124,12 +124,23 @@ INSTALLED_APPS += ["anymail"]  # noqa: F405
 # https://anymail.readthedocs.io/en/stable/esps/mailgun/
 # EMAIL_BACKEND = env("DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
 # EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
-EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
-ANYMAIL = {
-    "MAILJET_API_KEY": env("DJANGO_MAILJET_API_KEY"),
-    "MAILJET_SECRET_KEY": env("DJANGO_MAILJET_SECRET_KEY"),
-}
+#EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+#ANYMAIL = {
+#    "MAILJET_API_KEY": env("DJANGO_MAILJET_API_KEY"),
+#    "MAILJET_SECRET_KEY": env("DJANGO_MAILJET_SECRET_KEY"),
+#}
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+
+DEFAULT_FROM_EMAIL = "vision@enteldigital.cl"
+
+EMAIL_HOST = env("EMAIL_HOST", default=None)
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default=None)
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default=None)
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging

@@ -13,8 +13,15 @@ if typing.TYPE_CHECKING:
 
 
 class AccountAdapter(DefaultAccountAdapter):
+
+        
     def is_open_for_signup(self, request: HttpRequest) -> bool:
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
+    
+    def render_mail(self, template_prefix, email, context, headers=None):
+        if template_prefix == "account/email/password_reset_key":
+            context["password_reset_url"] = context["password_reset_url"].replace("/accounts/", "#/account/") 
+        return super().render_mail(template_prefix,email,context,headers=headers)
 
 
 # class SocialAccountAdapter(DefaultSocialAccountAdapter):
