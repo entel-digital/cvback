@@ -34,7 +34,7 @@ const goHome = () => {
       icon="person_outline"
       :label="userStore.user?.data.user.display"
       dropdown-icon="expand_more"
-      style="width: 100px; margin-right: 60px"
+      style="width: 200px; margin-right: 60px"
     >
       <q-list>
         <q-item class="fit" clickable v-close-popup @click="signOut">

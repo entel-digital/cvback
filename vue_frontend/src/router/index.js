@@ -14,8 +14,9 @@ const router = createRouter({
       component: SingIngView
     },
     {
-      path: '/restaurar_contraseña',
+      path: '/account/password/reset/key/:key',
       name: 'reset',
+      props: true,
       component: ResetPasswordView
     },
     {

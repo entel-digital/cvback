@@ -1,6 +1,5 @@
 <script setup>
 import { baseStorageUrl } from '@/services/utils/globals.js'
-import SingIn from '@/components/SingIn.vue'
 import ResetPass from '@/components/ResetPass.vue'
 
 import { onMounted, ref } from 'vue'
@@ -16,17 +15,17 @@ const logoEntelDigitalWhite = `${baseStorageUrl}/images/entel_digital_blanco.png
 const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
 const styleBg = `background-image: url(${pathImageBg}); background-size: cover; background-repeat: no-repeat; background-position: center;  height: 100vh;
   width: 100%;`
+
 const router = useRouter()
 
-onMounted(async () => {
-  const statusSession = await useUserStore().GET_SESSION()
-  if (statusSession?.is_authenticated) {
-    router.push({ name: 'home' })
+const goHome = () => {
+  router.push({ path: '/login' })
+}
+onMounted(() => {
+  if (!router.currentRoute.value.params.key) {
+    router.push({ name: 'login' })
   }
 })
-const showRequestPassword = ref(false);
-
-
 </script>
 
 <template>
@@ -46,22 +45,21 @@ const showRequestPassword = ref(false);
         </div>
       </div>
       <div class="col-6">
-        <div  class="flex flex-center column" :style="styleBg">
+        <div class="flex flex-center column" :style="styleBg">
           <ResetPass />
           <div class="q-py-md">
             <q-btn
               flat
-              label="Recuperar contraseña"
+              label="Volver"
               no-caps
               type="submit"
               color="white"
               class="full-width"
               style="text-decoration: underline"
-              @click="showRequestPassword = true"
+              @click="goHome()"
             />
           </div>
         </div>
-
       </div>
     </div>
 
@@ -71,7 +69,7 @@ const showRequestPassword = ref(false);
           <img :src="logoVisionWhite" alt="vision-logo" style="width: 70%" />
         </div>
 
-        <SingIn />
+        <ResetPass />
         <div class="flex justify-center self-end">
           <img :src="logoEntelDigitalWhite" alt="vlogo" style="width: 30%" />
         </div>

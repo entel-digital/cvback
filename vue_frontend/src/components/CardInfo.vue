@@ -27,10 +27,12 @@
             <q-scroll-area style="height: 100px; ">
 
               <div v-for="label in eventStore.summaryEvents.labelsSummary" :key="label">
-                <q-chip square outline color="primary">
-                  <q-avatar color="primary" text-color="white" class="barlow-bold fs-18-23">{{
+                <q-chip square outline color="primary" style="width: fit-content;">
+                  <q-avatar color="primary" text-color="white" class="barlow-bold fs-18-23 q-px-md" style="width: auto;">
+                    {{
                     label.value
-                  }}</q-avatar>
+                  }}
+                  </q-avatar>
                   <span class="barlow-bold fs-16-19"> {{ label.key }}</span>
                 </q-chip>
 
@@ -54,8 +56,8 @@
             <q-scroll-area style="height: 100px; ">
 
               <div v-for="label in eventStore.summaryEvents.typesSummary" :key="label">
-                <q-chip square outline color="primary">
-                  <q-avatar color="primary" text-color="white" class="barlow-bold fs-18-23">{{
+                <q-chip square outline color="primary" style="width: fit-content;">
+                  <q-avatar color="primary" text-color="white"  class="barlow-bold fs-18-23 q-px-md" style="width: auto;" >{{
                     label.value
                   }}</q-avatar>
                   <span class="barlow-bold fs-16-19"> {{ label.key }}</span>
@@ -108,5 +110,8 @@ export default defineComponent({
 .card-large {
   width: 100%;
   max-width: 400px;
+}
+.pad-avatar-num{
+  padding: 0px 24px 0px 20px; 
 }
 </style>

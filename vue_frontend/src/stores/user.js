@@ -45,25 +45,15 @@ export const useUserStore = defineStore('user', {
         // return error
       }
     },
-    async RESET_PASSWORD() {
+    async RESET_PASSWORD(key, password) {
       try {
-        const response = await api.get('_allauth/browser/v1/auth/password/reset')
+        const response = await api.get('_allauth/browser/v1/auth/password/reset', {key, password})
         return response
       } catch (error) {
         console.log('HERE IN ERROR RESET PASSWORD')
         // return error
       }
-    },
-    async CHANGE_PASSWORD() {
-      try {
-        const response = await api.get('_allauth/browser/v1/account/password/change')
-        return response
-      } catch (error) {
-        console.log('HERE IN ERROR CHANGE PASSWORD')
-        // return error
-      }
     }
-
 
   }
 })

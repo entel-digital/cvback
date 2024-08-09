@@ -228,6 +228,20 @@
 
         <q-separator />
       </q-list>
+      <div class="q-pa-lg flex flex-center">
+          <q-pagination
+            :model-value="eventStore.pagination.page"
+            direction-links
+            ellipses
+            :max="pagesNumber"
+            :max-pages="5"
+            text-color="dark"
+            active-text-color="white"
+            color="dark"
+            class="q-px-xl"
+            @update:model-value="updatePagination"
+          />
+        </div>
     </div>
   </div>
 </template>
