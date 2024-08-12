@@ -2,7 +2,7 @@ createWebHashHistory
 <template>
   <div class="flex flex-center">
     <div class="bg-blue-5 border-radius flex flex-center column q-pa-lg" style="height: 70vh">
-      <div v-if="!showResponse" class="column">
+      <div class="column">
         <p class="q-py-lg text-center text-white barlow-bold">Restaurar contraseña</p>
         <form
           @submit.prevent="resetPassword()"
@@ -52,19 +52,6 @@ createWebHashHistory
           </div>
         </form>
       </div>
-      <div v-else>
-        <p>¡El cambio ha sido exitoso!</p>
-        <div class="q-pt-md q-pb-lg">
-          <q-btn
-            label="Volver al inicio"
-            no-caps
-            type="submit"
-            color="accent"
-            class="full-width"
-            @click="goHome"
-          />
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -78,6 +65,7 @@ import { useUserStore } from '@/stores/user.js'
 export default defineComponent({
   name: 'SignInIndex',
   setup() {
+    const key = ref('')
     const password = ref('')
     const password2 = ref('')
 
@@ -91,7 +79,6 @@ export default defineComponent({
       password.value = ''
       password2.value = ''
     }
-
     const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
 
     const checkPass = (value) => {
@@ -108,24 +95,36 @@ export default defineComponent({
       } else {
         if (regexPassword.test(password.value) && regexPassword.test(password2.value)) {
           loading.value = true
-          await userStore.RESET_PASSWORD({
-            key: router.currentRoute.value.params.key,
+          const response = await userStore.RESET_PASSWORD({
+            key: key.value,
             password: password.value
           })
-          loading.value = false
-          router.push({ name: '/' })
+          if (response?.status !== 200) {
+
+              $q.notify({
+                color: 'negative',
+                position: 'top',
+                message: 'Ha ocurrido un error. Intente nuevamente'
+              })
+          } else {
+            router.push({ name: 'home' })
+          }
           clearForm()
-        }
-        else {
+          loading.value = false
+        } else {
           clearForm()
           $q.notify({
             color: 'negative',
             position: 'top',
-            message: 'Ha ocurrido un error. Intente nuevamente',
+            message: 'Ha ocurrido un error. Intente nuevamente'
           })
         }
       }
     }
+    onMounted(() => {
+      key.value = router.currentRoute.value.params.key
+    })
+
     const goHome = () => {
       router.push({ path: '/login' })
     }

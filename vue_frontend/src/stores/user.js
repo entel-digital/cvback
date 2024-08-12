@@ -1,12 +1,11 @@
 import { defineStore } from 'pinia'
-import { api } from "@/services/utils/axios";
-
+import { api } from '@/services/utils/axios'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
     user: null
   }),
-  persist:{
+  persist: {
     paths: ['user']
   },
   actions: {
@@ -38,7 +37,9 @@ export const useUserStore = defineStore('user', {
     },
     async REQUEST_PASSWORD(email) {
       try {
-        const response = await api.post('_allauth/browser/v1/auth/password/request', {email: email})
+        const response = await api.post('_allauth/browser/v1/auth/password/request', {
+          email: email
+        })
         return response.data.status
       } catch (error) {
         console.log('HERE IN ERROR REQUEST PASSWORD', error)
@@ -47,13 +48,16 @@ export const useUserStore = defineStore('user', {
     },
     async RESET_PASSWORD(key, password) {
       try {
-        const response = await api.get('_allauth/browser/v1/auth/password/reset', {key, password})
+        const response = await api.post('_allauth/browser/v1/auth/password/reset', {
+          key: key,
+          password: password
+        })
         return response
       } catch (error) {
         console.log('HERE IN ERROR RESET PASSWORD')
         // return error
+        return { errors: { code: 'error'}}
       }
     }
-
   }
 })
