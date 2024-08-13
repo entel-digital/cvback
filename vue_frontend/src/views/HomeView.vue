@@ -86,7 +86,7 @@ export default defineComponent({
       await eventStore.FETCH_EVENTS()
     }
     onMounted(() => {
-      fetchAllEvents()
+      fetchAllEvents();
     })
 
     const filterData = async (data) => {
