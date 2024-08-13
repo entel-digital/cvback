@@ -48,10 +48,12 @@ export const useUserStore = defineStore('user', {
     },
     async RESET_PASSWORD(key, password) {
       try {
-        const response = await api.post('_allauth/browser/v1/auth/password/reset',
-          key,
-          password
-        )
+        console.log("key store",key);
+        console.log("password store",password);
+        const response = await api.post('_allauth/browser/v1/auth/password/reset',{
+          key: key,
+          password: password
+      })
         return response
       } catch (error) {
         console.log('HERE IN ERROR RESET PASSWORD')
