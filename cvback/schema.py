@@ -107,9 +107,9 @@ class Query(graphene.ObjectType):
         EventFilterAndPaginationType,
         offset=graphene.Int(default_value=0),
         rows_per_page=graphene.Int(default_value=10),
-        id_equals_to=graphene.Int(default_value=None),
-        id_lower_than=graphene.Int(default_value=None),
-        id_greater_than_equal=graphene.Int(default_value=None),
+        id_equals_to=graphene.String(default_value=None),
+        id_lower_than=graphene.String(default_value=None),
+        id_greater_than_equal=graphene.String(default_value=None),
         date_equals_to=graphene.DateTime(default_value=None),
         date_lower_than=graphene.DateTime(default_value=None),
         date_greater_than_equal=graphene.DateTime(default_value=None),
@@ -198,6 +198,7 @@ class Query(graphene.ObjectType):
 
         return result
 
+    
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
 
