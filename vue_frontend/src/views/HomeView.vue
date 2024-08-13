@@ -2,9 +2,9 @@
   <div>
     <Toolbar />
 
-    <div class="q-py-md q-pr-lg q-pl-sm">
+    <!-- <div class="q-py-md q-pr-lg q-pl-sm">
       <FilterEvents @filterData="filterData" />
-    </div>
+    </div> -->
 
     <div class="fit row wrap justify-center items-center q-py-md q-pl-lg q-pr-md">
       <CardInfo />
@@ -28,7 +28,7 @@ import { useEventsStore } from '@/stores/events.js'
 import { useRouter } from 'vue-router'
 
 import Toolbar from '@/components/Toolbar.vue'
-import CardInfo from '@/components/CardInfo.vue'
+import CardInfo from '@/components/SummaryEvents.vue'
 import FilterEvents from '@/components/FilterEvents.vue'
 import TableEvents from '@/components/TableEvents.vue'
 
@@ -84,19 +84,31 @@ export default defineComponent({
 
     const fetchAllEvents = async () => {
       await eventStore.FETCH_EVENTS()
-    }
-    onMounted(() => {
-      fetchAllEvents();
-    })
+    };
+
+
+    onMounted(async () => {
+      console.log("route params:",router.currentRoute.value)
+      console.log("query params event", router.currentRoute.value.query.event || 'all')
+      console.log("query params filter", router.currentRoute.value.query.filter || 'true')
+
+      if(router.currentRoute.value.query?.event){
+        await eventStore.FETCH_EVENTS_BY_ID(router.currentRoute.value.query.event)
+      }else{
+        fetchAllEvents()
+      }
+    });
 
     const filterData = async (data) => {
+      console.log("filterData", data)
+     router.push({ name:"home" })
       eventStore.loadingEvents = true
       eventStore.dateSelected = data.dateToFilter
       eventStore.labelsTypeSelected = data.labelTypeToFilter
       eventStore.pagination.page = 1
       eventStore.pagination.offset = 0
       updateData(data.dateToFilter, data.labelTypeToFilter)
-    }
+    };
 
     const updateData = async (date, label) => {
       eventStore.loadingEvents = true
@@ -116,7 +128,7 @@ export default defineComponent({
         eventStore.funtionToUse = 'allevents'
         await fetchAllEvents()
       }
-    }
+    };
 
     watch(
       () => eventStore.pagination.page,
@@ -125,7 +137,17 @@ export default defineComponent({
           updateData(eventStore.dateSelected, eventStore.labelsTypeSelected)
         }
       }
-    )
+    );
+
+    watch(
+      () => router.currentRoute.value.query,
+      (newQuery) => {
+        console.log("newQuery", newQuery)
+        // applyFilters(newQuery);
+      },
+      { immediate: true }
+    );
+
 
     return {
       columns,

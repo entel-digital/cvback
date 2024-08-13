@@ -1,5 +1,5 @@
 export default `
-query filteredAndPaginatedEvents( $idEqualsTo: Int) {
+query filteredAndPaginatedEvents( $idEqualsTo: String) {
   filteredAndPaginatedEvents(idEqualsTo: $idEqualsTo) {
     filtered
        events {

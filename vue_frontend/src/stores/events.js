@@ -60,6 +60,7 @@ export const useEventsStore = defineStore('events', {
         console.log('HERE IN ERROR FETCH EVENTS')
         this.allEvents = []
         this.loadingEvents = false
+        return
       }
     },
     async FETCH_EVENTS_BY_DATE() {
@@ -94,6 +95,7 @@ export const useEventsStore = defineStore('events', {
         console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE')
         this.allEvents = []
         this.loadingEvents = false
+        return
       }
     },
     async FETCH_EVENTS_BY_LABEL() {
@@ -125,6 +127,8 @@ export const useEventsStore = defineStore('events', {
       } catch (error) {
         console.log('HERE IN ERROR FETCH_EVENTS_BY_LABEL')
         this.allEvents = []
+        this.loadingEvents = false
+        return
       }
     },
     async FETCH_EVENTS_BY_DATE_BY_LABEL() {
@@ -159,6 +163,38 @@ export const useEventsStore = defineStore('events', {
       } catch (error) {
         console.log('HERE IN ERROR FETCH_EVENTS_BY_DATE_BY_LABEL')
         this.allEvents = []
+        this.loadingEvents = false
+        return
+      }
+    },
+    async FETCH_EVENTS_BY_ID(eventId) {
+      this.allEvents = []
+      this.loadingEvents = true
+      try {
+        const data = await getAllEventsById(eventId)
+
+        data.filteredAndPaginatedEvents.events.sort((a, b) => {
+          return new Date(b.addedDate) - new Date(a.addedDate)
+        })
+
+        this.summaryEvents = {
+          totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
+          totalQueryEvents: data.filteredAndPaginatedEvents.queryTotalNumber,
+          labelsSummary: parseData(data.filteredAndPaginatedEvents.labelsSummary),
+          typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
+        }
+
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+
+        this.allEvents = data.filteredAndPaginatedEvents.events
+        this.loadingEvents = false
+
+        return
+      } catch (error) {
+        console.log('HERE IN ERROR FETCH_EVENTS_BY_ID')
+        this.allEvents = []
+        this.loadingEvents = false
+        return
       }
     }
   }

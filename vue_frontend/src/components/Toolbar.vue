@@ -48,7 +48,7 @@ export default defineComponent({
       router.push({ name: 'login' })
     };
     const goHome = () => {
-      router.push({ path: '/' })
+      router.push({ name: 'home' })
     };
 
     userStore

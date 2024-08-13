@@ -22,6 +22,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'home',
+      props: true,
       component: HomeView,
       beforeEnter: async (to, from, next) => {
         const statusSession = await useUserStore().GET_SESSION()

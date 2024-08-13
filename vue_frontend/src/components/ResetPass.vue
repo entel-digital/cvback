@@ -100,7 +100,6 @@ export default defineComponent({
             password: password.value
           })
           if (response?.status !== 200) {
-
               $q.notify({
                 color: 'negative',
                 position: 'top',
