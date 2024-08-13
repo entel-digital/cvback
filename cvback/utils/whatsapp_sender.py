@@ -55,4 +55,5 @@ class WhatsappSender():
                 "Authorization": token,
                 }, json=data
         )
+        print( "Whatsapp Response:", response.json())
         return response

@@ -95,10 +95,10 @@ export default defineComponent({
       } else {
         if (regexPassword.test(password.value) && regexPassword.test(password2.value)) {
           loading.value = true
-          const response = await userStore.RESET_PASSWORD({
-            key: key.value,
-            password: password.value
-          })
+          const response = await userStore.RESET_PASSWORD(
+            key.value,
+            password.value
+        )
           if (response?.status !== 200) {
               $q.notify({
                 color: 'negative',
