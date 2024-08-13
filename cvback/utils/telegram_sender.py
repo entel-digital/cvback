@@ -17,6 +17,7 @@ Elementos faltantes: {','.join(event_data['missing_labels'])}
 https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/events/event/{event_data['id']}/change/"""
         url = f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={text}"
         response = requests.get(url).json()  # this sends the message
+        print( "Telegram Response:", response.json())
         for image in event_data["images"]:
             try:
                 url = f"https://api.telegram.org/bot{self.token}/sendPhoto"
