@@ -19,7 +19,8 @@ export const useEventsStore = defineStore('events', {
     allEvents: [],
     dateSelected: null,
     timeSelected: null,
-    labelsTypeSelected: null,
+    labelsSelected: null,
+    typesSelected: null,
     summaryEvents: null,
     pagination: {
       sortBy: 'desc',
@@ -29,7 +30,7 @@ export const useEventsStore = defineStore('events', {
       rowsPerPage: 50
     },
     funtionToUse: 'allevents',
-    labelsTypes: null,
+    labelTypesList: null,
     loadingEvents: false
   }),
   actions: {
@@ -105,7 +106,7 @@ export const useEventsStore = defineStore('events', {
         const data = await getAllEventsByLabel(
           this.pagination.offset,
           this.pagination.rowsPerPage,
-          this.labelsTypeSelected
+          this.labelsSelected
         )
 
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
@@ -140,7 +141,7 @@ export const useEventsStore = defineStore('events', {
           this.pagination.rowsPerPage,
           this.dateSelected.from,
           this.dateSelected.to,
-          this.labelsTypeSelected
+          this.labelsSelected
         )
 
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
@@ -184,7 +185,7 @@ export const useEventsStore = defineStore('events', {
           typesSummary: parseData(data.filteredAndPaginatedEvents.typesSummary)
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        this.labelTypesList = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false

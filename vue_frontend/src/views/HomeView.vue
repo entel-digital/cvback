@@ -7,7 +7,7 @@
     </div> -->
 
     <div class="fit row wrap justify-center items-center q-py-md q-pl-lg q-pr-md">
-      <CardInfo />
+      <SummaryEvents />
     </div>
 
     <div class="q-py-sm">
@@ -28,7 +28,7 @@ import { useEventsStore } from '@/stores/events.js'
 import { useRouter } from 'vue-router'
 
 import Toolbar from '@/components/Toolbar.vue'
-import CardInfo from '@/components/SummaryEvents.vue'
+import SummaryEvents from '@/components/SummaryEvents.vue'
 import FilterEvents from '@/components/FilterEvents.vue'
 import TableEvents from '@/components/TableEvents.vue'
 
@@ -36,8 +36,8 @@ export default defineComponent({
   name: 'HomeView',
   components: {
     Toolbar,
-    CardInfo,
-    FilterEvents,
+    SummaryEvents,
+    // FilterEvents,
     TableEvents
   },
   setup() {
@@ -84,75 +84,72 @@ export default defineComponent({
 
     const fetchAllEvents = async () => {
       await eventStore.FETCH_EVENTS()
-    };
-
+    }
 
     onMounted(async () => {
-      console.log("route params:",router.currentRoute.value)
-      console.log("query params event", router.currentRoute.value.query.event || 'all')
-      console.log("query params filter", router.currentRoute.value.query.filter || 'true')
-
-      if(router.currentRoute.value.query?.event){
-        await eventStore.FETCH_EVENTS_BY_ID(router.currentRoute.value.query.event)
-      }else{
+      // if (router.currentRoute.value.query?.event) {
+      //   await eventStore.FETCH_EVENTS_BY_ID(router.currentRoute.value.query.event)
+      // } else {
         fetchAllEvents()
-      }
-    });
+      // }
+    })
 
-    const filterData = async (data) => {
-      console.log("filterData", data)
-     router.push({ name:"home" })
-      eventStore.loadingEvents = true
-      eventStore.dateSelected = data.dateToFilter
-      eventStore.labelsTypeSelected = data.labelTypeToFilter
-      eventStore.pagination.page = 1
-      eventStore.pagination.offset = 0
-      updateData(data.dateToFilter, data.labelTypeToFilter)
-    };
+    // const filterData = async (data) => {
+    //  router.push({ name:"home" })
+    //   eventStore.loadingEvents = true
+    //   eventStore.dateSelected = data.dateToFilter
+    //   eventStore.labelsTypeSelected = data.labelTypeToFilter
+    //   eventStore.pagination.page = 1
+    //   eventStore.pagination.offset = 0
+    //   updateData(data.dateToFilter, data.labelTypeToFilter)
+    // };
 
     const updateData = async (date, label) => {
       eventStore.loadingEvents = true
       if (date !== null && label !== null) {
-        eventStore.funtionToUse = 'bydateandlabel'
         await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
         eventStore.loadingEvents = false
-      } else if (date !== null && !label) {
-        eventStore.funtionToUse = 'bydate'
+      } else if (date !== null && label === null) {
         await eventStore.FETCH_EVENTS_BY_DATE()
         eventStore.loadingEvents = false
-      } else if (!date && label !== null) {
-        eventStore.funtionToUse = 'bylabel'
+      } else if (date === null && label !== null) {
         await eventStore.FETCH_EVENTS_BY_LABEL()
         eventStore.loadingEvents = false
-      } else if (!date && !label) {
-        eventStore.funtionToUse = 'allevents'
+      } else if (date === null && label === null) {
         await fetchAllEvents()
       }
-    };
+    }
 
     watch(
-      () => eventStore.pagination.page,
+       () => eventStore.pagination.page,
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
-          updateData(eventStore.dateSelected, eventStore.labelsTypeSelected)
+         await  updateData(eventStore.dateSelected, eventStore.labelsSelected)
         }
       }
-    );
+    )
+    watch(
+      () => eventStore.labelsSelected,
+      async (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+            updateData(eventStore.dateSelected, eventStore.labelsSelected)
+        }
+      },
+      { immediate: true }
+
+    )
 
     watch(
       () => router.currentRoute.value.query,
       (newQuery) => {
-        console.log("newQuery", newQuery)
         // applyFilters(newQuery);
       },
       { immediate: true }
-    );
-
+    )
 
     return {
       columns,
       signOut,
-      filterData,
       eventStore
     }
   }

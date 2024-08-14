@@ -119,11 +119,9 @@ import { useEventsStore } from '@/stores/events'
 export default defineComponent({
   name: 'SummaryEvents',
   setup(props) {
-    const number = props.numberToShow
-    const title = props.titleToShow
-    const eventStore = ref(useEventsStore())
-    const labelToFilter = ref({})
-    const typeToFilter = ref({})
+    const eventStore = useEventsStore()
+    const labelToFilter = ref(null)
+    const typeToFilter = ref(null)
 
     const parseData = (data) => {
       const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
@@ -136,18 +134,23 @@ export default defineComponent({
     })
 
     const getLabel = (label) => {
-      if (labelToFilter.value.key === label.key) {
-        labelToFilter.value = {}
-      } else labelToFilter.value = label
+      if (labelToFilter.value?.key === label.key) {
+        labelToFilter.value = null
+        eventStore.labelsSelected = null
+      } else {
+        labelToFilter.value = label
+        eventStore.labelsSelected = label.key
+      }
     }
     const getType = (label) => {
       if (typeToFilter.value.key === label.key) {
-        typeToFilter.value = {}
+        typeToFilter.value = null
       } else typeToFilter.value = label
+      eventStore.typesSelected = label.key
     }
 
     const getColor = (label, tofilter) => {
-      if (!tofilter.key) {
+      if (!tofilter) {
         return 'primary'
       } else if (label === tofilter.key) {
         return 'primary'
@@ -155,8 +158,6 @@ export default defineComponent({
     }
 
     return {
-      number,
-      title,
       eventStore,
       parseData,
       selection,
