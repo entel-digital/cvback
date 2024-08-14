@@ -89,7 +89,6 @@ def create_alert(event):
                 chat_id = subscription.user.telegram_chat_id
                 send_telegram(chat_id, event_data)
             if subscription.user.phone_number and "whatsapp" in alert_types:
-                print("USER_ID:", subscription.user.id)
                 users_data.append(get_user_info(subscription.user))
             if subscription.user.phone_number and subscription.alert_type.name == "sms":
                 pass
