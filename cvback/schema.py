@@ -6,6 +6,7 @@ import json
 from asyncio import iscoroutinefunction
 from cvback.events.schema import FrameType
 from django.db.models import Prefetch
+from datetime import datetime, timedelta
 
 def optional_query(func):
     if iscoroutinefunction(func):
@@ -78,6 +79,10 @@ class EventFilterAndPaginationType(graphene.ObjectType):
     labels_summary = graphene.JSONString()
     types_summary = graphene.JSONString()
     unique_labels_count = graphene.Int()
+    query_total_events_year=graphene.Int()
+    query_total_events_month=graphene.Int()
+    query_total_events_day=graphene.Int()
+    query_total_events_week=graphene.Int()
 
 class Query(graphene.ObjectType):
     all_events = graphene.List(OptimizedEventType)
@@ -178,10 +183,22 @@ class Query(graphene.ObjectType):
 
         unique_labels_count = sum(1 for count in labels_summary.values() if count > 0) - 1
 
+        now = datetime.now()
+        this_year_first_day = datetime(now.year,1,1,0,0,0).strftime('%Y-%m-%dT%H:%M:%S.%f')
+        this_year_event_number = len(qs.filter(informed_date__gte=this_year_first_day))
+        this_month_first_day = datetime(now.year,now.month,1,0,0,0).strftime('%Y-%m-%dT%H:%M:%S.%f')
+        this_month_event_number = len(qs.filter(informed_date__gte=this_month_first_day))
+        this_week_first_day = now-timedelta(days=now.weekday())
+        this_week_first_day = datetime(this_week_first_day.year, this_week_first_day.month,this_week_first_day.day,0,0,0)
+        this_week_event_number = len(qs.filter(informed_date__gte=this_week_first_day))
+        this_day_start = datetime(now.year,now.month,now.day,0,0,0).strftime('%Y-%m-%dT%H:%M:%S.%f')
+        this_day_event_number = len(qs.filter(informed_date__gte=this_day_start))
+
+
         if offset:
             qs = qs[offset:]
         if rows_per_page:
-            qs = qs[:rows_per_page]
+            qs = qs[:rows_per_page]        
 
         result = EventFilterAndPaginationType(
             events=gql_optimizer.query(qs, info),
@@ -193,7 +210,11 @@ class Query(graphene.ObjectType):
             query_total_number=total,
             labels_summary=json.dumps(labels_summary),
             types_summary=json.dumps(types_summary),
-            unique_labels_count=unique_labels_count
+            unique_labels_count=unique_labels_count,
+            query_total_events_year=this_year_event_number,
+            query_total_events_month=this_month_event_number,
+            query_total_events_day=this_day_event_number,
+            query_total_events_week=this_week_event_number
         )
 
         return result
