@@ -6,10 +6,13 @@
       <FilterEvents @filterData="filterData" />
     </div> -->
 
-    <div class="fit row wrap justify-center items-center q-py-md q-pl-lg q-pr-md">
+    <div class="fit row wrap justify-center items-center q-py-md ">
       <SummaryEvents />
     </div>
 
+    <!-- <div class="lt-md fit row wrap justify-center items-center q-py-md">
+      <SummaryEvents />
+    </div> -->
     <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"

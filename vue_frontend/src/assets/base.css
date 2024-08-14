@@ -59,4 +59,7 @@ body {
   font-size: 34px;
   line-height: 18px;
 }
-
+.fs-12-14 {
+  font-size: 12px;
+  line-height: 10px;
+}

@@ -10,13 +10,35 @@
     <q-btn-dropdown
       flat
       width="auto"
-      class="text-grey-6 text-bold"
+      class="gt-sm text-grey-6 text-bold"
       push
       icon="person_outline"
       dropdown-icon="expand_more"
       :label="getUserName"
       style="width: 200px; margin-right: 60px"
     >
+
+      <q-list>
+        <q-item class="fit" clickable v-close-popup @click="signOut">
+          <q-item-section>
+            <q-item-label>Cerrar sesión</q-item-label>
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="logout" color="grey-6" />
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-btn-dropdown>
+    <q-btn-dropdown
+      flat
+      width="auto"
+      class="lt-md text-grey-6 text-bold"
+      push
+      icon="person_outline"
+      dropdown-icon="expand_more"
+      style="width: 70px; margin-right: 10px"
+    >
+
       <q-list>
         <q-item class="fit" clickable v-close-popup @click="signOut">
           <q-item-section>
@@ -83,5 +105,6 @@ export default defineComponent({
 }
 .toolbar-height {
   height: 60px;
+  width: auto;
 }
 </style>

@@ -1,34 +1,36 @@
 <template>
-  <div class="fit row wrap justify-center q-gutter-lg">
+  <div class="fit row wrap justify-center q-gutter-md">
     <q-card class="col card-small">
+
       <div v-if="!eventStore.summaryEvents" class="text-center q-pa-md">
         <q-spinner color="primary" size="3em" />
       </div>
-      <div v-else class="fit row q-py-md">
-        <q-card-section class="bg-white text-center q-py-sm" style="width: 130px">
-          <div class="barlow-bold fs-16-19 text-dark">Total hoy</div>
-          <div class="barlow-semibold fs-34-18 q-pa-sm text-primary">
+      <div v-else class="row q-py-md q-px-none">
+        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total hoy</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">
             {{ eventStore.summaryEvents.totalQueryEvents }}
           </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" style="width: 130px">
-          <div class="barlow-bold fs-16-19 text-dark">Total semana</div>
-          <div class="barlow-semibold fs-34-18 q-pa-sm text-primary">17</div>
+        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total semana</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">17</div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" style="width: 130px">
-          <div class="barlow-bold fs-16-19 text-dark">Total mes</div>
-          <div class="barlow-semibold fs-34-18 q-pa-sm text-primary">20</div>
+        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total mes</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">20</div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" style="width: 130px">
-          <div class="barlow-bold fs-16-19 text-dark">Total año</div>
-          <div class="barlow-semibold fs-34-18 q-pa-sm text-primary">24</div>
+        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total año</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">24</div>
         </q-card-section>
       </div>
     </q-card>
 
-    <q-card class="col">
+    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white">
-        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
+        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
+        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Etiquetas</div>
 
         <div style="max-height: 100px">
           <div v-if="!eventStore.summaryEvents">
@@ -66,9 +68,11 @@
       </q-card-section>
     </q-card>
 
-    <q-card class="col">
+
+    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white">
-        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
+        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
+        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Eventos</div>
         <div style="max-height: 100px">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
@@ -104,9 +108,10 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-card class="col">
+    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white text-center">
-        <div class="barlow-bold fs-16-19 text-dark">Filtros</div>
+        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
+        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Filtros</div>
       </q-card-section>
     </q-card>
   </div>
@@ -115,6 +120,7 @@
 <script>
 import { defineComponent, ref, computed } from 'vue'
 import { useEventsStore } from '@/stores/events'
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'SummaryEvents',
@@ -122,6 +128,8 @@ export default defineComponent({
     const eventStore = useEventsStore()
     const labelToFilter = ref(null)
     const typeToFilter = ref(null)
+    const Screen =  useQuasar().screen
+    console.log("screen", Screen.lt.sm)
 
     const parseData = (data) => {
       const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
@@ -165,7 +173,8 @@ export default defineComponent({
       getType,
       getColor,
       labelToFilter,
-      typeToFilter
+      typeToFilter,
+      Screen
     }
   }
 })
