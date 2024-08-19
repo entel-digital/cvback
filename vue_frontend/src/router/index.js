@@ -22,10 +22,11 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'home',
+      props: true,
       component: HomeView,
       beforeEnter: async (to, from, next) => {
         const statusSession = await useUserStore().GET_SESSION()
-        if (statusSession?.is_authenticated) {
+        if (statusSession?.meta.is_authenticated) {
           next()
         } else {
           next({ name: 'login' })

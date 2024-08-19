@@ -20,7 +20,7 @@ const router = useRouter()
 
 onMounted(async () => {
   const statusSession = await useUserStore().GET_SESSION()
-  if (statusSession?.is_authenticated) {
+  if (statusSession?.meta.is_authenticated) {
     router.push({ name: 'home' })
   }
 })

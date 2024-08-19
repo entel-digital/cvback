@@ -51,7 +51,10 @@
             </q-tr>
             <q-tr v-show="props.expand" :props="props">
               <q-td colspan="100%" class="no-padding">
-                <div class="fit row justify-between q-py-sm" style="min-height: 400px">
+                <div
+                  class="fit row justify-between q-py-sm"
+                  style="min-height: 500px; overflow-y: auto"
+                >
                   <div class="col-4 text-left q-pa-md q-gutter-md">
                     <q-list class="fit">
                       <q-item v-if="props.row.confidence">
@@ -94,13 +97,20 @@
                         <q-item-section>
                           <q-item-label
                             >OCR:
-                            <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
-                              <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                ocr.name || 'No identificado'
-                              }}</q-chip>
-                              <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                ocr.value || 'No identificado'
-                              }}</q-chip>
+                            <div v-if="props.row.inferenceOcr.length > 1">
+                              <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
+                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                                  ocr.name
+                                }}</q-chip>
+                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
+                                  ocr.value
+                                }}</q-chip>
+                              </div>
+                            </div>
+                            <div v-else style="max-width: fit-content">
+                              <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs">
+                                No identificado
+                              </q-chip>
                             </div>
                           </q-item-label>
                         </q-item-section>
@@ -229,19 +239,19 @@
         <q-separator />
       </q-list>
       <div class="q-pa-lg flex flex-center">
-          <q-pagination
-            :model-value="eventStore.pagination.page"
-            direction-links
-            ellipses
-            :max="pagesNumber"
-            :max-pages="5"
-            text-color="dark"
-            active-text-color="white"
-            color="dark"
-            class="q-px-xl"
-            @update:model-value="updatePagination"
-          />
-        </div>
+        <q-pagination
+          :model-value="eventStore.pagination.page"
+          direction-links
+          ellipses
+          :max="pagesNumber"
+          :max-pages="5"
+          text-color="dark"
+          active-text-color="white"
+          color="dark"
+          class="q-px-xl"
+          @update:model-value="updatePagination"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -296,11 +306,8 @@ export default defineComponent({
         dateObj.getMonth() + 1 < 10 ? `0${dateObj.getMonth() + 1}` : dateObj.getMonth() + 1
       const day = dateObj.getDate() < 10 ? `0${dateObj.getDate()}` : dateObj.getDate()
       const year = dateObj.getFullYear()
-      const hour =
-        dateObj.getHours() < 10 ? `0${dateObj.getHours() }` : dateObj.getHours()
-      const minutes =
-        dateObj.getMinutes()  < 10 ? `0${dateObj.getMinutes() }` : dateObj.getMinutes()
-
+      const hour = dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours()
+      const minutes = dateObj.getMinutes() < 10 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes()
 
       const newDate = {
         date: `${day}/${month}/${year}`,

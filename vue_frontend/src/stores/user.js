@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', {
     async SIGN_IN(data) {
       try {
         const user = await api.post('_allauth/browser/v1/auth/login ', JSON.stringify(data))
-        this.user = user.data
+        this.user = user.data.user
         return user
       } catch (error) {
         console.log('HERE IN ERROR SIGN_IN')
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', {
     async GET_SESSION() {
       try {
         const session = await api.get('_allauth/browser/v1/auth/session')
-        return session.data.meta
+        return session.data
       } catch (error) {
         console.log('HERE IN ERROR SESSION')
         // return error
