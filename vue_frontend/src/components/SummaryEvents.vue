@@ -1,6 +1,6 @@
 <template>
   <div class="fit row wrap justify-center q-gutter-md">
-    <q-card class="col card-small">
+    <q-card class="col card-small ">
 
       <div v-if="!eventStore.summaryEvents" class="text-center q-pa-md">
         <q-spinner color="primary" size="3em" />
@@ -32,12 +32,12 @@
         <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
         <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Etiquetas</div>
 
-        <div style="max-height: 100px">
+        <div style="max-height: 100px; max-width: 300px;">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
           </div>
 
-          <div v-else class="q-gutter-x-sm row inline" style="width: 100%">
+          <div v-else class=" row inline" style="width: 100%">
             <q-scroll-area style="height: 100px">
               <q-chip
                 v-for="label in eventStore.summaryEvents.labelsSummary"
@@ -73,12 +73,12 @@
       <q-card-section class="bg-white">
         <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
         <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Eventos</div>
-        <div style="max-height: 100px">
+        <div style="max-height: 100px; max-width: 300px;">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
           </div>
 
-          <div v-else class="q-gutter-x-sm row inline" style="width: 100%">
+          <div v-else class="row inline" style="width: 100%">
             <q-scroll-area style="height: 100px">
               <q-chip
                 v-for="label in eventStore.summaryEvents.typesSummary"
@@ -183,5 +183,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .card-small {
   max-height: 250px;
+}
+.q-card__section.q-card__section--vert.bg-white{
+ padding: 16px 4px
 }
 </style>

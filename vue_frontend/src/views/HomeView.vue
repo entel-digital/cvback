@@ -10,9 +10,6 @@
       <SummaryEvents />
     </div>
 
-    <!-- <div class="lt-md fit row wrap justify-center items-center q-py-md">
-      <SummaryEvents />
-    </div> -->
     <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"
