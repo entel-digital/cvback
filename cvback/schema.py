@@ -183,24 +183,7 @@ class Query(graphene.ObjectType):
 
         unique_labels_count = sum(1 for count in labels_summary.values() if count > 0) - 1
 
-        now = datetime.now()
-        this_year_first_day = datetime(now.year,1,1,0,0,0).astimezone().strftime('%Y-%m-%dT%H:%M:%S.%f%Z')
-        qs2 = qs.filter(informed_date__gte=this_year_first_day)
-        this_year_event_number = len(qs2)
-        this_month_first_day = datetime(now.year,now.month,1,0,0,0).astimezone().strftime('%Y-%m-%dT%H:%M:%S.%f%Z')
-        qs2 = qs2.filter(informed_date__gte=this_month_first_day)
-        this_month_event_number = len(qs2)
-        this_week_first_day = now-timedelta(days=now.weekday())
-        this_week_first_day = datetime(this_week_first_day.year, this_week_first_day.month,this_week_first_day.day,0,0,0).astimezone().strftime('%Y-%m-%dT%H:%M:%S.%f%Z')
-        qs2 = qs2.filter(informed_date__gte=this_week_first_day)
-        this_week_event_number = len(qs2)
-        this_day_start = datetime(now.year,now.month,now.day,0,0,0).astimezone().strftime('%Y-%m-%dT%H:%M:%S.%f%Z')
-        qs2 = qs2.filter(informed_date__gte=this_day_start)
-        this_day_event_number = len(qs2)
-        print(this_year_event_number, this_year_first_day)
-        print(this_month_event_number,this_month_first_day)
-        print(this_day_event_number,this_day_start)
-        print(this_week_event_number,this_week_first_day)
+        
 
 
         if offset:
@@ -219,12 +202,8 @@ class Query(graphene.ObjectType):
             labels_summary=json.dumps(labels_summary),
             types_summary=json.dumps(types_summary),
             unique_labels_count=unique_labels_count,
-            query_total_events_year=this_year_event_number,
-            query_total_events_month=this_month_event_number,
-            query_total_events_day=this_day_event_number,
-            query_total_events_week=this_week_event_number
         )
-
+        print("RESULT")
         return result
 
     
