@@ -1,29 +1,29 @@
 <template>
   <div class="fit row wrap justify-center q-gutter-md">
-    <q-card class="col card-small ">
+    <q-card class="col card-small">
       <div v-if="!eventStore.summaryEvents" class="text-center q-pa-md">
         <q-spinner color="primary" size="3em" />
       </div>
-      <div v-else class="row justify-evenly q-py-sm q-px-md">
-        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+      <div v-else class="row justify-around">
+        <q-card-section class="bg-white text-center q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
           <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total hoy</div>
           <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
             {{ eventStore.summaryEvents.queryTotalEventsDay }}
           </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+        <q-card-section class="bg-white text-center q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
           <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total semana</div>
           <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
             {{ eventStore.summaryEvents.queryTotalEventsWeek }}
           </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+        <q-card-section class="bg-white text-center  q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
           <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total mes</div>
           <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
             {{ eventStore.summaryEvents.queryTotalEventsMonth }}
           </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+        <q-card-section class="bg-white text-center  q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
           <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total año</div>
           <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
             {{ eventStore.summaryEvents.queryTotalEventsYear }}
@@ -61,7 +61,7 @@
                   text-color="white"
                   font-size="14px"
                   class="barlow-bold"
-                  style="width: auto; padding: 0 10px"
+                  style="width: auto; padding: 0 15px"
                 >
                   {{ label.value }}
                 </q-avatar>
@@ -102,7 +102,7 @@
                   text-color="white"
                   font-size="14px"
                   class="barlow-bold"
-                  style="width: auto; padding: 0 10px"
+                  style="width: auto; padding: 0 15px"
                 >
                   {{ label.value }}
                 </q-avatar>
@@ -113,13 +113,14 @@
         </div>
       </q-card-section>
     </q-card>
-    <!-- <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
+    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white text-center">
         <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
         <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Filtros</div>
-         <DateTimePicker />
+         <!-- <DateTimePicker /> -->
+          <!-- <Picker /> -->
       </q-card-section>
-    </q-card> -->
+    </q-card>
   </div>
 </template>
 
@@ -128,12 +129,14 @@ import { defineComponent, ref, computed } from 'vue'
 import { useEventsStore } from '@/stores/events'
 import { useQuasar } from 'quasar';
 
-// import DateTimePicker from '@/components/DateTimePicker.vue';
+import DateTimePicker from '@/components/DateTimePicker.vue';
+import Picker from '@/components/Picker.vue';
 
 export default defineComponent({
   name: 'SummaryEvents',
   components: {
     // DateTimePicker
+    Picker
   },
   setup(props) {
     const eventStore = useEventsStore()
