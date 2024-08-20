@@ -94,6 +94,11 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterTh
     labelsSummary
     labelTextFilter
     queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
 }
 }
 `

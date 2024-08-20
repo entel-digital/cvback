@@ -20,7 +20,7 @@ const router = createRouter({
       component: ResetPasswordView
     },
     {
-      path: '/dashboard',
+      path: '/dashboard/:eventId?/:dateRange?/:label?',
       name: 'home',
       props: true,
       component: HomeView,

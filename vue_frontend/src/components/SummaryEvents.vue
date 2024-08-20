@@ -1,28 +1,33 @@
 <template>
   <div class="fit row wrap justify-center q-gutter-md">
     <q-card class="col card-small ">
-
       <div v-if="!eventStore.summaryEvents" class="text-center q-pa-md">
         <q-spinner color="primary" size="3em" />
       </div>
-      <div v-else class="row q-py-md q-px-none">
-        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total hoy</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">
-            {{ eventStore.summaryEvents.totalQueryEvents }}
+      <div v-else class="row justify-evenly q-py-sm q-px-md">
+        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total hoy</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
+            {{ eventStore.summaryEvents.queryTotalEventsDay }}
           </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total semana</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">17</div>
+        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total semana</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
+            {{ eventStore.summaryEvents.queryTotalEventsWeek }}
+          </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total mes</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">20</div>
+        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total mes</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
+            {{ eventStore.summaryEvents.queryTotalEventsMonth }}
+          </div>
         </q-card-section>
-        <q-card-section class="bg-white text-center q-py-sm" :style="Screen.lt.md ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.md ? 'fs-12-14': 'fs-16-19'">Total año</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.md ? 'fs-18-23': 'fs-28-34'">24</div>
+        <q-card-section class="bg-white text-center" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
+          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total año</div>
+          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
+            {{ eventStore.summaryEvents.queryTotalEventsYear }}
+          </div>
         </q-card-section>
       </div>
     </q-card>
@@ -108,12 +113,13 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
+    <!-- <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white text-center">
         <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
         <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Filtros</div>
+         <DateTimePicker />
       </q-card-section>
-    </q-card>
+    </q-card> -->
   </div>
 </template>
 
@@ -122,14 +128,18 @@ import { defineComponent, ref, computed } from 'vue'
 import { useEventsStore } from '@/stores/events'
 import { useQuasar } from 'quasar';
 
+// import DateTimePicker from '@/components/DateTimePicker.vue';
+
 export default defineComponent({
   name: 'SummaryEvents',
+  components: {
+    // DateTimePicker
+  },
   setup(props) {
     const eventStore = useEventsStore()
     const labelToFilter = ref(null)
     const typeToFilter = ref(null)
     const Screen =  useQuasar().screen
-    console.log("screen", Screen.lt.sm)
 
     const parseData = (data) => {
       const replaces = data.replace(/\\\"/g, '"').slice(1, -1)

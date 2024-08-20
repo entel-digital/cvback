@@ -94,6 +94,11 @@ query filteredAndPaginatedEvents( $idEqualsTo: String) {
     labelsSummary
     labelTextFilter
     queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
 }
 }
 `

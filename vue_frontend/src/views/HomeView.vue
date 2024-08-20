@@ -63,7 +63,7 @@ export default defineComponent({
         label: 'Etiqueta',
         field: 'labelType',
         align: 'center',
-        sortable: true
+        sortable: true,
       },
       {
         name: 'action',
@@ -83,6 +83,7 @@ export default defineComponent({
     }
 
     const fetchAllEvents = async () => {
+
       await eventStore.FETCH_EVENTS()
     }
 
