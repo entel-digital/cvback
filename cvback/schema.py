@@ -79,10 +79,10 @@ class EventFilterAndPaginationType(graphene.ObjectType):
     labels_summary = graphene.JSONString()
     types_summary = graphene.JSONString()
     unique_labels_count = graphene.Int()
-    query_total_events_year=graphene.Int()
-    query_total_events_month=graphene.Int()
-    query_total_events_day=graphene.Int()
-    query_total_events_week=graphene.Int()
+    query_total_events_year = graphene.Int()
+    query_total_events_month = graphene.Int()
+    query_total_events_day = graphene.Int()
+    query_total_events_week = graphene.Int()
 
 class Query(graphene.ObjectType):
     all_events = graphene.List(OptimizedEventType)
@@ -136,6 +136,14 @@ class Query(graphene.ObjectType):
         date_greater_than_equal = kwargs.get('date_greater_than_equal')
         label_text_filter = kwargs.get('label_text_filter')
 
+
+        # Calculate time-based totals
+        now = datetime.now()
+        query_total_events_year = qs.filter(informed_date__year=now.year).count()
+        query_total_events_month = qs.filter(informed_date__year=now.year, informed_date__month=now.month).count()
+        query_total_events_day = qs.filter(informed_date__date=now.date()).count()
+        query_total_events_week = qs.filter(informed_date__gte=now - timedelta(days=now.weekday())).count()
+
         filtered = False
         filtered_by = []
 
@@ -183,8 +191,6 @@ class Query(graphene.ObjectType):
 
         unique_labels_count = sum(1 for count in labels_summary.values() if count > 0) - 1
 
-        
-
 
         if offset:
             qs = qs[offset:]
@@ -202,11 +208,13 @@ class Query(graphene.ObjectType):
             labels_summary=json.dumps(labels_summary),
             types_summary=json.dumps(types_summary),
             unique_labels_count=unique_labels_count,
+            query_total_events_year=query_total_events_year,
+            query_total_events_month=query_total_events_month,
+            query_total_events_day=query_total_events_day,
+            query_total_events_week=query_total_events_week,
         )
-        print("RESULT")
         return result
 
-    
 class Mutation(graphene.ObjectType):
     update_event = UpdateEventMutation.Field()
 
