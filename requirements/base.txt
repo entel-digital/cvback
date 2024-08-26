@@ -34,6 +34,7 @@ djangorestframework
 django-graphql-jwt
 django-cors-headers
 django-vue-utils==0.1.4
+django-csv-export-view
 
 # TODO: add version
 #zxcvbn
