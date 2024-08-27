@@ -244,14 +244,6 @@ export default defineComponent({
         }
       },
     )
-    watch(
-      () => newFrames,
-      (newFrames, updateFrames) => {
-      console.log('newFrames', newFrames)
-      console.log('updateFrames', updateFrames)
-
-      },
-    )
 
     return {
       slide,

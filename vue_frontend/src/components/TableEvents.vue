@@ -300,10 +300,7 @@ export default defineComponent({
     const eventStore = useEventsStore()
 
     const pagesNumber = computed(() => {
-      const totalToUse =
-        eventStore.funtionToUse === 'allevents'
-          ? eventStore.summaryEvents?.totalEvents
-          : eventStore.summaryEvents?.totalQueryEvents
+      const totalToUse = eventStore.summaryEvents?.totalQueryEvents
       return totalToUse ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage) : 1
     })
 
@@ -322,7 +319,7 @@ export default defineComponent({
     }
 
     const formatDateEvent = (date) => {
-      const dateObj = new Date(date) // Log después de cambiar rowSelected
+      const dateObj = new Date(date)
 
       const month =
         dateObj.getMonth() + 1 < 10 ? `0${dateObj.getMonth() + 1}` : dateObj.getMonth() + 1

@@ -49,18 +49,15 @@ export default defineComponent({
 
     const updateValues = (value) => {
       if (!dateRange.value) {
-        console.error('dateRange is null')
         // Initialize dateRange to some default value or handle the error appropriately
         dateRange.value = { startDate: new Date(), endDate: new Date() }
       }
-      console.log('value updateValues', value)
     }
 
     const dateRange = ref({
       startDate: new Date(),
       endDate: new Date()
     })
-    console.log('dateRange', dateRange)
 
     onMounted(() => {
       if (!dateRange.value) {

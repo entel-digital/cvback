@@ -63,6 +63,7 @@ export const useEventsStore = defineStore('events', {
         this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
 
         this.allEvents = data.filteredAndPaginatedEvents.events
+
         this.loadingEvents = false
         return
       } catch (error) {
@@ -145,8 +146,9 @@ export const useEventsStore = defineStore('events', {
         }
 
         this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
-
         this.allEvents = data.filteredAndPaginatedEvents.events
+
+
         this.loadingEvents = false
         return
       } catch (error) {
