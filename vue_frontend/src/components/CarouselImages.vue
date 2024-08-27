@@ -62,7 +62,11 @@
               no-caps
               :icon="hideBbox ? 'visibility' : 'visibility_off'"
               @click="toggleBbox"
-            />
+            >
+            <q-tooltip>
+        {{  hideBbox ? 'Ver Boundigbox' : 'Esconder Boundigbox' }}
+        </q-tooltip>
+          </q-btn>
             <q-btn
               push
               round
@@ -70,7 +74,11 @@
               text-color="white"
               :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
               @click="fullscreen = true"
-            />
+            >
+            <q-tooltip>
+        {{  hideBbox ? 'Ver pantalla completa' : 'Salir pantalla completa' }}
+        </q-tooltip>
+            </q-btn>
           </div>
         </q-carousel-control>
       </template>

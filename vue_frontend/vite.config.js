@@ -14,6 +14,13 @@ export default defineConfig({
     host: true,
     strictPort: true,
   },
+  css: {
+    preprocessorOptions: {
+      css: {
+        additionalData: `@import "@/assets/styles/main.css";`,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       input: {
