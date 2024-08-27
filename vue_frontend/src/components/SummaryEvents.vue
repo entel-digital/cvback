@@ -146,13 +146,12 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-card class="col card-small">
+    <!-- <q-card class="col card-small">
       <q-card-section class="bg-white text-center">
         <div class="barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
-        <!-- <DateTimePicker /> -->
-        <!-- <Picker /> -->
+
       </q-card-section>
-    </q-card>
+    </q-card> -->
   </div>
   <div class="lt-md q-pl-md ">
     <q-list bordered class="fit justify-center rounded-borders">
@@ -294,7 +293,7 @@
 
       <q-separator />
 
-      <q-expansion-item>
+      <!-- <q-expansion-item>
         <template v-slot:header>
           <q-item-section class="barlow-bold fs-16-19 text-dark">
            Filtro por fecha
@@ -306,7 +305,7 @@
 
           </q-card-section>
         </q-card>
-      </q-expansion-item>
+      </q-expansion-item> -->
     </q-list>
   </div>
 </div>

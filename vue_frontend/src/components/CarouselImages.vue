@@ -98,7 +98,6 @@
           :name="index + 1"
           id="dialog_carousel-frames"
         >
-        {{  frame.imageUrl }}
           <template v-if="frame.type === 'image'">
             <ImageWithBoundingBoxes
               :imageUrl="frame.imageUrl"
@@ -146,6 +145,7 @@
                 text-color="white"
                 no-caps
                 :icon="hideBbox ? 'visibility' : 'visibility_off'"
+                :disable="frame.type === 'video'"
                 @click="toggleBbox"
               >
                 <q-tooltip>{{ hideBbox ? 'Ocultar BoundingBox' : 'Ver BoundingBox' }}</q-tooltip>
@@ -240,6 +240,7 @@ export default defineComponent({
       (newEvent, oldEvent) => {
         if(newEvent[0] !== oldEvent[0]){
           slide.value = 1
+          hideBbox.value = true
         }
       },
     )

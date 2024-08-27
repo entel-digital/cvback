@@ -23,7 +23,7 @@
               @click="getRowSelected(props.row)"
             >
               <q-td key="name" :props="props">
-                <span class="barlow-semibold fs-15-18">
+                <span class="barlow-semibold fs-15-18 q-pl-lg">
                   {{ props.row.eventType.name }}
                 </span>
               </q-td>
@@ -153,7 +153,7 @@
             </q-tr>
           </template>
         </q-table>
-        <div class="q-pa-lg flex flex-center">
+        <div class="q-pa-lg flex flex-center" >
           <q-pagination
             :model-value="eventStore.pagination.page"
             direction-links
@@ -164,6 +164,7 @@
             active-text-color="white"
             color="dark"
             class="q-px-xl"
+            style="max-width: fit-content"
             @update:model-value="updatePagination"
           />
         </div>
@@ -391,6 +392,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.q-pagination__middle.row.justify-center {
+  max-width: fit-content !important;
+}
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 60vh;
@@ -439,7 +443,5 @@ export default defineComponent({
   }
 }
 
-:deep(.q-pagination__middle.row.justify-center) {
-  max-width: fit-content !important;
-}
+
 </style>
