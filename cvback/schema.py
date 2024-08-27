@@ -118,7 +118,7 @@ class Query(graphene.ObjectType):
         date_equals_to=graphene.DateTime(default_value=None),
         date_lower_than=graphene.DateTime(default_value=None),
         date_greater_than_equal=graphene.DateTime(default_value=None),
-        label_text_filter=graphene.String(),
+        label_id_filter=graphene.String(),
     )
 
     @optional_query
@@ -134,7 +134,7 @@ class Query(graphene.ObjectType):
         date_equals_to = kwargs.get('date_equals_to')
         date_lower_than = kwargs.get('date_lower_than')
         date_greater_than_equal = kwargs.get('date_greater_than_equal')
-        label_text_filter = kwargs.get('label_text_filter')
+        label_id_filter = kwargs.get('label_id_filter')
 
 
         # Calculate time-based totals
@@ -147,10 +147,10 @@ class Query(graphene.ObjectType):
         filtered = False
         filtered_by = []
 
-        if label_text_filter:
+        if label_id_filter:
             filtered = True
-            filtered_by.append("label_text")
-            qs = qs.filter(event_label__name__icontains=label_text_filter)
+            filtered_by.append("label_id")
+            qs = qs.filter(event_label__id=label_id_filter)
         if id_equals_to:
             filtered = True
             filtered_by.append("id=")
