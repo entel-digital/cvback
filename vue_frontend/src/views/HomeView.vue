@@ -52,18 +52,15 @@ export default defineComponent({
       },
       {
         name: 'date',
-        label: 'Fecha',
+        label: 'Fecha agregado',
         field: 'addedDate',
         align: 'center',
-        sortable: true,
-        sort: (a, b) => new Date(a) - new Date(b)
       },
       {
         name: 'labelType',
         label: 'Etiqueta',
         field: 'labelType',
         align: 'center',
-        sortable: true,
       },
       {
         name: 'action',

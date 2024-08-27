@@ -97,14 +97,11 @@
                         <q-item-section>
                           <q-item-label
                             >OCR:
-                            <div v-if="props.row.inferenceOcr.length > 1">
+                            <div v-if="props.row.inferenceOcr.length >= 1">
                               <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
-                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                  ocr.name
-                                }}</q-chip>
-                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                  ocr.value
-                                }}</q-chip>
+                                <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                                  >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                                </q-chip>
                               </div>
                             </div>
                             <div v-else style="max-width: fit-content">
@@ -148,6 +145,7 @@
                       :frames="props.row.frames"
                       :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
                       :videos="props.row.videos"
+                      :eventSelected="expanded"
                     />
                   </div>
                 </div>
@@ -161,7 +159,7 @@
             direction-links
             ellipses
             :max="pagesNumber"
-            :max-pages="5"
+            :max-pages="7"
             text-color="dark"
             active-text-color="white"
             color="dark"
@@ -208,22 +206,44 @@
                 <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
               <q-item-label
-                >Fecha creado:
+                >Fecha informado:
                 <span class="barlow-bold">
-                  {{ formatDateEvent(row.addedDate).date }}
+                  {{ formatDateEvent(row.informedDate).date }}
                 </span>
-                <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
+                <span class="barlow"> | {{ formatDateEvent(row.informedDate).time }} </span>
               </q-item-label>
               <q-item-label
                 >OCR:
                 <div v-for="ocr in row.inferenceOcr" :key="ocr.id">
-                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                    ocr.name || 'No identificado'
-                  }}</q-chip>
-                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                    ocr.value || 'No identificado'
-                  }}</q-chip>
+                  <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                    >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                  </q-chip>
                 </div>
+              </q-item-label>
+              <q-item-label
+                >Etiquetas:
+                <div>
+                <q-chip
+                  outline
+                  v-for="label in row.labelsDetected"
+                  :key="label.id"
+                  :label="label.name"
+                  icon="check_circle"
+                  color="positive"
+                  style="max-width: fit-content"
+                  class="q-px-xs"
+                />
+                <q-chip
+                  outline
+                  v-for="label in row.labelsMissing"
+                  :key="label.id"
+                  :label="label.name"
+                  icon="cancel"
+                  color="negative"
+                  style="max-width: fit-content"
+                  class="q-px-xs"
+                />
+              </div>
               </q-item-label>
             </q-card-section>
             <q-card-section>
@@ -231,6 +251,7 @@
                 :frames="row.frames"
                 :inferenceDetectionClassification="row.inferenceDetectionClassification"
                 :videos="row.videos"
+                :frameSelected="rowSelected"
               />
             </q-card-section>
           </q-card>
@@ -308,10 +329,11 @@ export default defineComponent({
       const year = dateObj.getFullYear()
       const hour = dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours()
       const minutes = dateObj.getMinutes() < 10 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes()
+      const seconds = dateObj.getSeconds() < 10 ? `0${dateObj.getSeconds()}` : dateObj.getSeconds()
 
       const newDate = {
         date: `${day}/${month}/${year}`,
-        time: `${hour}:${minutes}`
+        time: `${hour}:${minutes}:${seconds}`
       }
       return newDate
     }

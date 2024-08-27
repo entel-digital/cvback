@@ -1,48 +1,83 @@
 <template>
-  <div class="fit row wrap justify-center q-gutter-md">
+  <div>
+  <div class="gt-sm fit row wrap justify-center q-gutter-md">
     <q-card class="col card-small">
-      <div v-if="!eventStore.summaryEvents" class="text-center q-pa-md">
-        <q-spinner color="primary" size="3em" />
-      </div>
-      <div v-else class="row justify-around">
-        <q-card-section class="bg-white text-center q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total hoy</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
-            {{ eventStore.summaryEvents.queryTotalEventsDay }}
-          </div>
-        </q-card-section>
-        <q-card-section class="bg-white text-center q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total semana</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
-            {{ eventStore.summaryEvents.queryTotalEventsWeek }}
-          </div>
-        </q-card-section>
-        <q-card-section class="bg-white text-center  q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total mes</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
-            {{ eventStore.summaryEvents.queryTotalEventsMonth }}
-          </div>
-        </q-card-section>
-        <q-card-section class="bg-white text-center  q-py-none" :style="Screen.lt.lg ? 'width: 70px' : 'width: 130px'">
-          <div class="barlow-bold text-dark" :class="Screen.lt.lg ? 'fs-12-14': 'fs-16-19'">Total año</div>
-          <div class="barlow-semibold q-pa-sm text-primary" :class="Screen.lt.lg ? 'fs-18-23': 'fs-28-34'">
-            {{ eventStore.summaryEvents.queryTotalEventsYear }}
-          </div>
-        </q-card-section>
-      </div>
-    </q-card>
-
-    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
       <q-card-section class="bg-white">
-        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
-        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Etiquetas</div>
+        <div class="barlow-bold fs-16-19 text-dark q-pb-sm">Total Eventos</div>
 
-        <div style="max-height: 100px; max-width: 300px;">
+        <div style="max-height: 100px; max-width: 300px">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
           </div>
 
-          <div v-else class=" row inline" style="width: 100%">
+          <div v-else  style="width: 100%">
+            <!-- <q-list class="q-pt-none" > -->
+              <q-scroll-area style="width: 100% ; height: 120px">
+                <div class="full-width row wrap justify-evenly items-start content-start">
+              <q-item dense class="q-pb-sm text-center col-lg-6 col-md-6 col-sm-3 col-xs-3" >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsDay
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
+                      datesSummary.today
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col-lg-7 col-md-7 col-sm-4 col-xs-4" >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsWeek
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
+                      datesSummary.week.start + ' - ' + datesSummary.week.end
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col-lg-6 col-md-6 col-sm-3 col-xs-3" >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsMonth
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">Mes {{
+                      datesSummary.month
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col-lg-6 col-md-6 col-sm-4 col-xs-4" >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsYear
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark"> Año {{
+                      datesSummary.year
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+          </div>
+          </q-scroll-area>
+          </div>
+        </div>
+      </q-card-section>
+    </q-card>
+    <q-card class="col card-small">
+      <q-card-section class="bg-white">
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
+
+        <div style="max-height: 100px; max-width: 300px">
+          <div v-if="!eventStore.summaryEvents">
+            <q-spinner color="primary" size="3em" />
+          </div>
+
+          <div v-else class="row inline" style="width: 100%">
             <q-scroll-area style="height: 100px">
               <q-chip
                 v-for="label in eventStore.summaryEvents.labelsSummary"
@@ -73,12 +108,10 @@
       </q-card-section>
     </q-card>
 
-
-    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
+    <q-card class="col card-small">
       <q-card-section class="bg-white">
-        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
-        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Tipos de Eventos</div>
-        <div style="max-height: 100px; max-width: 300px;">
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
+        <div style="max-height: 100px; max-width: 300px">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
           </div>
@@ -113,36 +146,188 @@
         </div>
       </q-card-section>
     </q-card>
-    <q-card :class="Screen.lt.md ? 'row': 'col card-small'">
+    <q-card class="col card-small">
       <q-card-section class="bg-white text-center">
-        <div class="gt-sm barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
-        <div class="lt-md barlow-bold fs-12-14 text-dark q-pb-md">Filtros</div>
-         <!-- <DateTimePicker /> -->
-          <!-- <Picker /> -->
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Filtros</div>
+        <!-- <DateTimePicker /> -->
+        <!-- <Picker /> -->
       </q-card-section>
     </q-card>
   </div>
+  <div class="lt-md q-pl-md ">
+    <q-list bordered class="fit justify-center rounded-borders">
+      <q-expansion-item>
+        <template v-slot:header>
+          <q-item-section class="barlow-bold fs-16-19 text-dark">
+            Total eventos
+          </q-item-section>
+        </template>
+
+        <q-card>
+          <q-card-section class="fit row q-px-xs">
+            <q-item dense class="q-pb-sm text-center col" >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsDay
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
+                      datesSummary.today
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col " >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsWeek
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
+                      datesSummary.week.start + ' - ' + datesSummary.week.end
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col " >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsMonth
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark"> Mes {{
+                      datesSummary.month
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+              <q-item dense class="q-pb-sm text-center col " >
+                <q-item-section>
+                  <q-item-section>
+                    <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
+                      eventStore.summaryEvents.queryTotalEventsYear
+                    }}</q-item-label>
+                    <q-item-label caption class="q-mt-none barlow-bold text-dark">Año {{
+                      datesSummary.year
+                    }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </q-item>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <q-separator />
+
+      <q-expansion-item>
+        <template v-slot:header>
+          <q-item-section class="barlow-bold fs-16-19 text-dark">
+            Tipos de Etiquetas
+          </q-item-section>
+        </template>
+
+        <q-card>
+          <q-card-section>
+            <q-chip
+                v-for="label in eventStore.summaryEvents.labelsSummary"
+                :key="label"
+                square
+                outline
+                clickable
+                :color="getColor(label.key, labelToFilter)"
+                class="barlow-bold fs-14-19"
+                style="width: fit-content"
+                @click="getLabel(label)"
+              >
+                <q-avatar
+                  :color="getColor(label.key, labelToFilter)"
+                  size="2em"
+                  text-color="white"
+                  font-size="14px"
+                  class="barlow-bold"
+                  style="width: auto; padding: 0 15px"
+                >
+                  {{ label.value }}
+                </q-avatar>
+                {{ label.key }}
+              </q-chip>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <q-separator />
+      <q-expansion-item>
+        <template v-slot:header>
+          <q-item-section class="barlow-bold fs-16-19 text-dark">
+            Tipos de Eventos
+          </q-item-section>
+        </template>
+
+        <q-card>
+          <q-card-section>
+            <q-chip
+                v-for="label in eventStore.summaryEvents.typesSummary"
+                :key="label"
+                square
+                outline
+                clickable
+                :color="getColor(label.key, typeToFilter)"
+                class="barlow-bold fs-14-19"
+                style="width: fit-content"
+                @click="getType(label)"
+              >
+                <q-avatar
+                  :color="getColor(label.key, typeToFilter)"
+                  size="2em"
+                  text-color="white"
+                  font-size="14px"
+                  class="barlow-bold"
+                  style="width: auto; padding: 0 15px"
+                >
+                  {{ label.value }}
+                </q-avatar>
+                {{ label.key }}
+              </q-chip>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <q-separator />
+
+      <q-expansion-item>
+        <template v-slot:header>
+          <q-item-section class="barlow-bold fs-16-19 text-dark">
+           Filtro por fecha
+          </q-item-section>
+        </template>
+
+        <q-card>
+          <q-card-section>
+
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+    </q-list>
+  </div>
+</div>
 </template>
 
 <script>
 import { defineComponent, ref, computed } from 'vue'
 import { useEventsStore } from '@/stores/events'
-import { useQuasar } from 'quasar';
-
-import DateTimePicker from '@/components/DateTimePicker.vue';
-import Picker from '@/components/Picker.vue';
+import { useQuasar, date } from 'quasar'
+import DateTimePicker from '@/components/DateTimePicker.vue'
 
 export default defineComponent({
   name: 'SummaryEvents',
   components: {
     // DateTimePicker
-    Picker
   },
   setup(props) {
     const eventStore = useEventsStore()
     const labelToFilter = ref(null)
     const typeToFilter = ref(null)
-    const Screen =  useQuasar().screen
+    const Screen = useQuasar().screen
 
     const parseData = (data) => {
       const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
@@ -177,6 +362,61 @@ export default defineComponent({
         return 'primary'
       } else return 'blue-9'
     }
+    const formattingDates = {
+      months: [
+        'Enero',
+        'Febrero',
+        'Marzo',
+        'Abril',
+        'Mayo',
+        'Junio',
+        'Julio',
+        'Agosto',
+        'Septiembre',
+        'Octubre',
+        'Noviembre',
+        'Diciembre'
+      ],
+      monthsShort: [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dic'
+      ]
+    }
+    const getWeekBounds = (dateInput) => {
+      const startOfWeek = date.startOfDate(
+        date.subtractFromDate(dateInput, { days: (date.getDayOfWeek(dateInput) + 6) % 7 }),
+        'day'
+      )
+
+      const endOfWeek = date.addToDate(startOfWeek, { days: 6 })
+
+      return {
+        startOfWeek,
+        endOfWeek
+      }
+    };
+
+    const datesSummary = computed(() => {
+      return {
+        today: date.formatDate(new Date(), 'DD MMMM', formattingDates),
+        week: {
+          start: date.formatDate(getWeekBounds(new Date()).startOfWeek, 'DD MMM', formattingDates),
+          end: date.formatDate(getWeekBounds(new Date()).endOfWeek, 'DD MMM', formattingDates)
+        },
+        month: date.formatDate(new Date(), 'MMMM', formattingDates),
+        year: date.formatDate(new Date(), 'YYYY')
+      }
+    })
 
     return {
       eventStore,
@@ -187,7 +427,8 @@ export default defineComponent({
       getColor,
       labelToFilter,
       typeToFilter,
-      Screen
+      Screen,
+      datesSummary
     }
   }
 })
@@ -197,7 +438,7 @@ export default defineComponent({
 .card-small {
   max-height: 250px;
 }
-.q-card__section.q-card__section--vert.bg-white{
- padding: 16px 4px
+.q-card__section.q-card__section--vert.bg-white {
+  padding: 16px 4px;
 }
 </style>
