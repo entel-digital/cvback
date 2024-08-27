@@ -56,6 +56,7 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
         confidence
       }
     }
+    filtered
     typesSummary
     globalTotalNumber
     labelsSummary

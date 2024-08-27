@@ -91,15 +91,19 @@ export default defineComponent({
     const updateData = async (date, label) => {
       eventStore.loadingEvents = true
       if (date !== null && label !== null) {
+        console.log("entro al date y label")
         await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
         eventStore.loadingEvents = false
       } else if (date !== null && label === null) {
+        console.log("entro al date")
         await eventStore.FETCH_EVENTS_BY_DATE()
         eventStore.loadingEvents = false
       } else if (date === null && label !== null) {
+        console.log("entro al label")
         await eventStore.FETCH_EVENTS_BY_LABEL()
         eventStore.loadingEvents = false
       } else if (date === null && label === null) {
+        console.log("entro al todos")
         await fetchAllEvents()
       }
 

@@ -89,6 +89,7 @@ query filteredAndPaginatedEvents( $idEqualsTo: String) {
         confidence
       }
     }
+    filtered
     typesSummary
     globalTotalNumber
     labelsSummary

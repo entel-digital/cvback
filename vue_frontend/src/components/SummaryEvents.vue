@@ -26,7 +26,7 @@
                   </q-item-section>
                 </q-item-section>
               </q-item>
-              <q-item dense class="q-pb-sm text-center col-lg-7 col-md-7 col-sm-4 col-xs-4" >
+              <q-item dense class="q-pb-sm text-center col-lg-6 col-md-6 col-sm-3 col-xs-3" >
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
@@ -70,7 +70,7 @@
     </q-card>
     <q-card class="col card-small">
       <q-card-section class="bg-white">
-        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Etiquetas</div>
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Total Etiquetas <span><q-icon size="22px" :name=" isFiltered ? 'filter_list':'filter_list_off'"/></span></div>
 
         <div style="max-height: 100px; max-width: 300px">
           <div v-if="!eventStore.summaryEvents">
@@ -110,7 +110,7 @@
 
     <q-card class="col card-small">
       <q-card-section class="bg-white">
-        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Tipos de Eventos</div>
+        <div class="barlow-bold fs-16-19 text-dark q-pb-md">Total Tipo de Eventos</div>
         <div style="max-height: 100px; max-width: 300px">
           <div v-if="!eventStore.summaryEvents">
             <q-spinner color="primary" size="3em" />
@@ -123,11 +123,9 @@
                 :key="label"
                 square
                 outline
-                clickable
                 :color="getColor(label.key, typeToFilter)"
                 class="barlow-bold fs-14-19"
                 style="width: fit-content"
-                @click="getType(label)"
               >
                 <q-avatar
                   :color="getColor(label.key, typeToFilter)"
@@ -155,7 +153,7 @@
   </div>
   <div class="lt-md q-pl-md ">
     <q-list bordered class="fit justify-center rounded-borders">
-      <q-expansion-item>
+      <q-expansion-item default-opened>
         <template v-slot:header>
           <q-item-section class="barlow-bold fs-16-19 text-dark">
             Total eventos
@@ -218,10 +216,10 @@
 
       <q-separator />
 
-      <q-expansion-item>
+      <q-expansion-item default-opened>
         <template v-slot:header>
           <q-item-section class="barlow-bold fs-16-19 text-dark">
-            Tipos de Etiquetas
+            Total Etiquetas
           </q-item-section>
         </template>
 
@@ -255,10 +253,10 @@
       </q-expansion-item>
 
       <q-separator />
-      <q-expansion-item>
+      <q-expansion-item default-opened>
         <template v-slot:header>
           <q-item-section class="barlow-bold fs-16-19 text-dark">
-            Tipos de Eventos
+            Total Tipo de Eventos
           </q-item-section>
         </template>
 
@@ -269,11 +267,9 @@
                 :key="label"
                 square
                 outline
-                clickable
                 :color="getColor(label.key, typeToFilter)"
                 class="barlow-bold fs-14-19"
                 style="width: fit-content"
-                @click="getType(label)"
               >
                 <q-avatar
                   :color="getColor(label.key, typeToFilter)"
@@ -417,6 +413,10 @@ export default defineComponent({
       }
     })
 
+    const isFiltered = computed(() => {
+      return eventStore.summaryEvents.filtered
+    })
+
     return {
       eventStore,
       parseData,
@@ -427,7 +427,8 @@ export default defineComponent({
       labelToFilter,
       typeToFilter,
       Screen,
-      datesSummary
+      datesSummary,
+      isFiltered
     }
   }
 })
