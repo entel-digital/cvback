@@ -55,5 +55,6 @@ class WhatsappSender():
                 "Authorization": token,
                 }, json=data
         )
-        print( "Whatsapp Response:", response.json())
+        users =", ".join([user_data["username"]  for user_data in users_data])
+        print( f"Whatsapp Response:[FOR USERS: { users }]", response.json())
         return response
