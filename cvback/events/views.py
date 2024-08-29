@@ -151,11 +151,11 @@ class CustomCSVExportView(CSVExportView):
         date_equals_to = request.GET.get('date_equals_to')
         date_lower_than = request.GET.get('date_lower_than')
         date_greater_than_equal = request.GET.get('date_greater_than_equal')
-        label_text_filter = request.GET.get('label_text_filter')
+        label_id_filter = request.GET.get('label_id_filter')
 
         qs = Event.objects.all()
-        if label_text_filter:
-            qs = qs.filter(event_label__name__icontains=label_text_filter)
+        if label_id_filter:
+            qs = qs.filter(event_label__id=label_id_filter)
         if id_equals_to:
             qs = qs.filter(id=id_equals_to)
         if date_equals_to:
@@ -258,7 +258,6 @@ class DataExportView(CustomCSVExportView):
                 'cameras__need_physical_maintenance',
                 'cameras__need_replacement',
                 'cameras__photo',
-                'cameras',
                 'cameras__area__id',
                 'cameras__area__added_date',
                 'cameras__area__added_modified',
