@@ -1,6 +1,9 @@
 <template>
   <div class="fit">
-    <div class="fit row no-wrap justify-between items-start content-start q-py-md">
+    <div class="fit column no-wrap justify-between items-start  content-start">
+      <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
+        <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
+    </div>
       <div class="gt-sm fit col-12">
         <q-table
           class="fit my-sticky-dynamic fs-15-18"
@@ -153,7 +156,7 @@
             </q-tr>
           </template>
         </q-table>
-        <div class="q-pa-lg flex flex-center" >
+        <div class="q-pa-lg flex flex-center">
           <q-pagination
             :model-value="eventStore.pagination.page"
             direction-links
@@ -224,27 +227,27 @@
               <q-item-label
                 >Etiquetas:
                 <div>
-                <q-chip
-                  outline
-                  v-for="label in row.labelsDetected"
-                  :key="label.id"
-                  :label="label.name"
-                  icon="check_circle"
-                  color="positive"
-                  style="max-width: fit-content"
-                  class="q-px-xs"
-                />
-                <q-chip
-                  outline
-                  v-for="label in row.labelsMissing"
-                  :key="label.id"
-                  :label="label.name"
-                  icon="cancel"
-                  color="negative"
-                  style="max-width: fit-content"
-                  class="q-px-xs"
-                />
-              </div>
+                  <q-chip
+                    outline
+                    v-for="label in row.labelsDetected"
+                    :key="label.id"
+                    :label="label.name"
+                    icon="check_circle"
+                    color="positive"
+                    style="max-width: fit-content"
+                    class="q-px-xs"
+                  />
+                  <q-chip
+                    outline
+                    v-for="label in row.labelsMissing"
+                    :key="label.id"
+                    :label="label.name"
+                    icon="cancel"
+                    color="negative"
+                    style="max-width: fit-content"
+                    class="q-px-xs"
+                  />
+                </div>
               </q-item-label>
             </q-card-section>
             <q-card-section>
@@ -282,6 +285,7 @@
 import { defineComponent, ref, computed, watch, onMounted } from 'vue'
 import { types } from '@/utils/colors'
 import { useEventsStore } from '@/stores/events'
+import { useQuasar } from 'quasar'
 
 import CarouselImages from '@/components/CarouselImages.vue'
 
@@ -298,6 +302,8 @@ export default defineComponent({
     const fullscreen = ref(false)
     const expanded = ref([])
     const eventStore = useEventsStore()
+    const $q = useQuasar()
+
 
     const pagesNumber = computed(() => {
       const totalToUse = eventStore.summaryEvents?.totalQueryEvents
@@ -368,6 +374,24 @@ export default defineComponent({
         eventStore.pagination.rowsPerPage
     }
 
+    const exportData = async () => {
+      eventStore.loadingExport = true
+      const result = await eventStore.EXPORT_DATA()
+      console.log("result export ",result)
+      if(!result?.success){
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'report_problem',
+          message: 'Ha ocurrido un problema con la descarga, intenta nuevamente'
+        })
+      }
+    };
+    const loadingExport = computed(() => {
+      return eventStore.loadingExport
+    })
+
+
     return {
       rowSelected,
       pagesNumber,
@@ -382,7 +406,9 @@ export default defineComponent({
       findColor,
       eventStore,
       updatePagination,
-      displayRows
+      displayRows,
+      exportData,
+      loadingExport
     }
   }
 })
@@ -439,6 +465,4 @@ export default defineComponent({
     background-color: #fafafa; // Add your desired color here
   }
 }
-
-
 </style>

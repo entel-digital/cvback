@@ -18,7 +18,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsDay
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsDay')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
                       datesSummary.today
@@ -30,7 +30,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsWeek
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsWeek')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
                       datesSummary.week.start + ' - ' + datesSummary.week.end
@@ -42,7 +42,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsMonth
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsMonth')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">Mes {{
                       datesSummary.month
@@ -54,7 +54,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsYear
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsYear')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark"> Año {{
                       datesSummary.year
@@ -80,7 +80,7 @@
           <div v-else class="row inline" style="width: 100%">
             <q-scroll-area style="height: 100px">
               <q-chip
-                v-for="label in eventStore.summaryEvents.labelsSummary"
+                v-for="label in allLabels"
                 :key="label"
                 square
                 outline
@@ -119,7 +119,7 @@
           <div v-else class="row inline" style="width: 100%">
             <q-scroll-area style="height: 100px">
               <q-chip
-                v-for="label in eventStore.summaryEvents.typesSummary"
+                v-for="label in allTypes"
                 :key="label"
                 square
                 outline
@@ -166,7 +166,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsDay
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsDay')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
                       datesSummary.today
@@ -178,7 +178,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsWeek
+                      isFilled(eventStore.summaryEvents, 'queryTotalEventsWeek')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
                       datesSummary.week.start + ' - ' + datesSummary.week.end
@@ -190,7 +190,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsMonth
+                      isFilled(eventStore.summaryEvents,'queryTotalEventsMonth')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark"> Mes {{
                       datesSummary.month
@@ -202,7 +202,7 @@
                 <q-item-section>
                   <q-item-section>
                     <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-                      eventStore.summaryEvents.queryTotalEventsYear
+                      isFilled(eventStore.summaryEvents,'queryTotalEventsYear')
                     }}</q-item-label>
                     <q-item-label caption class="q-mt-none barlow-bold text-dark">Año {{
                       datesSummary.year
@@ -226,7 +226,7 @@
         <q-card>
           <q-card-section>
             <q-chip
-                v-for="label in eventStore.summaryEvents.labelsSummary"
+                v-for="label in allLabels"
                 :key="label"
                 square
                 outline
@@ -263,7 +263,7 @@
         <q-card>
           <q-card-section>
             <q-chip
-                v-for="label in eventStore.summaryEvents.typesSummary"
+                v-for="label in allTypes"
                 :key="label"
                 square
                 outline
@@ -335,19 +335,20 @@ export default defineComponent({
     })
 
     const getLabel = (label) => {
-      if (labelToFilter.value?.key === label.key) {
+      console.log("label", label)
+      if (labelToFilter.value?.value === label.value) {
         labelToFilter.value = null
         eventStore.labelsSelected = null
       } else {
         labelToFilter.value = label
-        eventStore.labelsSelected = label.key
+        eventStore.labelsSelected = label.value.toString()
       }
     }
     const getType = (label) => {
-      if (typeToFilter.value.key === label.key) {
+      if (typeToFilter.value.value === label.value) {
         typeToFilter.value = null
       } else typeToFilter.value = label
-      eventStore.typesSelected = label.key
+      eventStore.typesSelected = label.value
     }
 
     const getColor = (label, tofilter) => {
@@ -414,7 +415,23 @@ export default defineComponent({
     })
 
     const isFiltered = computed(() => {
-      return eventStore.summaryEvents.filtered
+      if(eventStore.summaryEvents){
+        return eventStore.summaryEvents.filtered
+      } else return false
+    })
+
+
+    const isFilled = (value, data) => {
+      return value? value[data] : 0
+    }
+
+    const allLabels = computed(() => {
+       return eventStore.summaryEvents ?  eventStore.summaryEvents.labelsSummary : []
+
+    })
+    const allTypes = computed(() => {
+       return eventStore.summaryEvents ?  eventStore.summaryEvents.typesSummary : []
+
     })
 
     return {
@@ -428,7 +445,10 @@ export default defineComponent({
       typeToFilter,
       Screen,
       datesSummary,
-      isFiltered
+      isFiltered,
+      isFilled,
+      allLabels,
+      allTypes
     }
   }
 })

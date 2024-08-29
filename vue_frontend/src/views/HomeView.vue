@@ -66,7 +66,7 @@ export default defineComponent({
         name: 'action',
         label: '',
         field: '',
-        align: 'center'
+        align: 'rigth'
       }
     ]
 
@@ -91,19 +91,15 @@ export default defineComponent({
     const updateData = async (date, label) => {
       eventStore.loadingEvents = true
       if (date !== null && label !== null) {
-        console.log("entro al date y label")
         await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
         eventStore.loadingEvents = false
       } else if (date !== null && label === null) {
-        console.log("entro al date")
         await eventStore.FETCH_EVENTS_BY_DATE()
         eventStore.loadingEvents = false
       } else if (date === null && label !== null) {
-        console.log("entro al label")
         await eventStore.FETCH_EVENTS_BY_LABEL()
         eventStore.loadingEvents = false
       } else if (date === null && label === null) {
-        console.log("entro al todos")
         await fetchAllEvents()
       }
 
@@ -122,7 +118,7 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
           eventStore.pagination.page = 1
-            updateData(eventStore.dateSelected, eventStore.labelsSelected)
+            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
         }
       },
       { immediate: true }

@@ -6,11 +6,12 @@ import {
   getAllEventsById,
   getAllEventsByLabel
 } from '@/services/cv-api/modules/events/index.js'
+import { api } from '@/services/utils/axios'
 
 const parseData = (data) => {
   const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
   return Object.entries(JSON.parse(replaces))
-    .map(([key, value]) => ({ key, value }))
+    .map(([key, value, id]) => ({ key, value, id }))
     .filter((itm) => itm.key !== 'total')
 }
 
@@ -31,7 +32,8 @@ export const useEventsStore = defineStore('events', {
     },
     funtionToUse: 'allevents',
     labelTypesList: null,
-    loadingEvents: false
+    loadingEvents: false,
+    loadingExport: false
   }),
   actions: {
     async FETCH_EVENTS() {
@@ -55,12 +57,14 @@ export const useEventsStore = defineStore('events', {
           queryTotalNumber: data.filteredAndPaginatedEvents.queryTotalNumber,
           uniqueLabelsCount: data.filteredAndPaginatedEvents.uniqueLabelsCount,
           queryTotalEventsYear: data.filteredAndPaginatedEvents.queryTotalEventsYear,
-          queryTotalEventsWeek:   data.filteredAndPaginatedEvents.queryTotalEventsWeek,
+          queryTotalEventsWeek: data.filteredAndPaginatedEvents.queryTotalEventsWeek,
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
-
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        console.log('data.filteredAndPaginatedEvents', data.filteredAndPaginatedEvents)
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
+          (itm) => itm.key
+        )
 
         this.allEvents = data.filteredAndPaginatedEvents.events
 
@@ -99,12 +103,14 @@ export const useEventsStore = defineStore('events', {
           queryTotalNumber: data.filteredAndPaginatedEvents.queryTotalNumber,
           uniqueLabelsCount: data.filteredAndPaginatedEvents.uniqueLabelsCount,
           queryTotalEventsYear: data.filteredAndPaginatedEvents.queryTotalEventsYear,
-          queryTotalEventsWeek:   data.filteredAndPaginatedEvents.queryTotalEventsWeek,
+          queryTotalEventsWeek: data.filteredAndPaginatedEvents.queryTotalEventsWeek,
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
+          (itm) => itm.key
+        )
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -140,14 +146,15 @@ export const useEventsStore = defineStore('events', {
           queryTotalNumber: data.filteredAndPaginatedEvents.queryTotalNumber,
           uniqueLabelsCount: data.filteredAndPaginatedEvents.uniqueLabelsCount,
           queryTotalEventsYear: data.filteredAndPaginatedEvents.queryTotalEventsYear,
-          queryTotalEventsWeek:   data.filteredAndPaginatedEvents.queryTotalEventsWeek,
+          queryTotalEventsWeek: data.filteredAndPaginatedEvents.queryTotalEventsWeek,
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
+          (itm) => itm.key
+        )
         this.allEvents = data.filteredAndPaginatedEvents.events
-
 
         this.loadingEvents = false
         return
@@ -184,12 +191,14 @@ export const useEventsStore = defineStore('events', {
           queryTotalNumber: data.filteredAndPaginatedEvents.queryTotalNumber,
           uniqueLabelsCount: data.filteredAndPaginatedEvents.uniqueLabelsCount,
           queryTotalEventsYear: data.filteredAndPaginatedEvents.queryTotalEventsYear,
-          queryTotalEventsWeek:   data.filteredAndPaginatedEvents.queryTotalEventsWeek,
+          queryTotalEventsWeek: data.filteredAndPaginatedEvents.queryTotalEventsWeek,
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
 
-        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
+          (itm) => itm.key
+        )
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -211,7 +220,10 @@ export const useEventsStore = defineStore('events', {
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate)
         })
-        console.log("data.filteredAndPaginatedEvents by date y label", data.filteredAndPaginatedEvents.filtered)
+        console.log(
+          'data.filteredAndPaginatedEvents by date y label',
+          data.filteredAndPaginatedEvents.filtered
+        )
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
@@ -223,12 +235,14 @@ export const useEventsStore = defineStore('events', {
           queryTotalNumber: data.filteredAndPaginatedEvents.queryTotalNumber,
           uniqueLabelsCount: data.filteredAndPaginatedEvents.uniqueLabelsCount,
           queryTotalEventsYear: data.filteredAndPaginatedEvents.queryTotalEventsYear,
-          queryTotalEventsWeek:   data.filteredAndPaginatedEvents.queryTotalEventsWeek,
+          queryTotalEventsWeek: data.filteredAndPaginatedEvents.queryTotalEventsWeek,
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
 
-        this.labelTypesList = parseData(data.filteredAndPaginatedEvents.labelsSummary).map((itm) => itm.key)
+        this.labelTypesList = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
+          (itm) => itm.key
+        )
 
         this.allEvents = data.filteredAndPaginatedEvents.events
         this.loadingEvents = false
@@ -242,5 +256,25 @@ export const useEventsStore = defineStore('events', {
       }
     },
 
+    async EXPORT_DATA() {
+      let url = `events/csv_events/`
+
+      if (this.labelsSelected) {
+        url = `events/csv_events/?label_id_filter=${this.labelsSelected}`
+      }
+      try {
+        const result = await api.get(url)
+        this.loadingExport = false
+        if (result) {
+          return { success: true }
+        } else {
+          return { success: false }
+        }
+      } catch (error) {
+        console.log('error downloading file')
+        this.loadingExport = false
+        return { success: false }
+      }
+    }
   }
 })
