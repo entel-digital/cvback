@@ -7,9 +7,19 @@ from allauth.account.adapter import DefaultAccountAdapter
 from django.conf import settings
 from django.http import HttpRequest
 
+
+from allauth.account.forms import ResetPasswordForm
+from allauth.account.utils import filter_users_by_email
+
 if typing.TYPE_CHECKING:
     # from allauth.socialaccount.models import SocialLogin
     from cvback.users.models import User
+
+
+class NoMsg:
+
+    def send(self):
+        print("NOSEND")
 
 
 class AccountAdapter(DefaultAccountAdapter):
@@ -19,11 +29,24 @@ class AccountAdapter(DefaultAccountAdapter):
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
     
     def render_mail(self, template_prefix, email, context, headers=None):
+        users = filter_users_by_email(email,is_active=True, prefer_verified=True)
+        print(context["request"].path)
+        if not users and "/_allauth/browser/v1/auth/password/request" == context["request"].path:
+            return NoMsg()
         if template_prefix == "account/email/password_reset_key":
             context["password_reset_url"] = context["password_reset_url"].replace("/accounts/", "/#/account/") 
         return super().render_mail(template_prefix,email,context,headers=headers)
 
-
+    def send_mail(self, template_prefix, email, context,request ):
+        ctx = {
+            "email": email,
+            "current_site": "",
+            
+        }
+        ctx.update(context)
+        msg = super().render_mail(template_prefix, email, ctx)
+        msg.send()
+        
 # class SocialAccountAdapter(DefaultSocialAccountAdapter):
 #     def is_open_for_signup(self, request: HttpRequest, sociallogin: SocialLogin) -> bool:
 #         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
