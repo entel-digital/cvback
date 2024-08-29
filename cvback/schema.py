@@ -182,14 +182,14 @@ class Query(graphene.ObjectType):
 
         # Calculate summaries
         all_labels = Label.objects.all()
-        labels_summary = {label.name: count for label in all_labels if (count := qs.filter(event_label=label).count()) > 0}
-        labels_summary['total'] = total
+        labels_summary = {label.name: {"total":count,"id":label.id} for label in all_labels if (count := qs.filter(event_label=label).count()) > 0}
+        labels_summary['total'] = {"total":total,"id":None}
 
         all_types = EventType.objects.all()
-        types_summary = {event_type.name: count for event_type in all_types if (count := qs.filter(event_type=event_type).count()) > 0}
-        types_summary['total'] = total
-
-        unique_labels_count = sum(1 for count in labels_summary.values() if count > 0) - 1
+        types_summary = {event_type.name:  {"total":count,"id":event_type.id} for event_type in all_types if (count := qs.filter(event_type=event_type).count()) > 0}
+        types_summary['total'] = {"total":total,"id":None}
+        values = [1 for a in labels_summary.values() if a['total']>0 and a['total'] ]
+        unique_labels_count = sum(values) - 1
 
 
         if offset:
