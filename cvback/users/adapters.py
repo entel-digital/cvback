@@ -37,7 +37,7 @@ class AccountAdapter(DefaultAccountAdapter):
             context["password_reset_url"] = context["password_reset_url"].replace("/accounts/", "/#/account/") 
         return super().render_mail(template_prefix,email,context,headers=headers)
 
-    def send_mail(self, template_prefix, email, context,request ):
+    def send_mail(self, template_prefix, email, context):
         ctx = {
             "email": email,
             "current_site": "",
