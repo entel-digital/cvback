@@ -258,7 +258,6 @@ class DataExportView(CustomCSVExportView):
                 'cameras__need_physical_maintenance',
                 'cameras__need_replacement',
                 'cameras__photo',
-                'cameras',
                 'cameras__area__id',
                 'cameras__area__added_date',
                 'cameras__area__added_modified',

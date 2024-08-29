@@ -92,6 +92,14 @@ DJANGO_APPS = [
     "django.forms",
     "django.contrib.gis"
 ]
+LOCAL_APPS = [
+    "cvback",
+    "cvback.users",
+    "cvback.devices",
+    "cvback.events",
+    "cvback.alerts"
+    # Your stuff: custom apps go here
+]
 THIRD_PARTY_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
@@ -108,14 +116,6 @@ THIRD_PARTY_APPS = [
     "django_vue_utilities",
 ]
 
-LOCAL_APPS = [
-    "cvback",
-    "cvback.users",
-    "cvback.devices",
-    "cvback.events",
-    "cvback.alerts"
-    # Your stuff: custom apps go here
-]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
