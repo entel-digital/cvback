@@ -376,15 +376,7 @@ export default defineComponent({
 
     const exportData = async () => {
       eventStore.loadingExport = true
-      const result = await eventStore.EXPORT_DATA()
-      if(!result?.success){
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'report_problem',
-          message: 'Ha ocurrido un problema con la descarga, intenta nuevamente'
-        })
-      }
+       await eventStore.EXPORT_DATA()
     };
     const loadingExport = computed(() => {
       return eventStore.loadingExport
