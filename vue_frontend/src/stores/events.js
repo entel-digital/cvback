@@ -9,16 +9,16 @@ import {
 import { api } from '@/services/utils/axios'
 
 const parseData = (data) => {
-  const replaces = data.replace(/\\\"/g, '"').slice(1, -1);
-  const parsedData = JSON.parse(replaces);
+  const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
+  const parsedData = JSON.parse(replaces)
 
- return Object.entries(parsedData)
-  .filter(([key, value]) => key !== 'total')
-  .map(([key, value]) => ({
-    key,
-    value: value.total,
-    id: value.id
-  }));
+  return Object.entries(parsedData)
+    .filter(([key, value]) => key !== 'total')
+    .map(([key, value]) => ({
+      key,
+      value: value.total,
+      id: value.id
+    }))
 }
 
 export const useEventsStore = defineStore('events', {
@@ -48,7 +48,6 @@ export const useEventsStore = defineStore('events', {
 
       try {
         const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage)
-
 
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate)
@@ -264,24 +263,25 @@ export const useEventsStore = defineStore('events', {
     },
 
     async EXPORT_DATA() {
-      let url = `events/csv_events/`
+      let url = `${api.defaults.baseURL}events/csv_events/`
 
       if (this.labelsSelected) {
         url = `events/csv_events/?label_id_filter=${this.labelsSelected}`
       }
-      try {
-        const result = await api.get(url)
-        this.loadingExport = false
-        if (result) {
-          return { success: true }
-        } else {
-          return { success: false }
-        }
-      } catch (error) {
-        console.log('error downloading file')
-        this.loadingExport = false
-        return { success: false }
-      }
+
+      const enlace = document.createElement('a')
+
+      enlace.href = url
+
+      enlace.download = `data_export_${new Date().toISOString()}.csv`
+
+      enlace.style.display = 'none'
+
+      document.body.appendChild(enlace)
+
+      enlace.click()
+
+      document.body.removeChild(enlace)
     }
   }
 })
