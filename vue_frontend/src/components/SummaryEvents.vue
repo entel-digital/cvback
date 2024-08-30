@@ -311,13 +311,9 @@
 import { defineComponent, ref, computed } from 'vue'
 import { useEventsStore } from '@/stores/events'
 import { useQuasar, date } from 'quasar'
-import DateTimePicker from '@/components/DateTimePicker.vue'
 
 export default defineComponent({
   name: 'SummaryEvents',
-  components: {
-    // DateTimePicker
-  },
   setup(props) {
     const eventStore = useEventsStore()
     const labelToFilter = ref(null)
