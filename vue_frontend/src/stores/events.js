@@ -282,6 +282,7 @@ export const useEventsStore = defineStore('events', {
       enlace.click()
 
       document.body.removeChild(enlace)
+      this.loadingExport = false
     }
   }
 })
