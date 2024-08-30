@@ -375,8 +375,9 @@ export default defineComponent({
     }
 
     const exportData = async () => {
-      eventStore.loadingExport = true
-       await eventStore.EXPORT_DATA()
+         eventStore.EXPORT_DATA()
+
+
     };
     const loadingExport = computed(() => {
       return eventStore.loadingExport
