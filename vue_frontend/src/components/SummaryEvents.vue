@@ -335,20 +335,19 @@ export default defineComponent({
     })
 
     const getLabel = (label) => {
-      console.log("label", label)
       if (labelToFilter.value?.value === label.value) {
         labelToFilter.value = null
         eventStore.labelsSelected = null
       } else {
         labelToFilter.value = label
-        eventStore.labelsSelected = label.value.toString()
+        eventStore.labelsSelected = label.id.toString()
       }
     }
-    const getType = (label) => {
-      if (typeToFilter.value.value === label.value) {
+    const getType = (type) => {
+      if (typeToFilter.value.value === type.value) {
         typeToFilter.value = null
-      } else typeToFilter.value = label
-      eventStore.typesSelected = label.value
+      } else typeToFilter.value = type
+      eventStore.typesSelected = type.id.toString()
     }
 
     const getColor = (label, tofilter) => {

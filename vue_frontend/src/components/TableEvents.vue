@@ -377,7 +377,6 @@ export default defineComponent({
     const exportData = async () => {
       eventStore.loadingExport = true
       const result = await eventStore.EXPORT_DATA()
-      console.log("result export ",result)
       if(!result?.success){
         $q.notify({
           color: 'red-5',

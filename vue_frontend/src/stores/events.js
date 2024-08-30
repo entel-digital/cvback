@@ -9,10 +9,16 @@ import {
 import { api } from '@/services/utils/axios'
 
 const parseData = (data) => {
-  const replaces = data.replace(/\\\"/g, '"').slice(1, -1)
-  return Object.entries(JSON.parse(replaces))
-    .map(([key, value, id]) => ({ key, value, id }))
-    .filter((itm) => itm.key !== 'total')
+  const replaces = data.replace(/\\\"/g, '"').slice(1, -1);
+  const parsedData = JSON.parse(replaces);
+
+ return Object.entries(parsedData)
+  .filter(([key, value]) => key !== 'total')
+  .map(([key, value]) => ({
+    key,
+    value: value.total,
+    id: value.id
+  }));
 }
 
 export const useEventsStore = defineStore('events', {
@@ -43,9 +49,11 @@ export const useEventsStore = defineStore('events', {
       try {
         const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage)
 
+
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate)
         })
+
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
@@ -61,7 +69,6 @@ export const useEventsStore = defineStore('events', {
           queryTotalEventsMonth: data.filteredAndPaginatedEvents.queryTotalEventsMonth,
           queryTotalEventsDay: data.filteredAndPaginatedEvents.queryTotalEventsDay
         }
-        console.log('data.filteredAndPaginatedEvents', data.filteredAndPaginatedEvents)
         this.labelsTypes = parseData(data.filteredAndPaginatedEvents.labelsSummary).map(
           (itm) => itm.key
         )
