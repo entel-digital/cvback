@@ -10,9 +10,6 @@
       <SummaryEvents />
     </div>
 
-    <!-- <div class="lt-md fit row wrap justify-center items-center q-py-md">
-      <SummaryEvents />
-    </div> -->
     <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"
@@ -55,24 +52,21 @@ export default defineComponent({
       },
       {
         name: 'date',
-        label: 'Fecha',
+        label: 'Fecha agregado',
         field: 'addedDate',
         align: 'center',
-        sortable: true,
-        sort: (a, b) => new Date(a) - new Date(b)
       },
       {
         name: 'labelType',
         label: 'Etiqueta',
         field: 'labelType',
         align: 'center',
-        sortable: true
       },
       {
         name: 'action',
         label: '',
         field: '',
-        align: 'center'
+        align: 'rigth'
       }
     ]
 
@@ -86,26 +80,13 @@ export default defineComponent({
     }
 
     const fetchAllEvents = async () => {
+
       await eventStore.FETCH_EVENTS()
     }
 
     onMounted(async () => {
-      // if (router.currentRoute.value.query?.event) {
-      //   await eventStore.FETCH_EVENTS_BY_ID(router.currentRoute.value.query.event)
-      // } else {
         fetchAllEvents()
-      // }
     })
-
-    // const filterData = async (data) => {
-    //  router.push({ name:"home" })
-    //   eventStore.loadingEvents = true
-    //   eventStore.dateSelected = data.dateToFilter
-    //   eventStore.labelsTypeSelected = data.labelTypeToFilter
-    //   eventStore.pagination.page = 1
-    //   eventStore.pagination.offset = 0
-    //   updateData(data.dateToFilter, data.labelTypeToFilter)
-    // };
 
     const updateData = async (date, label) => {
       eventStore.loadingEvents = true
@@ -121,6 +102,7 @@ export default defineComponent({
       } else if (date === null && label === null) {
         await fetchAllEvents()
       }
+
     }
 
     watch(
@@ -135,7 +117,8 @@ export default defineComponent({
       () => eventStore.labelsSelected,
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
-            updateData(eventStore.dateSelected, eventStore.labelsSelected)
+          eventStore.pagination.page = 1
+            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
         }
       },
       { immediate: true }

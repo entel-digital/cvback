@@ -89,11 +89,17 @@ query filteredAndPaginatedEvents( $idEqualsTo: String) {
         confidence
       }
     }
+    filtered
     typesSummary
     globalTotalNumber
     labelsSummary
     labelTextFilter
     queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
 }
 }
 `

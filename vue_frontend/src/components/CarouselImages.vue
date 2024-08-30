@@ -34,7 +34,7 @@
           :offset="[0, 0]"
           class="text-white carousel-control row justify-between items-center"
         >
-          <div class="fit row q-pl-md" style="max-width:200px ;">
+          <div class="fit row q-pl-md" style="max-width: 200px">
             <q-btn
               push
               dense
@@ -43,7 +43,10 @@
               icon="arrow_left"
               @click="$refs.carousel.previous()"
             />
-            <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 4px">
+            <div
+              class="q-px-sm q-pt-xs font-18-22 text-bold"
+              style="max-width: 40px; margin-top: 4px"
+            >
               {{ slide }}/{{ newFrames.length }}
             </div>
             <q-btn
@@ -55,22 +58,26 @@
               @click="$refs.carousel.next()"
             />
           </div>
-          <div class="fit row q-px-lg" style="max-width: fit-content;">
+          <div class="fit row q-px-lg q-gutter-x-md" style="max-width: fit-content">
             <q-btn
               dense
               text-color="white"
               no-caps
               :icon="hideBbox ? 'visibility' : 'visibility_off'"
               @click="toggleBbox"
-            />
+            >
+              <q-tooltip>{{ hideBbox ? 'Ocultar BoundingBox' : 'Ver BoundingBox' }}</q-tooltip>
+            </q-btn>
             <q-btn
               push
               round
               dense
               text-color="white"
-              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              :icon="'fullscreen'"
               @click="fullscreen = true"
-            />
+            >
+              <q-tooltip>Ver pantalla completa</q-tooltip>
+            </q-btn>
           </div>
         </q-carousel-control>
       </template>
@@ -108,7 +115,7 @@
             :offset="[0, 0]"
             class="text-white rounded-borders carousel-control row justify-between items-center"
           >
-            <div class="fit row q-pl-md" style="max-width:200px ;">
+            <div class="fit row q-pl-md" style="max-width: 200px">
               <q-btn
                 push
                 dense
@@ -117,7 +124,10 @@
                 icon="arrow_left"
                 @click="$refs.carousel.previous()"
               />
-              <div class="q-px-sm q-pt-xs font-18-22 text-bold" style="max-width: 40px; margin-top: 4px">
+              <div
+                class="q-px-sm q-pt-xs font-18-22 text-bold"
+                style="max-width: 40px; margin-top: 4px"
+              >
                 {{ slide }}/{{ newFrames.length }}
               </div>
               <q-btn
@@ -129,22 +139,27 @@
                 @click="$refs.carousel.next()"
               />
             </div>
-            <div class="fit row q-px-lg" style="max-width: fit-content;">
+            <div class="fit row q-px-lg q-gutter-x-md" style="max-width: fit-content">
               <q-btn
                 dense
                 text-color="white"
                 no-caps
                 :icon="hideBbox ? 'visibility' : 'visibility_off'"
+                :disable="frame.type === 'video'"
                 @click="toggleBbox"
-              />
+              >
+                <q-tooltip>{{ hideBbox ? 'Ocultar BoundingBox' : 'Ver BoundingBox' }}</q-tooltip>
+              </q-btn>
               <q-btn
                 push
                 round
                 dense
                 text-color="white"
-                :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                :icon="'fullscreen_exit'"
                 @click="fullscreen = false"
-              />
+              >
+                <q-tooltip>Salir Pantalla completa</q-tooltip>
+              </q-btn>
             </div>
           </q-carousel-control>
         </template>
@@ -154,12 +169,12 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch } from "vue";
-import ImageWithBoundingBoxes from './ImageWithBoundingBoxes.vue';
-import VideoPlayer from './VideoPlayer.vue';
+import { defineComponent, ref, computed, watch } from 'vue'
+import ImageWithBoundingBoxes from './ImageWithBoundingBoxes.vue'
+import VideoPlayer from './VideoPlayer.vue'
 
 export default defineComponent({
-  name: "CarouselImages",
+  name: 'CarouselImages',
   components: {
     ImageWithBoundingBoxes,
     VideoPlayer
@@ -177,44 +192,58 @@ export default defineComponent({
     videos: {
       type: Array,
       default: () => []
+    },
+    eventSelected: {
+      type: Array,
+      default: () => []
     }
   },
 
   setup(props) {
-    const slide = ref(1);
-    const fullscreen = ref(false);
-    const hideBbox = ref(true);
+    const slide = ref(1)
+    const fullscreen = ref(false)
+    const hideBbox = ref(true)
 
     const newFrames = computed(() => {
       if (!props.frames || !props.inferenceDetectionClassification) {
-        return [];
+        return []
       }
 
-      const imageFrames = props.frames.map(frame => ({
+      const imageFrames = props.frames.map((frame) => ({
         ...frame,
         type: 'image',
         boundingBoxes: props.inferenceDetectionClassification
-          .filter(inference => inference.frame.id === frame.id)
-          .flatMap(inference =>
-            inference.boundingBoxes.map(box => ({
+          .filter((inference) => inference.frame.id === frame.id)
+          .flatMap((inference) =>
+            inference.boundingBoxes.map((box) => ({
               ...box,
               label: inference.labels[0]?.name || '',
               confidence: inference.confidence
             }))
           )
-      }));
+      }))
 
-      const videoFrames = props.videos.map(video => ({
+      const videoFrames = props.videos.map((video) => ({
         id: video.id,
         type: 'video',
         videoUrl: video.videoUrl
-      }));
-      return [...imageFrames, ...videoFrames];
-    });
+      }))
+      return [...imageFrames, ...videoFrames]
+    })
 
     const toggleBbox = () => {
-      hideBbox.value = !hideBbox.value;
+      hideBbox.value = !hideBbox.value
     };
+
+    watch(
+      () => props.eventSelected,
+      (newEvent, oldEvent) => {
+        if(newEvent[0] !== oldEvent[0]){
+          slide.value = 1
+          hideBbox.value = true
+        }
+      },
+    )
 
     return {
       slide,
@@ -222,9 +251,9 @@ export default defineComponent({
       newFrames,
       hideBbox,
       toggleBbox
-    };
-  },
-});
+    }
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -234,7 +263,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
   padding: 10px;
 }
 
@@ -265,7 +294,8 @@ export default defineComponent({
   height: 100%;
 }
 
-:deep(img), :deep(video) {
+:deep(img),
+:deep(video) {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;

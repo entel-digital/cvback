@@ -2,6 +2,16 @@ export default `
 query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
   filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
     filtered
+    typesSummary
+    globalTotalNumber
+    labelsSummary
+    labelTextFilter
+    queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
     events {
       id
       addedDate
@@ -56,11 +66,6 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
         confidence
       }
     }
-    typesSummary
-    globalTotalNumber
-    labelsSummary
-    labelTextFilter
-    queryTotalNumber
   }
 }
 `

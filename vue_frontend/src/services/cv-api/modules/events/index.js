@@ -29,20 +29,20 @@ export const getAllEventsByDateAndLabel = async (
   rowsPerPage,
   dateGreaterThanEqual,
   dateLowerThan,
-  labelTextFilter
+  labelIdFilter
 ) => {
   const body = {
     query: queries.allEventsByDateAndLabel,
-    variables: { offset, rowsPerPage, dateGreaterThanEqual, dateLowerThan, labelTextFilter }
+    variables: { offset, rowsPerPage, dateGreaterThanEqual, dateLowerThan, labelIdFilter }
   }
   const { data } = await Post(body)
   return data
 }
 
-export const getAllEventsByLabel = async (offset, rowsPerPage, labelTextFilter) => {
+export const getAllEventsByLabel = async (offset, rowsPerPage, labelIdFilter) => {
   const body = {
     query: queries.allEventsByLabel,
-    variables: { offset, rowsPerPage, labelTextFilter }
+    variables: { offset, rowsPerPage, labelIdFilter }
   }
   const { data } = await Post(body)
   return data

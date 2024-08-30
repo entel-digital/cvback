@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelTextFilter: String, ) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage,  labelTextFilter: $labelTextFilter) {
+query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelIdFilter: String, ) {
+  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage,  labelIdFilter: $labelIdFilter) {
     filtered
        events {
       id
@@ -89,11 +89,17 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelTextFilte
         confidence
       }
     }
+    filtered
     typesSummary
     globalTotalNumber
     labelsSummary
     labelTextFilter
     queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
 }
 }
 `

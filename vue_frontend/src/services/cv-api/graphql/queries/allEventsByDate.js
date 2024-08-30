@@ -89,11 +89,17 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterTh
         confidence
       }
     }
+    filtered
     typesSummary
     globalTotalNumber
     labelsSummary
     labelTextFilter
     queryTotalNumber
+    uniqueLabelsCount
+    queryTotalEventsYear
+    queryTotalEventsWeek
+    queryTotalEventsMonth
+    queryTotalEventsDay
 }
 }
 `

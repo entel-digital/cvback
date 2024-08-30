@@ -1,6 +1,9 @@
 <template>
   <div class="fit">
-    <div class="fit row no-wrap justify-between items-start content-start q-py-md">
+    <div class="fit column no-wrap justify-between items-start  content-start">
+      <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
+        <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
+    </div>
       <div class="gt-sm fit col-12">
         <q-table
           class="fit my-sticky-dynamic fs-15-18"
@@ -23,7 +26,7 @@
               @click="getRowSelected(props.row)"
             >
               <q-td key="name" :props="props">
-                <span class="barlow-semibold fs-15-18">
+                <span class="barlow-semibold fs-15-18 q-pl-lg">
                   {{ props.row.eventType.name }}
                 </span>
               </q-td>
@@ -97,14 +100,11 @@
                         <q-item-section>
                           <q-item-label
                             >OCR:
-                            <div v-if="props.row.inferenceOcr.length > 1">
+                            <div v-if="props.row.inferenceOcr.length >= 1">
                               <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
-                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                  ocr.name
-                                }}</q-chip>
-                                <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                                  ocr.value
-                                }}</q-chip>
+                                <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                                  >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                                </q-chip>
                               </div>
                             </div>
                             <div v-else style="max-width: fit-content">
@@ -148,6 +148,7 @@
                       :frames="props.row.frames"
                       :inferenceDetectionClassification="props.row.inferenceDetectionClassification"
                       :videos="props.row.videos"
+                      :eventSelected="expanded"
                     />
                   </div>
                 </div>
@@ -161,11 +162,12 @@
             direction-links
             ellipses
             :max="pagesNumber"
-            :max-pages="5"
+            :max-pages="7"
             text-color="dark"
             active-text-color="white"
             color="dark"
             class="q-px-xl"
+            style="max-width: fit-content"
             @update:model-value="updatePagination"
           />
         </div>
@@ -208,21 +210,43 @@
                 <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
               </q-item-label>
               <q-item-label
-                >Fecha creado:
+                >Fecha informado:
                 <span class="barlow-bold">
-                  {{ formatDateEvent(row.addedDate).date }}
+                  {{ formatDateEvent(row.informedDate).date }}
                 </span>
-                <span class="barlow"> | {{ formatDateEvent(row.addedDate).time }} </span>
+                <span class="barlow"> | {{ formatDateEvent(row.informedDate).time }} </span>
               </q-item-label>
               <q-item-label
                 >OCR:
                 <div v-for="ocr in row.inferenceOcr" :key="ocr.id">
-                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                    ocr.name || 'No identificado'
-                  }}</q-chip>
-                  <q-chip dense outline color="primary" class="barlow q-px-sm">{{
-                    ocr.value || 'No identificado'
-                  }}</q-chip>
+                  <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                    >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                  </q-chip>
+                </div>
+              </q-item-label>
+              <q-item-label
+                >Etiquetas:
+                <div>
+                  <q-chip
+                    outline
+                    v-for="label in row.labelsDetected"
+                    :key="label.id"
+                    :label="label.name"
+                    icon="check_circle"
+                    color="positive"
+                    style="max-width: fit-content"
+                    class="q-px-xs"
+                  />
+                  <q-chip
+                    outline
+                    v-for="label in row.labelsMissing"
+                    :key="label.id"
+                    :label="label.name"
+                    icon="cancel"
+                    color="negative"
+                    style="max-width: fit-content"
+                    class="q-px-xs"
+                  />
                 </div>
               </q-item-label>
             </q-card-section>
@@ -231,6 +255,7 @@
                 :frames="row.frames"
                 :inferenceDetectionClassification="row.inferenceDetectionClassification"
                 :videos="row.videos"
+                :frameSelected="rowSelected"
               />
             </q-card-section>
           </q-card>
@@ -260,6 +285,7 @@
 import { defineComponent, ref, computed, watch, onMounted } from 'vue'
 import { types } from '@/utils/colors'
 import { useEventsStore } from '@/stores/events'
+import { useQuasar } from 'quasar'
 
 import CarouselImages from '@/components/CarouselImages.vue'
 
@@ -276,12 +302,11 @@ export default defineComponent({
     const fullscreen = ref(false)
     const expanded = ref([])
     const eventStore = useEventsStore()
+    const $q = useQuasar()
+
 
     const pagesNumber = computed(() => {
-      const totalToUse =
-        eventStore.funtionToUse === 'allevents'
-          ? eventStore.summaryEvents?.totalEvents
-          : eventStore.summaryEvents?.totalQueryEvents
+      const totalToUse = eventStore.summaryEvents?.totalQueryEvents
       return totalToUse ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage) : 1
     })
 
@@ -300,7 +325,7 @@ export default defineComponent({
     }
 
     const formatDateEvent = (date) => {
-      const dateObj = new Date(date) // Log después de cambiar rowSelected
+      const dateObj = new Date(date)
 
       const month =
         dateObj.getMonth() + 1 < 10 ? `0${dateObj.getMonth() + 1}` : dateObj.getMonth() + 1
@@ -308,10 +333,11 @@ export default defineComponent({
       const year = dateObj.getFullYear()
       const hour = dateObj.getHours() < 10 ? `0${dateObj.getHours()}` : dateObj.getHours()
       const minutes = dateObj.getMinutes() < 10 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes()
+      const seconds = dateObj.getSeconds() < 10 ? `0${dateObj.getSeconds()}` : dateObj.getSeconds()
 
       const newDate = {
         date: `${day}/${month}/${year}`,
-        time: `${hour}:${minutes}`
+        time: `${hour}:${minutes}:${seconds}`
       }
       return newDate
     }
@@ -348,6 +374,23 @@ export default defineComponent({
         eventStore.pagination.rowsPerPage
     }
 
+    const exportData = async () => {
+      eventStore.loadingExport = true
+      const result = await eventStore.EXPORT_DATA()
+      if(!result?.success){
+        $q.notify({
+          color: 'red-5',
+          textColor: 'white',
+          icon: 'report_problem',
+          message: 'Ha ocurrido un problema con la descarga, intenta nuevamente'
+        })
+      }
+    };
+    const loadingExport = computed(() => {
+      return eventStore.loadingExport
+    })
+
+
     return {
       rowSelected,
       pagesNumber,
@@ -362,13 +405,18 @@ export default defineComponent({
       findColor,
       eventStore,
       updatePagination,
-      displayRows
+      displayRows,
+      exportData,
+      loadingExport
     }
   }
 })
 </script>
 
 <style lang="scss">
+.q-pagination__middle.row.justify-center {
+  max-width: fit-content !important;
+}
 .my-sticky-dynamic {
   /* height or max-height is important */
   height: 60vh;
@@ -415,9 +463,5 @@ export default defineComponent({
     // Add this selector
     background-color: #fafafa; // Add your desired color here
   }
-}
-
-:deep(.q-pagination__middle.row.justify-center) {
-  max-width: fit-content !important;
 }
 </style>
