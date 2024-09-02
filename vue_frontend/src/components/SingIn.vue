@@ -59,6 +59,7 @@ export default defineComponent({
         username: username.value,
         password: password.value
       })
+      
       if (userStore.user?.meta.is_authenticated) {
         router.push({ name: 'home' })
         loading.value = false

@@ -12,8 +12,8 @@ export const useUserStore = defineStore('user', {
     async SIGN_IN(data) {
       try {
         const user = await api.post('_allauth/browser/v1/auth/login ', JSON.stringify(data))
-        this.user = user.data.user
-        return user
+        this.user = user.data
+        return this.user
       } catch (error) {
         console.log('HERE IN ERROR SIGN_IN')
       }

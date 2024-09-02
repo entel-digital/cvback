@@ -1,34 +1,3 @@
-<script setup>
-import { baseStorageUrl } from '@/services/utils/globals.js'
-import SingIn from '@/components/SingIn.vue'
-import RequestResetPassword from '@/components/RequestResetPassword.vue'
-
-import { onMounted, ref } from 'vue'
-import { useUserStore } from '@/stores/user.js'
-import { useRouter } from 'vue-router'
-
-const logoVisionBlue = `${baseStorageUrl}/images/logo_vision_azul.png`
-const logoEntelDigitalBlue = `${baseStorageUrl}/images/entel_digital_azul.png`
-
-const logoVisionWhite = `${baseStorageUrl}/images/logo_vision_blanco.png`
-const logoEntelDigitalWhite = `${baseStorageUrl}/images/entel_digital_blanco.png`
-
-const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
-const styleBg = `background-image: url(${pathImageBg}); background-size: cover; background-repeat: no-repeat; background-position: center;  height: 100vh;
-  width: 100%;`
-const router = useRouter()
-
-onMounted(async () => {
-  const statusSession = await useUserStore().GET_SESSION()
-  if (statusSession?.meta.is_authenticated) {
-    router.push({ name: 'home' })
-  }
-})
-const showRequestPassword = ref(false);
-
-
-</script>
-
 <template>
   <q-layout view="hHh Lpr lFf">
     <div class="gt-sm row">
@@ -46,37 +15,36 @@ const showRequestPassword = ref(false);
         </div>
       </div>
       <div class="col-6">
-        <div  class="flex flex-center column" :style="styleBg">
-          <div v-if ="!showRequestPassword">
+        <div class="flex flex-center column" :style="styleBg">
+          <div v-if="!showRequestPassword">
             <SingIn />
-          <div class="q-py-md">
-            <q-btn
-              flat
-              label="Recuperar contraseña"
-              no-caps
-              type="submit"
-              color="white"
-              class="full-width"
-              style="text-decoration: underline"
-              @click="showRequestPassword = true"
-            />
-          </div>
+            <div class="q-py-md">
+              <q-btn
+                flat
+                label="Recuperar contraseña"
+                no-caps
+                type="submit"
+                color="white"
+                class="full-width"
+                style="text-decoration: underline"
+                @click="showRequestPassword = true"
+              />
+            </div>
           </div>
           <div v-else>
             <RequestResetPassword />
-          <div class="q-py-md">
-            <q-btn
-              flat
-              label="Volver"
-              no-caps
-              color="white"
-              class="full-width"
-              style="text-decoration: underline"
-              @click="showRequestPassword = false"
-            />
+            <div class="q-py-md">
+              <q-btn
+                flat
+                label="Volver"
+                no-caps
+                color="white"
+                class="full-width"
+                style="text-decoration: underline"
+                @click="showRequestPassword = false"
+              />
+            </div>
           </div>
-          </div>
-
         </div>
       </div>
     </div>
@@ -95,6 +63,63 @@ const showRequestPassword = ref(false);
     </div>
   </q-layout>
 </template>
+
+<script>
+import { defineComponent, onMounted, ref } from 'vue'
+import { useUserStore } from '@/stores/user.js'
+import { useRouter } from 'vue-router'
+import { baseStorageUrl } from '@/services/utils/globals.js'
+
+import SingIn from '@/components/SingIn.vue'
+import RequestResetPassword from '@/components/RequestResetPassword.vue'
+
+export default defineComponent({
+  name: 'SingInView',
+  components:{
+    SingIn,
+    RequestResetPassword
+  },
+  setup() {
+    const logoVisionBlue = `${baseStorageUrl}/images/logo_vision_azul.png`
+    const logoEntelDigitalBlue = `${baseStorageUrl}/images/entel_digital_azul.png`
+
+    const logoVisionWhite = `${baseStorageUrl}/images/logo_vision_blanco.png`
+    const logoEntelDigitalWhite = `${baseStorageUrl}/images/entel_digital_blanco.png`
+
+    const pathImageBg = `${baseStorageUrl}/images/torreentel.png`
+
+    const styleBg = `
+      background-image: url(${pathImageBg}); 
+      background-size: cover; 
+      background-repeat: no-repeat; 
+      background-position: center;  
+      height: 100vh;
+      width: 100%;
+    `
+
+    const router = useRouter()
+
+    onMounted(async () => {
+      const statusSession = await useUserStore().GET_SESSION()
+      if (statusSession?.meta.is_authenticated) {
+        router.push({ name: 'home' })
+      }
+    })
+
+    const showRequestPassword = ref(false)
+
+    return {
+      logoEntelDigitalBlue,
+      logoEntelDigitalWhite,
+      logoVisionBlue,
+      logoVisionWhite,
+      pathImageBg,
+      styleBg,
+      showRequestPassword
+    }
+  }
+})
+</script>
 
 <style scoped>
 .mt-minus-15 {
