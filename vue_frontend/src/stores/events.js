@@ -263,26 +263,28 @@ export const useEventsStore = defineStore('events', {
     },
 
     async EXPORT_DATA() {
+      this.loadingExport = true
       let url = `${api.defaults.baseURL}events/csv_events/`
 
       if (this.labelsSelected) {
-        url = `events/csv_events/?label_id_filter=${this.labelsSelected}`
+        url = `${url}?label_id_filter=${this.labelsSelected}`
       }
+      setTimeout(() => {
+        const enlace = document.createElement('a')
 
-      const enlace = document.createElement('a')
+        enlace.href = url
 
-      enlace.href = url
+        enlace.download = `data_export_${new Date().toISOString()}.csv`
 
-      enlace.download = `data_export_${new Date().toISOString()}.csv`
+        enlace.style.display = 'none'
 
-      enlace.style.display = 'none'
+        document.body.appendChild(enlace)
 
-      document.body.appendChild(enlace)
+        enlace.click()
 
-      enlace.click()
-
-      document.body.removeChild(enlace)
-      this.loadingExport = false
+        document.body.removeChild(enlace)
+        this.loadingExport = false
+      }, 2000)
     }
   }
 })
