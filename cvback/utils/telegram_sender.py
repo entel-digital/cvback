@@ -12,9 +12,12 @@ class TelegramSender():
         text = f"""📅 Fecha: {event_data['date']}
 ⏰ Hora del evento: {event_data['time']}
 🚌 Placa Vehículo: {event_data['vehicle_license_plate']}
+{event_data['event_label']}
 Elementos faltantes: {','.join(event_data['missing_labels'])}
 🔗 Para más detalles, visite:
-https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/events/event/{event_data['id']}/change/"""
+https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/events/event/{event_data['id']}/change/
+Hora de envío: {datetime.now().strftime("%H:%M:%S")}
+"""
         url = f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={text}"
         response = requests.get(url).json()  # this sends the message
         for image in event_data["images"]:
