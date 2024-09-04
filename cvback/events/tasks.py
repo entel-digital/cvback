@@ -33,6 +33,7 @@ def get_event_info(event):
     event_data["id"] = event.id
     event_data["date"] = informed_date if event.informed_date else ""
     event_data["time"] = informed_time if event.informed_date else ""
+    event_data["event_label"] = event.event_label.name if event.informed_date else ""
     if event.inference_ocr.all():
         if event.inference_ocr.all()[0].value:
             event_data["vehicle_license_plate"] = event.inference_ocr.all()[0].value
