@@ -43,5 +43,5 @@ class AccountAdapter(DefaultAccountAdapter):
         }
         ctx.update(context)
         msg = super().render_mail(template_prefix, email, ctx)
-        msg.attach(context["filename"],context["file"],context["mime_type"])
+        #msg.attach(context["filename"],context["file"],context["mime_type"])
         msg.send()

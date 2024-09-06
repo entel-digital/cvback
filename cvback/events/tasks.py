@@ -111,7 +111,7 @@ def save_file(qs,field_names, cls, request, format ):
         format = "CSV"
     return_file = IO()
 
-    df = pd.DataFrame(qs.values(*field_names))
+    df = pd.DataFrame(qs.values(*field_names).iterator())
     filename = cls.get_filename(qs)
     if format == "XLSX":
         filename = filename.replace(".csv","")
@@ -124,7 +124,7 @@ def save_file(qs,field_names, cls, request, format ):
             df[date_column] = df[date_column].dt.date
         mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
-        df.to_excel(writer, 'EVENTS')
+        df.to_excel(writer, 'EVENTS', index=False)
 
         
     elif format == "CSV":
@@ -132,7 +132,7 @@ def save_file(qs,field_names, cls, request, format ):
         filename = filename.replace(".xlsx","")
         if not filename.endswith(".csv"):
             filename += ".csv"
-        df.to_csv(return_file)
+        df.to_csv(return_file, index=False)
         
     exported_file = ExportedFile()
     exported_file.exported_file.save("./"+filename, return_file)
@@ -140,7 +140,7 @@ def save_file(qs,field_names, cls, request, format ):
 
     public_uri = exported_file.exported_file.url
     
-    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename, "mime_type":mime_type, "file":return_file}
+    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename }#, "mime_type":mime_type, "file":exported_file.exported_file.open().read()}
     if public_uri:
 
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_ready",

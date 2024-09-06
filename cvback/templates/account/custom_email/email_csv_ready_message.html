@@ -1,11 +1,14 @@
 
-{% extends "account/email/base_message.txt" %}
+
 {% load i18n %}
 
 {% block content %}{% autoescape off %}{% blocktrans %}Hi, {{username}}, You are receiving this email because you use the service to download the data from events.
 
+Follow this link to see your file.
+<a src="{{public_uri}}" download> Download File</a>
 
-Download the file attached to get the data.
+if you cant access copy the following link and paste it in your browser 
+{{public_uri}}
 
 
 
