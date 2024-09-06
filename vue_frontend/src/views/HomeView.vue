@@ -2,10 +2,6 @@
   <div>
     <Toolbar />
 
-    <!-- <div class="q-py-md q-pr-lg q-pl-sm">
-      <FilterEvents @filterData="filterData" />
-    </div> -->
-
     <div class="fit row wrap justify-center items-center q-py-md ">
       <SummaryEvents />
     </div>
