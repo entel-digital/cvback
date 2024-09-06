@@ -140,7 +140,7 @@ def save_file(qs,field_names, cls, request, format ):
 
     public_uri = exported_file.exported_file.url
     
-    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename, "mime_type":mime_type}
+    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename, "mime_type":mime_type, "file":return_file}
     if public_uri:
 
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_ready",
