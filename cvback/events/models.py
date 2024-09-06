@@ -261,3 +261,7 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.event_type.name} at {self.added_date} from {self.cameras}"
+
+
+class ExportedFile(models.Model):
+    exported_file = models.FileField(upload_to='exported_files/', null=True, blank=True, storage=MediaGoogleCloudStorage)

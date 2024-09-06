@@ -5,8 +5,8 @@
 {% block content %}{% autoescape off %}{% blocktrans %}Hi, {{username}}, You are receiving this email because you use the service to download the data from events.
 
 
-Follow the link  below to find your CSV file.
-{{ public_uri}}
+Download the file attached to get the data.
+
 
 
 
