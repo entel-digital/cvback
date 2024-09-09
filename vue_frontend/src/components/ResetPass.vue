@@ -99,7 +99,7 @@ export default defineComponent({
         if (regexPassword.test(password.value) || regexPassword.test(password2.value)) {
           loading.value = true
           response = await userStore.RESET_PASSWORD(key.value, password.value)
-          if (response?.status !== 200) {
+          if (response?.status !== 400) {
             $q.notify({
               color: 'red-5',
               textColor: 'white',
@@ -107,7 +107,15 @@ export default defineComponent({
               message: response.errors[0].message
             })
           } else {
-            router.push({ name: 'home' })
+            $q.notify({
+              color: 'primary',
+              textColor: 'white',
+              icon: 'report_problem',
+              message: 'Contraseña restaurada con éxito'
+            })
+            setTimeout(() => {
+              router.push({ name: 'login' })
+            }, 2000)
           }
           clearForm()
           loading.value = false
