@@ -34,10 +34,8 @@ createWebHashHistory
           <div class="q-py-md text-left text-white">
             Contraseña debe incluir:
             <ul>
-              <li>Al menos 8 carácteres</li>
-              <li>Al menos una mayúscula</li>
-              <li>Al menos una minúscula</li>
-              <li>Al menos un número</li>
+              <li>Debe tener al menos 8 carácteres</li>
+              <li>No debe ser solo númerica</li>
             </ul>
           </div>
           <div class="q-pt-md q-pb-lg">
@@ -48,6 +46,7 @@ createWebHashHistory
               color="accent"
               class="full-width"
               :loading="loading"
+              :disable="disableRestore"
             />
           </div>
         </form>
@@ -57,7 +56,7 @@ createWebHashHistory
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useUserStore } from '@/stores/user.js'
@@ -79,7 +78,7 @@ export default defineComponent({
       password.value = ''
       password2.value = ''
     }
-    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+    const regexPassword = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/g
 
     const checkPass = (value) => {
       if (regexPassword.test(value)) {
@@ -88,23 +87,25 @@ export default defineComponent({
         return 'La contraseña no cumple con los requisitos'
       }
     }
-
-    const resetPassword = async () => {
+    const disableRestore = computed(() => {
+      return password.value !== password2.value || password.value == ''
+    })
+   
+    const resetPassword = async () => {      
+      let response = null
       if (password.value !== password2.value) {
         return
       } else {
-        if (regexPassword.test(password.value) && regexPassword.test(password2.value)) {
+        if (regexPassword.test(password.value) || regexPassword.test(password2.value)) {
           loading.value = true
-          const response = await userStore.RESET_PASSWORD(
-            key.value,
-            password.value
-        )
+          response = await userStore.RESET_PASSWORD(key.value, password.value)
           if (response?.status !== 200) {
-              $q.notify({
-                color: 'negative',
-                position: 'top',
-                message: 'Ha ocurrido un error. Intente nuevamente'
-              })
+            $q.notify({
+              color: 'red-5',
+              textColor: 'white',
+              icon: 'report_problem',
+              message: response.errors[0].message
+            })
           } else {
             router.push({ name: 'home' })
           }
@@ -113,9 +114,10 @@ export default defineComponent({
         } else {
           clearForm()
           $q.notify({
-            color: 'negative',
-            position: 'top',
-            message: 'Ha ocurrido un error. Intente nuevamente'
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'report_problem',
+            message: response?.errors[0].message || 'Ocurrio un error. Vuelve a intentarlo'
           })
         }
       }
@@ -125,7 +127,7 @@ export default defineComponent({
     })
 
     const goHome = () => {
-      router.push({ path: '/login' })
+      router.push({ path: '/' })
     }
 
     return {
@@ -135,7 +137,8 @@ export default defineComponent({
       loading,
       checkPass,
       regexPassword,
-      goHome
+      goHome,
+      disableRestore
     }
   }
 })

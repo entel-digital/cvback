@@ -22,9 +22,7 @@ createWebHashHistory
               class="full-width"
               :loading="loading"
             />
-
           </div>
-
         </form>
       </div>
     </div>
@@ -55,24 +53,25 @@ export default defineComponent({
 
     const signInVision = async () => {
       loading.value = true
-      await userStore.SIGN_IN({
+      const resultSigIn = await userStore.SIGN_IN({
         username: username.value,
         password: password.value
       })
-      
-      if (userStore.user?.meta.is_authenticated) {
-        router.push({ name: 'home' })
-        loading.value = false
-        clearForm()
-      } else {
-        loading.value = false
-        $q.notify({
-          color: 'red-5',
-          textColor: 'white',
-          icon: 'report_problem',
-          message: 'Usuario o contraseña incorrectos'
-        })
-        clearForm()
+      if (resultSigIn) {
+        if (resultSigIn.meta?.is_authenticated) {
+          router.push({ name: 'home' })
+          loading.value = false
+          clearForm()
+        } else {
+          loading.value = false
+          $q.notify({
+            color: 'red-5',
+            textColor: 'white',
+            icon: 'report_problem',
+            message: resultSigIn.errors[0].message
+          })
+          clearForm()
+        }
       }
     }
 
