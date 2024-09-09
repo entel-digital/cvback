@@ -56,7 +56,6 @@ export default defineComponent({
     const resetPassword = async () => {
       loading.value = true
       const request = await userStore.REQUEST_PASSWORD(email.value)
-
       if (request === 200) {
         responseRequest.value = true
         clearForm()
@@ -66,7 +65,7 @@ export default defineComponent({
           color: 'red-5',
           textColor: 'white',
           icon: 'report_problem',
-          message: 'Ha ocurrido un error, intenta nuevamente'
+          message: request.erros[0].message
         })
       }
     }
