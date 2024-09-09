@@ -6,13 +6,13 @@
       <SummaryEvents />
     </div>
 
-    <div class="q-py-sm">
+    <!-- <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"
         :columns="columns"
         :loading="eventStore.loadingEvents"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default defineComponent({
     Toolbar,
     SummaryEvents,
     // FilterEvents,
-    TableEvents
+    // TableEvents
   },
   setup() {
     const columns = [
