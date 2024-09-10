@@ -306,9 +306,12 @@ export const useEventsStore = defineStore('events', {
         }
   
         const response = await api.get(url)
+          this.loadingExport = false
         return response 
       }catch(error){
         return error
+        this.loadingExport = false
+
       }
     }
   }

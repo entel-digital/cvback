@@ -400,7 +400,7 @@ export default defineComponent({
 
       if (response) {
         $q.notify({
-          message: response,
+          message: "Tu solicitud esta siendo procesada. Te enviaremos un correo en los próximos minutos con la confirmación",
           color: 'positive',
           position: 'bottom',
           timeout: 2000
