@@ -2,7 +2,7 @@
   <div class="fit">
     <div class="fit column no-wrap justify-between items-start  content-start">
       <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
-        <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
+        <q-btn no-caps :disable="!displayRows.lenght > 0" color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
     </div>
       <div class="gt-sm fit col-12">
         <q-table
@@ -175,6 +175,11 @@
     </div>
 
     <div class="lt-md">
+      <q-list bordered>
+       <q-item>
+        No hay datos para mostrar
+       </q-item>     
+      </q-list>
       <q-list bordered separator class="rounded-borders">
         <q-expansion-item group="events" bordered v-for="row in displayRows" :key="row.id">
           <template v-slot:header>

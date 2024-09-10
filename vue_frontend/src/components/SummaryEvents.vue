@@ -89,12 +89,12 @@
             /></span>
           </div>
 
-          <div style="max-height: 100px; max-width: 300px">
+          <div style=" max-height: 100px; max-width: 300px">
             <div v-if="!eventStore.summaryEvents">
               <q-spinner color="primary" size="3em" />
             </div>
 
-            <div v-else class="row inline" style="width: 100%">
+            <div v-else class="row inline" style="width: 100% ">
               <q-scroll-area style="height: 100px">
                 <q-chip
                   v-for="label in allLabels"
@@ -203,7 +203,7 @@
 
     <!-- MOBILE VERSION -->
     <div class="lt-lg q-pl-md">
-      <div class="fit row q-gutter-md">
+      <div class="fit row justify-center q-gutter-md">
         <q-card
           v-for="date in datesSummary"
           :key="date"
@@ -233,7 +233,7 @@
       </div>
       <q-card class="card-small q-mt-sm">
         <q-card-section class="bg-white">
-          <div class="barlow-bold fs-12-14 text-dark q-pb-md">
+          <div class="barlow-bold fs-12-14 text-dark q-pb-md q-pl-md">
             Total Etiquetas
             <span
               ><q-icon size="18px" :name="isFiltered ? 'filter_list' : 'filter_list_off'"
@@ -275,9 +275,10 @@
           </div>
         </q-card-section>
       </q-card>
+
       <q-card class="card-small q-mt-sm">
         <q-card-section class="bg-white">
-          <div class="barlow-bold fs-12-14 text-dark q-pb-md">
+          <div class="barlow-bold fs-12-14 text-dark q-pb-md q-pl-md">
             Total Eventos
           </div>
 
@@ -316,9 +317,10 @@
           </div>
         </q-card-section>
       </q-card>
-      <!-- <q-card class="col card-small  q-mt-sm">
+
+      <q-card class="col card-small  q-mt-sm">
         <q-card-section class="bg-white text-center">
-          <div class="barlow-bold fs-12-14 text-dark q-pb-xs text-left">
+          <div class="barlow-bold fs-12-14 text-dark q-pb-xs text-left q-pl-md">
             Filtro de hora
             <span
               ><q-icon size="18px" :name="isFiltered ? 'filter_list' : 'filter_list_off'"
@@ -336,8 +338,8 @@
                 </span>
                 {{ dateToDisplay }}
               </div>
-              <div class="row mt-1 border" v-show="show.calendar">
-                <Datepicker2
+              <div class="row mt-1 border" v-show="show.calendar" style="z-index: 5;">
+                <Datepicker
                   v-model="selectedDate"
                   @onSelect="showCalendar"
                   :next-prev-icon="true"
@@ -352,7 +354,7 @@
             </div>
           </div>
         </q-card-section>
-      </q-card> -->
+      </q-card>
     </div>
   </div>
 </template>
