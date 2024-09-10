@@ -4,9 +4,11 @@
       <q-card v-for="date in datesSummary" :key="date" style="width: 100%; max-width: 300px">
         <q-item dense class="q-pb-sm text-center" style="width: 100%; max-width: 300px">
           <q-item-section>
-            <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">{{
-              hasValue(eventStore.summaryEvents, 'queryTotalEventsDay')
-            }}</q-item-label>
+            <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">
+              {{
+              hasValue(date.queryName)
+            }}
+            </q-item-label>
             <q-item-label class="q-mt-none barlow-bold text-dark">{{ date.label }}</q-item-label>
             <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
               date.value
@@ -85,16 +87,16 @@
           <div class="barlow-bold fs-16-19 text-dark q-pb-md">
             Total Etiquetas
             <span class="q-px-sm"
-              ><q-icon size="22px" :name="isFiltered ? 'filter_list_off' : 'filter_list_'"
+              ><q-icon size="22px" :name="isFilterByLabel ? 'filter_list' : 'filter_list_off'"
             /></span>
           </div>
 
-          <div style=" max-height: 100px; max-width: 300px">
+          <div style="max-height: 100px; max-width: 300px">
             <div v-if="!eventStore.summaryEvents">
               <q-spinner color="primary" size="3em" />
             </div>
 
-            <div v-else class="row inline" style="width: 100% ">
+            <div v-else class="row inline" style="width: 100%">
               <q-scroll-area style="height: 100px">
                 <q-chip
                   v-for="label in allLabels"
@@ -116,6 +118,7 @@
                     style="width: auto; padding: 0 15px"
                   >
                     {{ label.value }}
+                      
                   </q-avatar>
                   {{ label.key }}
                 </q-chip>
@@ -181,7 +184,7 @@
                 </span>
                 {{ dateToDisplay }}
               </div>
-              <div class="row mt-1 border" v-show="show.calendar" style="z-index: 10;">
+              <div class="row mt-1 border" v-show="show.calendar" style="z-index: 10">
                 <Datepicker
                   v-model="selectedDate"
                   @onSelect="showCalendar"
@@ -225,7 +228,7 @@
             </q-item-section>
             <q-item-section>
               <q-item-label class="barlow-semibold q-px-sm text-primary fs-18-23 ellipsis">
-                {{ hasValue(eventStore.summaryEvents, 'queryTotalEventsDay') }}
+                {{ hasValue(date.queryName) }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -236,13 +239,13 @@
           <div class="barlow-bold fs-12-14 text-dark q-pb-md q-pl-md">
             Total Etiquetas
             <span
-              ><q-icon size="18px" :name="isFiltered ? 'filter_list' : 'filter_list_off'"
+              ><q-icon size="18px" :name="isFilterByLabel ? 'filter_list' : 'filter_list_off'"
             /></span>
           </div>
 
           <div style="max-height: 100px; max-width: 300px">
             <div v-if="!eventStore.summaryEvents" class="q-pl-md">
-              <q-spinner color="primary" size="2em"  />
+              <q-spinner color="primary" size="2em" />
             </div>
 
             <div v-else class="row inline" style="width: 100%">
@@ -278,9 +281,7 @@
 
       <q-card class="card-small q-mt-sm">
         <q-card-section class="bg-white">
-          <div class="barlow-bold fs-12-14 text-dark q-pb-md q-pl-md">
-            Total Eventos
-          </div>
+          <div class="barlow-bold fs-12-14 text-dark q-pb-md q-pl-md">Total Eventos</div>
 
           <div style="max-height: 100px; max-width: 300px">
             <div v-if="!eventStore.summaryEvents" class="q-pl-md">
@@ -318,18 +319,18 @@
         </q-card-section>
       </q-card>
 
-      <q-card class="col card-small  q-mt-sm">
+      <q-card class="col card-small q-mt-sm">
         <q-card-section class="bg-white text-center">
           <div class="barlow-bold fs-12-14 text-dark q-pb-xs text-left q-pl-md">
             Filtro de hora
             <span
-              ><q-icon size="18px" :name="isFiltered ? 'filter_list' : 'filter_list_off'"
+              ><q-icon size="18px" :name="isFilterByDate ? 'filter_list' : 'filter_list_off'"
             /></span>
           </div>
           <div class="q-pa-md" style="max-width: 300px">
             <div class="row no-padding">
               <div
-                class="col-6 p-1 border  q-px-sm q-py-none"
+                class="col-6 p-1 border q-px-sm q-py-none"
                 style="cursor: pointer; width: fit-content; min-width: 280px; text-align: left"
                 @click="showCalendar()"
               >
@@ -338,7 +339,7 @@
                 </span>
                 {{ dateToDisplay }}
               </div>
-              <div class="row mt-1 border" v-show="show.calendar" style="z-index: 5;">
+              <div class="row mt-1 border" v-show="show.calendar" style="z-index: 5">
                 <Datepicker
                   v-model="selectedDate"
                   @onSelect="showCalendar"
@@ -376,7 +377,6 @@ export default defineComponent({
     const typeToFilter = ref(null)
     const Screen = useQuasar().screen
 
-
     const show = ref({
       calendar: false
     })
@@ -398,7 +398,7 @@ export default defineComponent({
           date.formatDate(moment(eventStore.dateSelected.to), 'DD/MM/YYYY | HH:mm')
         )
       } else return 'Selecciona una fecha'
-    });
+    })
 
     const isFilterByDate = computed(() => {
       return eventStore.dateSelected
@@ -486,11 +486,13 @@ export default defineComponent({
         {
           name: 'today',
           label: 'Hoy',
+          queryName: 'queryTotalEventsDay',
           value: date.formatDate(new Date(), 'DD MMMM', formattingDates)
         },
         {
           name: 'week',
           label: 'Semana',
+          queryName: 'queryTotalEventsWeek',
           value:
             date.formatDate(getWeekBounds(new Date()).startOfWeek, 'DD MMM', formattingDates) +
             ' - ' +
@@ -499,24 +501,30 @@ export default defineComponent({
         {
           name: 'month',
           label: 'Mes',
+          queryName: 'queryTotalEventsMonth',
           value: date.formatDate(new Date(), 'MMMM', formattingDates)
         },
         {
           name: 'year',
           label: 'Año',
+          queryName: 'queryTotalEventsYear',
           value: date.formatDate(new Date(), 'YYYY')
         }
       ]
     })
 
-    const isFiltered = computed(() => {
-      if (eventStore.summaryEvents) {
-        return eventStore.summaryEvents.filtered
+    const isFilterByLabel = computed(() => {
+      if (eventStore.summaryEvents?.filtered && eventStore.labelsSelected) {
+        return true
       } else return false
     })
 
-    const hasValue = (value, data) => {
-      return value ? value[data] : 0
+    const hasValue = (data) => {
+      return eventStore.summaryEvents
+        ? eventStore.summaryEvents[data]
+          ? eventStore.summaryEvents[data]
+          : 0
+        : 0
     }
 
     const allLabels = computed(() => {
@@ -579,7 +587,7 @@ export default defineComponent({
       typeToFilter,
       Screen,
       datesSummary,
-      isFiltered,
+      isFilterByLabel,
       hasValue,
       allLabels,
       allTypes,
@@ -592,7 +600,7 @@ export default defineComponent({
       disabledFromTo,
       dateToDisplay,
       filterDates,
-      isFilterByDate,
+      isFilterByDate
     }
   }
 })
@@ -608,5 +616,8 @@ export default defineComponent({
 .my-card {
   width: 100%;
   max-width: 350px;
+}
+.q-focus-helper {
+  display: none !important;
 }
 </style>
