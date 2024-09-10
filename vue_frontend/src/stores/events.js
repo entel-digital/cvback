@@ -79,6 +79,7 @@ export const useEventsStore = defineStore('events', {
       } catch (error) {
         console.log('HERE IN ERROR FETCH EVENTS')
         this.allEvents = []
+        this.summaryEvents = { error: 'error'}
         this.loadingEvents = false
         return
       }
