@@ -263,29 +263,53 @@ export const useEventsStore = defineStore('events', {
       }
     },
 
-    async EXPORT_DATA() {
+    async EXPORT_DATA(format) {
       this.loadingExport = true
-      let url = `${api.defaults.baseURL}events/csv_events/`
+      // let url = `${api.defaults.baseURL}events/csv_events/?format=${format.toUpperCase()}`
+      // console.log("api.default base", api.defaults.baseURL);
+      // // let url = `localhost:8000/events/csv_events/`
 
-      if (this.labelsSelected) {
-        url = `${url}?label_id_filter=${this.labelsSelected}`
+
+      // if (this.labelsSelected) {
+      //   url = `${url}&label_id_filter=${this.labelsSelected}`
+      // }
+      // if(this.dateSelected){
+      //   url = `${url}&date_greater_than_equal=${this.dateSelected.from}&date_lower_than=${this.dateSelected.to}`
+      // }
+
+      // console.log('url export' ,url)
+      // const response = 
+      // setTimeout(() => {
+      //   // const enlace = document.createElement('a')
+
+      //   // enlace.href = url
+
+      //   // enlace.download = `data_export_${new Date().toISOString()}.csv`
+
+      //   // enlace.style.display = 'none'
+
+      //   // document.body.appendChild(enlace)
+
+      //   // enlace.click()
+
+      //   // document.body.removeChild(enlace)
+      //   this.loadingExport = false
+      // }, 2000)
+      try{
+        let url = `${api.defaults.baseURL}events/csv_events/?format=${format.toUpperCase()}`
+
+        if (this.labelsSelected) {
+          url = `${url}&label_id_filter=${this.labelsSelected}`
+        }
+        if(this.dateSelected){
+          url = `${url}&date_greater_than_equal=${this.dateSelected.from}&date_lower_than=${this.dateSelected.to}`
+        }
+  
+        const response = await api.get(url)
+        return response 
+      }catch(error){
+        return error
       }
-      setTimeout(() => {
-        const enlace = document.createElement('a')
-
-        enlace.href = url
-
-        enlace.download = `data_export_${new Date().toISOString()}.csv`
-
-        enlace.style.display = 'none'
-
-        document.body.appendChild(enlace)
-
-        enlace.click()
-
-        document.body.removeChild(enlace)
-        this.loadingExport = false
-      }, 2000)
     }
   }
 })

@@ -15,7 +15,6 @@
         </div>
       </div>
       <div class="col-6">
-        {{  styleBg }}
         <div class="flex flex-center column" :style="styleBg">
           <div v-if="!showRequestPassword">
             <SingIn />
@@ -101,7 +100,6 @@ export default defineComponent({
       width: 100%;
     `
 
-    console.log("pathImageBg", pathImageBg)
 
     const router = useRouter()
 

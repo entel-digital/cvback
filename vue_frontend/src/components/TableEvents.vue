@@ -2,8 +2,24 @@
   <div class="fit">
     <div class="fit column no-wrap justify-between items-start  content-start">
       <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
-        <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
-    </div>
+        <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
+        <q-btn-dropdown no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport">
+      <q-list separator class="fit">
+        <q-item clickable v-close-popup class="text-right fit" @click="exportData('csv')">
+          <q-item-section>
+            <q-item-label> Formato .csv</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item clickable v-close-popup class="text-right fit" @click="exportData('xlsx')">
+          <q-item-section>
+            <q-item-label> Formato .xlsx</q-item-label>
+          </q-item-section>
+        </q-item>
+
+      </q-list>
+    </q-btn-dropdown>
+      </div>
       <div class="gt-sm fit col-12">
         <q-table
           class="fit my-sticky-dynamic fs-15-18"
@@ -379,8 +395,17 @@ export default defineComponent({
         eventStore.pagination.rowsPerPage
     }
 
-    const exportData = async () => {
-         eventStore.EXPORT_DATA()
+    const exportData = async (format) => {
+      const response =  eventStore.EXPORT_DATA(format)
+
+      if (response) {
+        $q.notify({
+          message: response,
+          color: 'positive',
+          position: 'bottom',
+          timeout: 2000
+        })
+      }
 
 
     };
