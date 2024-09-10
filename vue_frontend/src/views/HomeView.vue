@@ -2,17 +2,17 @@
   <div>
     <Toolbar />
 
-    <div class="fit row wrap justify-center items-center q-py-md ">
-      <SummaryEvents />
+    <div class="fit row wrap justify-center items-center q-py-md " >
+      <SummaryEvents  />
     </div>
 
-    <!-- <div class="q-py-sm">
+    <div class="q-py-sm">
       <TableEvents
         :rows="eventStore.allEvents"
         :columns="columns"
         :loading="eventStore.loadingEvents"
       />
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -25,7 +25,7 @@ import { useRouter } from 'vue-router'
 
 import Toolbar from '@/components/Toolbar.vue'
 import SummaryEvents from '@/components/SummaryEvents.vue'
-import FilterEvents from '@/components/FilterEvents.vue'
+// import FilterEvents from '@/components/FilterEvents.vue'
 import TableEvents from '@/components/TableEvents.vue'
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
     Toolbar,
     SummaryEvents,
     // FilterEvents,
-    // TableEvents
+    TableEvents
   },
   setup() {
     const columns = [
@@ -98,8 +98,9 @@ export default defineComponent({
       } else if (date === null && label === null) {
         await fetchAllEvents()
       }
-
     }
+
+ 
 
     watch(
        () => eventStore.pagination.page,
@@ -111,6 +112,17 @@ export default defineComponent({
     )
     watch(
       () => eventStore.labelsSelected,
+      async (newValue, oldValue) => {
+        if (newValue !== oldValue) {
+          eventStore.pagination.page = 1
+            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
+        }
+      },
+      { immediate: true }
+
+    )
+    watch(
+      () => eventStore.dateSelected,
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
           eventStore.pagination.page = 1

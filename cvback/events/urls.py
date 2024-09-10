@@ -4,7 +4,7 @@ from cvback.events.views import (BoundingBoxApiView, FrameApiView, InferenceClas
                                  InferenceDetectionClassificationApiView, EventApiView,
                                  InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView,
                                  VideoApiView, KeyFrameApiView, LabelApiView, KeyVideoApiView,
-                                 LineOfInterestApiView, DataExportView)
+                                 LineOfInterestApiView, CustomCSVExportView)
 from graphene_django.views import GraphQLView
 from cvback.schema import schema
 # from django.views.decorators.csrf import csrf_exempt
@@ -27,5 +27,5 @@ urlpatterns = [
     path('videos/', VideoApiView.as_view(), name='events_videos'),
     path('key_videos/', KeyVideoApiView.as_view(), name='events_key_videos'),
     path('line_of_interest/', LineOfInterestApiView.as_view(), name='events_line_of_interest'),
-    path('csv_events/', DataExportView.as_view(), name = 'events_csv')
+    path('csv_events/', CustomCSVExportView.as_view(), name = 'events_csv2')
 ]

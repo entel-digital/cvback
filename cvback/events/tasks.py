@@ -1,8 +1,14 @@
 from celery import shared_task
+import pandas as pd
 from cvback.alerts.models import Alert, SubscribedEvent, Subscription
+from cvback.events.models import ExportedFile
+from cvback.users.adapters import AccountAdapter
 from cvback.utils.telegram_sender import TelegramSender
 from cvback.utils.whatsapp_sender import WhatsappSender
 from django.utils import timezone
+
+from io import BytesIO as IO
+
 
 to_tz = timezone.get_default_timezone()
 
@@ -33,6 +39,7 @@ def get_event_info(event):
     event_data["id"] = event.id
     event_data["date"] = informed_date if event.informed_date else ""
     event_data["time"] = informed_time if event.informed_date else ""
+    event_data["event_label"] = event.event_label.name
     if event.inference_ocr.all():
         if event.inference_ocr.all()[0].value:
             event_data["vehicle_license_plate"] = event.inference_ocr.all()[0].value
@@ -94,3 +101,56 @@ def create_alert(event):
                 pass
         if users_data:
             send_whatsapp(users_data, event_data)
+
+
+@shared_task(rate_limit='4/h')
+def save_file(qs,field_names, cls, request, format ):
+
+    filename = cls.get_filename(qs)
+    if not format in ["CSV", "XLSX"]:
+        format = "CSV"
+    return_file = IO()
+
+    df = pd.DataFrame(qs.values(*field_names).iterator())
+    filename = cls.get_filename(qs)
+    if format == "XLSX":
+        filename = filename.replace(".csv","")
+        if not filename.endswith(".xlsx"):
+            filename += ".xlsx"
+        writer = pd.ExcelWriter(return_file, engine='xlsxwriter')
+
+        date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
+        for date_column in date_columns:
+            df[date_column] = df[date_column].dt.date
+        mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+        df.to_excel(writer, 'EVENTS', index=False)
+
+        
+    elif format == "CSV":
+        mime_type="text/csv"
+        filename = filename.replace(".xlsx","")
+        if not filename.endswith(".csv"):
+            filename += ".csv"
+        df.to_csv(return_file, index=False)
+        
+    exported_file = ExportedFile()
+    exported_file.exported_file.save("./"+filename, return_file)
+    exported_file.save()
+
+    public_uri = exported_file.exported_file.url
+    
+    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename }#, "mime_type":mime_type, "file":exported_file.exported_file.open().read()}
+    if public_uri:
+
+        r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_ready",
+                                        email=request.user.email,
+                                        context=context,
+                                        request=request)
+        
+    else:
+        
+        r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_failed",
+                                        email=request.user.email,
+                                        context=context,
+                                        request=request)

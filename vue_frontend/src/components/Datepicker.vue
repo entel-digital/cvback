@@ -1,123 +1,205 @@
 <template>
   <div class="datepicker-container">
-    <div :class="calendarClass">
-      <div :class="calendarContainerClass">
-        <div class="q-px-xs q-py-md q-gutter-sm fit column">
-          <q-btn color="primary" label="Hoy" />
-          <q-btn color="primary" label="Ayer" />
-          <q-btn color="primary" label="Semana" />
-          <q-btn color="primary" label="Mes" />
-          <q-btn color="primary" label="Año" />
-        </div>
-        <div
-          :class="data.classes"
-          v-for="(data, dataIdx) in monthsData"
-          :key="'month_data' + dataIdx"
-        >
-          <div class="calendar-header q-px-lg">
-            <div class="month-name">
-              <template v-if="dataIdx == 0">
-                <span
-                  @click="movePrevMonth()"
-                  class="prev-icon"
-                  v-if="nextPrevIcon"
-                  :class="{ disabled: isPrevMonthDisabled }"
-                >
-                </span>
-                <span @click="movePrevMonth()" class="prev-text" v-else> PREV </span>
-              </template>
-
-              <span class="month-text"> {{ data.monthName }} </span>
-              <template v-if="(!enableSecondCalendar && dataIdx == 0) || dataIdx == 1">
-                <span
-                  @click="moveNextMonth()"
-                  class="next-icon"
-                  v-if="nextPrevIcon"
-                  :class="{ disabled: isNextMonthDisabled }"
-                >
-                </span>
-                <span @click="moveNextMonth()" class="next-text" v-else> NEXT </span>
-              </template>
-            </div>
-            <div class="day-name">
-              <span v-for="(day, index) in daysName" :key="'date_name' + index">
-                {{ day }}
-              </span>
-            </div>
+    <q-card class="my-card " bordered style="width: fit-content">
+      <q-card-section horizontal class="q-px-xs">
+        <q-card-section class="col-3">
+          <div class="q-px-xs q-gutter-y-sm column no-warp">
+            <q-btn
+              :outline="btnActive !== 'today'"
+              no-caps
+              color="primary"
+              label="Hoy"
+              @click="selectDateByBtn('today')"
+            />
+            <q-btn
+              :outline="btnActive !== 'yesterday'"
+              no-caps
+              color="primary"
+              label="Ayer"
+              @click="selectDateByBtn('yesterday')"
+            />
+            <q-btn
+              :outline="btnActive !== 'week'"
+              no-caps
+              color="primary"
+              label="Semana"
+              @click="selectDateByBtn('week')"
+            />
+            <q-btn
+              :outline="btnActive !== 'month'"
+              no-caps
+              color="primary"
+              label="Mes"
+              @click="selectDateByBtn('month')"
+            />
+            <q-btn
+              :outline="btnActive !== 'year'"
+              no-caps
+              color="primary"
+              label="Año"
+              @click="selectDateByBtn('year')"
+            />
           </div>
-          <div class="calendar-dates q-px-lg" style="height: 250px">
-            <template
-              v-for="dateRowIdx in data.calendarRows"
-              :key="'date_row_' + dataIdx + dateRowIdx"
-            >
-              <div class="date-row">
-                <template
-                  v-for="(dt, index) in data.dates.slice(7 * (dateRowIdx - 1), 7 * dateRowIdx)"
-                >
-                  <template v-if="typeof dt === 'object'">
-                    <div
-                    class="date"
-              :class="{
-                'date-highlighted': dt.highlighted,
-                'date-selected': dt.selected,
-                'date-disabled': dt.isDisabled,
-                'date-today': dt.isToday,
-                'date-selected-start': dt.startDateSelected,
-                'date-selected-end': dt.endDateSelected,
-                'date-hover': dt.isHovered
-              }"
-              :key="'calendar_dates' + dateRowIdx + index"
-              @click="onSelectDate(dt)"
-              @mouseover="hoverDate(dt)"
-                    >
-                      <span>
-                        {{ dt.dateNumber }}
-                      </span>
+        </q-card-section>
+
+        <q-separator vertical style="padding: 1px" />
+
+        <q-card-section style="width: fit-content; padding: 20px 50px 20px 10px">
+          <div :class="calendarClass" class="q-px-md">
+            <div :class="calendarContainerClass">
+              <div
+                :class="data.classes"
+                class="q-px-md"
+                v-for="(data, dataIdx) in monthsData"
+                :key="'month_data' + dataIdx"
+              >
+                <div class="calendar-header">
+                  <div class="month-name">
+                    <template v-if="dataIdx == 0">
+                      <q-btn
+                        round
+                        flat
+                        color="primary"
+                        icon="chevron_left"
+                        :disable="isPrevMonthDisabled"
+                        @click="movePrevMonth()"
+                      />
+                    </template>
+
+                    <span class="month-text"> {{ data.monthName }} </span>
+                    <template v-if="(!enableSecondCalendar && dataIdx == 0) || dataIdx == 1">
+                      <q-btn
+                        round
+                        flat
+                        color="primary"
+                        icon="chevron_right"
+                        :disable="isNextMonthDisabled"
+                        @click="moveNextMonth()"
+                      />
+                    </template>
+                  </div>
+                  <div class="day-name">
+                    <span v-for="(day, index) in daysName" :key="'date_name' + index">
+                      {{ day }}
+                    </span>
+                  </div>
+                </div>
+                <div class="calendar-dates" style="height: 220px">
+                  <template
+                    v-for="dateRowIdx in data.calendarRows"
+                    :key="'date_row_' + dataIdx + dateRowIdx"
+                  >
+                    <div class="date-row">
+                      <template
+                        v-for="(dt, index) in data.dates.slice(
+                          7 * (dateRowIdx - 1),
+                          7 * dateRowIdx
+                        )"
+                      >
+                        <template v-if="typeof dt === 'object'">
+                          <div
+                            class="date"
+                            :class="{
+                              'date-highlighted': dt.highlighted,
+                              'date-selected': dt.selected,
+                              'date-disabled': dt.isDisabled,
+                              'date-today': dt.isToday,
+                              'date-selected-start': dt.startDateSelected,
+                              'date-selected-end': dt.endDateSelected
+                            }"
+                            :key="'calendar_dates' + dateRowIdx + index"
+                            @click="onSelectDate(dt)"
+                            @mouseover="hoverDate(dt)"
+                          >
+                            <span>
+                              {{ dt.dateNumber }}
+                            </span>
+                          </div>
+                        </template>
+                        <div v-else :key="'blank_days' + dateRowIdx + index" class="blank-day">
+                          <!-- <span ></span> -->
+                        </div>
+                      </template>
                     </div>
                   </template>
-                  <div v-else :key="'blank_days' + dateRowIdx + index" class="blank-day">
-                    <!-- <span ></span> -->
-                  </div>
-                </template>
+                </div>
               </div>
-            </template>
+            </div>
+            <q-card-section class="row">
+              <div class="row inline justify-around">
+                <div style="width: fit-content">
+                  <select v-model="timeSelectedStart.hour" style="max-width: 50px">
+                    <option disabled value="">Seleccione un elemento</option>
+                    <option v-for="(option, index) in optionsHours" :key="index" :value="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                  :
+                  <select v-model="timeSelectedStart.min" style="max-width: 50px">
+                    <option disabled value="">Seleccione un elemento</option>
+                    <option v-for="(option, index) in optionsMinutes" :key="index" :value="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                </div>
+                <div style="width: fit-content">
+                  <select v-model="timeSelectedEnd.hour" style="max-width: 50px">
+                    <option v-for="(option, index) in optionsHours" :key="index" :value="option">
+                      {{ option }}
+                    </option>
+                  </select>
+                  :
+                  <select v-model="timeSelectedEnd.min" style="max-width: 50px">
+                    <option
+                      v-for="(option, index) in optionsMinutes"
+                      :key="index"
+                      :value="option"
+                      :label="option"
+                    >
+                      {{ option }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </q-card-section>
           </div>
-          <div>
-            <select v-model="selected" style="max-width: 50px">
-              <option disabled value="">Seleccione un elemento</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-            :
-            <select v-model="selected" style="max-width: 50px">
-              <option disabled value="">Seleccione un elemento</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
+        </q-card-section>
+      </q-card-section>
+      <q-separator />
+      <q-card-actions align="right">
+        <div :class="calendarFooterClass" class="fit">
+          <div class="fit row justify-end calendar-actions q-gutter-x-md" style="width: 0">
+            <q-btn
+              no-caps
+              color="dark"
+              dense
+              outline
+              label="Limpiar"
+              class="q-px-md"
+              style="width: 100px"
+              @click="clickClear"
+            >
+            </q-btn>
+            <q-btn
+              no-caps
+              color="primary"
+              label="Filtrar"
+              class="q-px-md"
+              style="width: 100px"
+              @click="goToFilter"
+            >
+            </q-btn>
           </div>
         </div>
-      </div>
-
-      <div :class="calendarFooterClass">
-        <div class="calendar-actions">
-          <button class="btn btn-cancel" :class="btnCancelClass" @click="clickCancel">
-            {{ btnCancelText || 'Cancel' }}
-          </button>
-          <button class="btn btn-clear" :class="btnClearClass" @click="clickClear">
-            {{ btnClearText || 'Clear' }}
-          </button>
-        </div>
-      </div>
-    </div>
+      </q-card-actions>
+    </q-card>
   </div>
 </template>
-
 <script>
-import { date } from 'quasar'
-
+import { useEventsStore } from '@/stores/events'
+import { watch } from 'vue';
 export default {
+  name: 'Datepicker2',
   props: {
     modelValue: {
       type: [Date, Object, String],
@@ -222,16 +304,22 @@ export default {
       default: true
     },
     lastMonth: {
-      type: String,
+      type: [String, Object],
       default: null
     },
     firstMonth: {
-      type: String,
+      type: [String, Object],
+      default: null
+    },
+    dateFromStore: {
+      type: [String, Object],
       default: null
     }
   },
   data() {
     return {
+      btnActive: null,
+      eventStore: useEventsStore(),
       start_date: new Date(),
       current_date: new Date(),
       selected_date: null,
@@ -240,6 +328,42 @@ export default {
         end_date: null
       },
       start_date_selected: false,
+      timeSelectedStart: {
+        hour: '00',
+        min: '00'
+      },
+      timeSelectedEnd: {
+        hour: '23',
+        min: '00'
+      },
+      optionsHours: [
+        '00',
+        '01',
+        '02',
+        '03',
+        '04',
+        '05',
+        '06',
+        '07',
+        '08',
+        '09',
+        '10',
+        '11',
+        '12',
+        '13',
+        '14',
+        '15',
+        '16',
+        '17',
+        '18',
+        '19',
+        '20',
+        '21',
+        '22',
+        '23'
+      ],
+      optionsMinutes: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
+
       months: [
         'Enero',
         'Febrero',
@@ -272,20 +396,28 @@ export default {
   },
   created() {
     this.init()
+    if(this.dateFromStore){
+      this.selected.start_date = this.dateFromStore.start_date
+      this.selected.end_date = this.dateFromStore.end_date
+    }
   },
+//   watch:{
+// handle:{
+//   deep: true,
+//   dateFromStore: function (newValue, oldValue) {
+//     if (newValue !== oldValue) {
+//       this.init()
+//     }
+// }
+//   },    
   computed: {
     currentMonth() {
-      return date.formatDate(
-        date.subtractFromDate(new Date(this.current_date), { months: 1 }),
-        'MMMM',
-        { months: this.months, monthsShort: this.monthsShort }
-      )
+      return moment(this.current_date)
+        .subtract(1, 'M')
+        .format(this.monthFormat || 'MMMM')
     },
     nextMonth() {
-      return date.formatDate(new Date(this.current_date), 'MMMM', {
-        months: this.months,
-        monthsShort: this.monthsShort
-      })
+      return moment(this.current_date).format(this.monthFormat || 'MMMM')
     },
     daysName() {
       if (this.givenDays && Array.isArray(this.givenDays) && this.givenDays.length) {
@@ -300,9 +432,7 @@ export default {
       return Math.ceil(this.nextMonthDates.length / 7)
     },
     blankDays() {
-      let firstDay = date
-        .startOfDate(date.subtractFromDate(new Date(this.current_date), { months: 1 }))
-        .getDay()
+      let firstDay = moment(this.current_date).subtract(1, 'M').startOf('month').day()
       if (firstDay === 0) {
         firstDay = 7
       }
@@ -313,7 +443,7 @@ export default {
       return firstDay
     },
     nextMonthBlankDays() {
-      let firstDay = date.startOfDate(new Date(this.current_date), 'month').getDay()
+      let firstDay = moment(this.current_date).startOf('M').day()
       if (firstDay === 0) {
         firstDay = 7
       }
@@ -324,8 +454,8 @@ export default {
       return firstDay
     },
     nextMonthDates() {
-      let startDate = date.startOfDate(date.clone(new Date(this.current_date)), 'month')
-      let lastDate = date.endOfDate(date.clone(startDate), 'month')
+      let startDate = moment(this.current_date).clone().startOf('month')
+      let lastDate = startDate.clone().endOf('month')
       if (this.nextMonthBlankDays > 0) {
         return Array(this.nextMonthBlankDays).concat(this.getDates(startDate, lastDate))
       } else {
@@ -333,14 +463,8 @@ export default {
       }
     },
     dates() {
-      let startDate = date.startOfDate(
-        date.subtractFromDate(new Date(this.current_date), { months: 1 }),
-        'month'
-      )
-      let lastDate = date.endOfDate(
-        date.subtractFromDate(new Date(this.current_date), { months: 1 }),
-        'month'
-      )
+      let startDate = moment(this.current_date).subtract(1, 'M').startOf('month')
+      let lastDate = moment(this.current_date).subtract(1, 'M').endOf('month')
       if (this.blankDays > 0) {
         return Array(this.blankDays).concat(this.getDates(startDate, lastDate))
       } else {
@@ -350,25 +474,25 @@ export default {
     highlightedDates() {
       let dates = []
       if (this.selected && this.selected.start_date && this.selected.end_date) {
-        const startDate = date.clone(this.selected.start_date)
-        const endDate = date.clone(this.selected.end_date)
-        if (startDate.getTime() < endDate.getTime()) {
+        const startDate = this.selected.start_date.clone()
+        const endDate = this.selected.end_date.clone()
+        if (startDate.isBefore(endDate)) {
           let idxDate = startDate
-          while (idxDate.getTime() <= endDate.getTime()) {
-            dates.push(date.formatDate(date.clone(idxDate), 'D-M-YYYY'))
-            date.addToDate(idxDate, { days: 1 })
+          while (idxDate.isSameOrBefore(endDate)) {
+            dates.push(idxDate.clone().format('D-M-YYYY'))
+            idxDate.add(1, 'days')
           }
         } else {
-          let idxDate = date.clone(endDate)
-          while (idxDate.getTime() <= startDate.getTime()) {
-            dates.push(date.formatDate(date.clone(idxDate), 'D-M-YYYY'))
-            date.addToDate(idxDate, { days: 1 })
+          let idxDate = endDate.clone()
+          while (idxDate.isSameOrBefore(startDate)) {
+            dates.push(idxDate.clone().format('D-M-YYYY'))
+            idxDate.add(1, 'days')
           }
         }
-      }
-      dates.shift()
-      if (!this.start_date_selected && dates.length) {
-        dates.pop()
+        dates.shift()
+        if (!this.start_date_selected && dates.length) {
+          dates.pop()
+        }
       }
       return dates
     },
@@ -426,27 +550,18 @@ export default {
       ) {
         disabledDates = disabledDates.concat(this.transformDateIntoMoment(this.disabledEndDates))
       }
-      return disabledDates.map((d) => date.formatDate(d, 'D-M-YYYY'))
+      return disabledDates.map((d) => d.format('D-M-YYYY'))
     },
     isNextMonthDisabled() {
       if (this.lastMonth) {
-        let currentDate = date.clone(new Date(this.current_date))
-        // moment(this.current_date).clone();
+        let currentDate = moment(this.current_date).clone()
 
         const lastMonth = this.transformDateIntoMoment(this.lastMonth)
-        if (lastMonth instanceof Date) {
-          const currentDate = new Date(this.current_date) // La fecha actual
-          const lastMonth = new Date(this.last_month) // La fecha del mes anterior
-
-          // Comprobar si currentDate es el mismo o posterior a lastMonth en mes y año
-          const isSameOrAfterMonth =
-            currentDate.getFullYear() > lastMonth.getFullYear() ||
-            (date.isSameDate(currentDate.getFullYear(), lastMonth.getFullYear()) &&
-              currentDate.getMonth() >= lastMonth.getMonth())
-
-          const isSameOrAfterYear = currentDate.getFullYear() >= lastMonth.getFullYear()
-
-          if (isSameOrAfterMonth && isSameOrAfterYear) {
+        if (moment.isMoment(lastMonth)) {
+          if (
+            currentDate.isSameOrAfter(lastMonth, 'month') &&
+            currentDate.isSameOrAfter(lastMonth, 'year')
+          ) {
             return true
           }
         }
@@ -455,27 +570,16 @@ export default {
     },
     isPrevMonthDisabled() {
       if (this.firstMonth) {
-        let currentDate = date.clone(this.current_date)
-        // let currentDate = moment(this.current_date).clone();
+        let currentDate = moment(this.current_date).clone()
         if (this.enableSecondCalendar) {
-          currentDate = date.subtractFromDate(currentDate, { months: 1 })
-
-          // currentDate = currentDate.subtract(1, "M");
+          currentDate = currentDate.subtract(1, 'M')
         }
         const firstMonth = this.transformDateIntoMoment(this.firstMonth)
-        if (firstMonth instanceof Date) {
-          const currentDate = new Date(this.current_date) // La fecha actual
-          const firstMonth = new Date(this.first_month) // La fecha del primer mes
-
-          // Comprobar si currentDate es el mismo o anterior a firstMonth en mes y año
-          const isSameOrBeforeMonth =
-            currentDate.getFullYear() < firstMonth.getFullYear() ||
-            (date.isSameDate(currentDate.getFullYear(), firstMonth.getFullYear()) &&
-              currentDate.getMonth() <= firstMonth.getMonth())
-
-          const isSameOrBeforeYear = currentDate.getFullYear() <= firstMonth.getFullYear()
-
-          if (isSameOrBeforeMonth && isSameOrBeforeYear) {
+        if (moment.isMoment(firstMonth)) {
+          if (
+            currentDate.isSameOrBefore(firstMonth, 'month') &&
+            currentDate.isSameOrBefore(firstMonth, 'year')
+          ) {
             return true
           }
         }
@@ -485,337 +589,378 @@ export default {
   },
   methods: {
     init() {
-    if (this.isRange) {
+      if (this.isRange) {
         if (this.modelValue && Array.isArray(this.modelValue) && this.modelValue.length == 2) {
-            const startDate = this.modelValue[0];
-            const endDate = this.modelValue[1];
-
-            // Manejo de la fecha de inicio
-            if (startDate instanceof Date) {
-                this.selected.start_date = date.startOfDate(startDate, 'day');
+          const startDate = this.modelValue[0]
+          const endDate = this.modelValue[1]
+          if (moment.isMoment(startDate)) {
+            this.selected.start_date = startDate.startOf('day')
+          } else {
+            if (
+              this.givenDateFormat &&
+              this.givenDateFormat !== null &&
+              this.givenDateFormat !== ''
+            ) {
+              this.selected.start_date = moment(startDate).startOf('day')
             } else {
-                if (this.givenDateFormat && this.givenDateFormat !== null && this.givenDateFormat !== '') {
-                    this.selected.start_date = date.startOfDate(
-                        date.formatDate(startDate, this.givenDateFormat),
-                        'day'
-                    );
-                } else {
-                    this.selected.start_date = date.startOfDate(startDate, 'day');
-                }
+              this.selected.start_date = moment(startDate, this.givenDateFormat).startOf('day')
             }
-
-            // Manejo de la fecha de fin
-            if (endDate instanceof Date) {
-                this.selected.end_date = date.endOfDate(endDate, 'day');
+          }
+          if (moment.isMoment(endDate)) {
+            this.selected.end_date = endDate.startOf('day')
+          } else {
+            if (
+              this.givenDateFormat &&
+              this.givenDateFormat !== null &&
+              this.givenDateFormat !== ''
+            ) {
+              this.selected.end_date = moment(endDate, this.givenDateFormat).startOf('day')
             } else {
-                if (this.givenDateFormat && this.givenDateFormat !== null && this.givenDateFormat !== '') {
-                    this.selected.end_date = date.startOfDate(
-                        date.formatDate(endDate, this.givenDateFormat),
-                        'day'
-                    );
-                } else {
-                    this.selected.end_date = date.startOfDate(endDate, 'day');
-                }
+              this.selected.end_date = moment(endDate).startOf('day')
             }
+          }
         }
-    } else {
+      } else {
         if (this.modelValue) {
-            const selectedDate = this.modelValue;
-
-            // Manejo de la fecha seleccionada
-            if (selectedDate instanceof Date) {
-                this.selected_date = date.startOfDate(selectedDate, 'day');
+          const selectedDate = this.modelValue
+          if (moment.isMoment(selectedDate)) {
+            this.selected_date = selectedDate.startOf('day')
+          } else {
+            if (
+              this.givenDateFormat &&
+              this.givenDateFormat !== null &&
+              this.givenDateFormat !== ''
+            ) {
+              this.selected_date = moment(selectedDate, this.givenDateFormat).startOf('day')
             } else {
-                if (this.givenDateFormat && this.givenDateFormat !== null && this.givenDateFormat !== '') {
-                    this.selected_date = date.startOfDate(
-                        date.formatDate(selectedDate, this.givenDateFormat),
-                        'day'
-                    );
-                } else {
-                    this.selected_date = date.startOfDate(selectedDate, 'day');
-                }
+              this.selected_date = moment(selectedDate).startOf('day')
             }
+          }
         }
-    }
-
-    // Manejo de la fecha del mes de inicio
-    if (this.startMonth && this.startMonth !== null) {
-        if (this.startMonth instanceof Date) {
-            this.current_date = date.startOfDate(this.startMonth, 'day');
+      }
+      if (this.startMonth && this.startMonth !== null) {
+        if (moment.isMoment(this.startMonth)) {
+          this.current_date = this.startMonth.toDate()
         } else {
-            if (this.givenDateFormat && this.givenDateFormat !== null && this.givenDateFormat !== '') {
-                this.current_date = date.startOfDate(
-                    date.formatDate(new Date(this.startMonth), this.givenDateFormat),
-                    'day'
-                );
-            } else {
-                this.current_date = date.startOfDate(new Date(this.startMonth), 'day');
-            }
+          if (
+            this.givenDateFormat &&
+            this.givenDateFormat !== null &&
+            this.givenDateFormat !== ''
+          ) {
+            this.current_date = moment(this.startMonth, this.givenDateFormat)
+              .startOf('day')
+              .toDate()
+          } else {
+            this.current_date = moment(this.startMonth).startOf('day').toDate()
+          }
         }
-    }
-},
+      }
+    },
     onSelectDate(dt) {
-    if (dt.isDisabled) {
-        return;
-    }
-    
-    const cloneDate = (date) => {
-        return new Date(date.getTime()); // Clona la fecha creando un nuevo objeto Date con el mismo timestamp
-    };
-    
-    if (this.isRange) {
+      this.btnActive = null
+
+      if (dt.isDisabled) {
+        return
+      }
+      if (this.isRange) {
         if (!this.start_date_selected) {
-            this.start_date_selected = true;
-            this.selected.end_date = null;
-            this.selected.start_date = cloneDate(dt.date); // Clona la fecha seleccionada
+          this.start_date_selected = true
+          this.selected.end_date = null
+          this.selected.start_date = dt.date.clone()
         } else {
-            this.start_date_selected = false;
-            if (this.selected.start_date.getTime() > dt.date.getTime()) {
-                this.selected.end_date = cloneDate(this.selected.start_date); // Clona la fecha de inicio
-                this.selected.start_date = cloneDate(dt.date); // Clona la nueva fecha seleccionada
-            } else {
-                this.selected.end_date = cloneDate(dt.date); // Clona la nueva fecha seleccionada
-            }
-            this.emitRangeDate();
-        }
-    } else {
-        this.selected_date = cloneDate(dt.date); // Clona la fecha seleccionada
-        this.emitRangeDate();
-    }
-},
+          this.start_date_selected = false
+          if (this.selected.start_date.isAfter(dt.date)) {
+            this.selected.end_date = this.selected.start_date
+            this.selected.start_date = dt.date
+          } else {
+            this.selected.end_date = dt.date.clone()
+          }
 
+          this.emitRangeDate()
+        }
+      } else {
+        this.selected_date = dt.date
+        this.emitRangeDate()
+      }
+    },
     hoverDate(dt) {
-    if (this.start_date_selected) {
-        const cloneDate = (date) => {
-            return new Date(date.getTime()); // Clona la fecha creando un nuevo objeto Date con el mismo timestamp
-        };
+      if (this.start_date_selected) {
+        // if( this.selected.start_date.isAfter( dt.date ) ){
 
-        // Clona la fecha seleccionada antes de asignarla
-        this.selected.end_date = cloneDate(dt.date);
-
-        // Si quieres restaurar la lógica de comparación (descomentando el código original):
-        /*
-        if (this.selected.start_date.getTime() > dt.date.getTime()) {
-            this.selected.end_date = this.selected.start_date;
-            this.selected.start_date = cloneDate(dt.date);
-        } else {
-            this.selected.end_date = cloneDate(dt.date);
-        }
-        */
-    }
-    
-    // Si quieres manejar el estado de `isHovered`, como en la nueva función:
-    dt.isHovered = true;
-},isStartDate(dt) {
-    if (
+        this.selected.end_date = dt.date.clone()
+        // }else{
+        //     this.selected.end_date = this.selected.start_date;
+        //     this.selected.start_date = dt.date;
+        // }
+      }
+    },
+    isStartDate(dt) {
+      if (
         this.isRange &&
         this.selected.start_date &&
-        this.selected.start_date.getTime() === dt.getTime()
-    ) {
-        return true;
-    }
-    return false;
-},
-isEndDate(dt) {
-    if (
+        this.selected.start_date.format('MM-DD-YYYY') === moment(dt).format('MM-DD-YYYY')
+      ) {
+        return true
+      }
+      return false
+    },
+    isEndDate(dt) {
+      if (
         this.isRange &&
         !this.start_date_selected &&
         this.selected.end_date &&
-        date.isSameDate(this.selected.end_date, dt) // Corregido de 'selected.selected' a 'selected.end_date'
-    ) {
-        return true;
-    }
-    return false;
-},
-isSelectedDate(dt) {
-    if (
-        !this.isRange &&
-        this.selected_date &&
-        this.selected_date.getTime() === dt.getTime()
-    ) {
-        return true;
-    }
-    return false;
-},
+        this.selected.end_date.format('MM-DD-YYYY') === moment(dt).format('MM-DD-YYYY')
+      ) {
+        return true
+      }
+      return false
+    },
+    isSelectedDate(dt) {
+      if (!this.isRange && this.selected_date && this.selected_date.isSame(dt)) {
+        return true
+      }
+      return false
+    },
     isHighlightedDate(dt) {
       if (
         this.highlightedDates &&
         this.highlightedDates.length &&
-        this.highlightedDates.includes(date.formatDate(dt, 'D-M-YYYY'))
+        this.highlightedDates.includes(dt.format('D-M-YYYY'))
       ) {
         return true
       }
       return false
     },
     getDates(startDate, lastDate) {
-    let dates = [];
-    while (startDate.getTime() < lastDate.getTime()) {
-        var isHighlighted = this.isHighlightedDate(startDate);
+      let dates = []
+      while (startDate.isBefore(lastDate)) {
+        var isHighlighted = this.isHighlightedDate(startDate)
         var isToday =
-            this.isTodayHighlight && date.isSameDate(date.startOfDate(new Date(), 'day'), startDate);
-
-        var isStartDate = this.isStartDate(startDate);
-        var isEndDate = this.isEndDate(startDate);
-        var isSelected = this.isSelectedDate(startDate) || isStartDate || isEndDate;
-        var isDisabled = this.isDisabledDate(startDate);
+          this.isTodayHighlight &&
+          moment().startOf('day').format('DD-MM-YYYY') ===
+            moment(startDate).startOf('day').format('DD-MM-YYYY')
+        var isStartDate = this.isStartDate(startDate)
+        var isEndDate = this.isEndDate(startDate)
+        var isSelected = this.isSelectedDate(startDate) || isStartDate || isEndDate
+        var isDisabled = this.isDisabledDate(startDate)
 
         let tmpDt = {
-            date: date.clone(startDate),
-            dateNumber: date.formatDate(startDate, 'D'),
-            highlighted: isHighlighted,
-            selected: isSelected,
-            toDate: new Date(startDate),
-            isDisabled: isDisabled,
-            isToday: isToday,
-            startDateSelected: isStartDate,
-            endDateSelected: isEndDate
-        };
-        dates.push(tmpDt);
+          date: startDate.clone(),
+          dateNumber: startDate.format('D'),
+          highlighted: isHighlighted,
+          selected: isSelected,
+          toDate: startDate.toDate(),
+          isDisabled: isDisabled,
+          isToday: isToday,
+          startDateSelected: isStartDate,
+          endDateSelected: isEndDate
+        }
 
-        startDate = date.addToDate(startDate, { day: 1 });
-    }
-    return dates;
-},
-moveNextMonth() {
-    if (this.isNextMonthDisabled) {
-        return;
-    }
-    this.current_date = date.addToDate(new Date(this.current_date), { months: 1 });
-},
-movePrevMonth() {
-    if (this.isPrevMonthDisabled) {
-        return;
-    }
-    this.current_date = date.subtractFromDate(new Date(this.current_date), { months: 1 });
-},
-emitRangeDate() {
-    let selected;
-    if (this.isRange) {
-        selected = [this.selected.start_date, this.selected.end_date];
-    } else {
-        selected = this.selected_date;
-    }
-    this.$emit("onSelect", selected);
-    this.$emit("update:modelValue", selected);
-},
-clickClear() {
-    if (this.isRange) {
+        dates.push(tmpDt)
+        startDate = startDate.add(1, 'day')
+      }
+      return dates
+    },
+    moveNextMonth() {
+      if (this.isNextMonthDisabled) {
+        return
+      }
+      this.current_date = moment(this.current_date).add(1, 'M').toDate()
+    },
+    movePrevMonth() {
+      if (this.isPrevMonthDisabled) {
+        return
+      }
+      this.current_date = moment(this.current_date).subtract(1, 'M').toDate()
+    },
+    emitRangeDate() {
+      let selected
+      if (this.isRange) {
+        selected = [this.selected.start_date, this.selected.end_date]
+      } else {
+        selected = this.selected_date
+      }
+      // this.$emit('onSelect', selected)
+      this.$emit('update:modelValue', selected)
+    },
+    goToFilter() {
+      let selected
+      if (this.isRange) {
+        selected = {
+          start: {
+            date: moment(this.selected.start_date).format('DD/MM/YYYY'),
+            time: this.timeSelectedStart
+          },
+          end: {
+            date: moment(this.selected.end_date).format('DD/MM/YYYY'),
+            time: this.timeSelectedEnd
+          }
+        }
+      } else {
+        selected = {
+          start: {
+            date: moment(this.selected).format('DD/MM/YYYY'),
+            timeStart: this.timeSelectedStart
+          },
+          end: {
+            date: moment(this.selected).format('DD/MM/YYYY'),
+            timeEnd: this.timeSelectedEnd
+          }
+        }
+      }
+      this.$emit('filterByDate', selected)
+    },
+    clickClear() {
+      if (this.isRange) {
         this.start_date_selected = false
         this.selected.start_date = null
         this.selected.end_date = null
-    } else {
+        this.timeSelectedStart = {
+          hour: '00',
+          min: '00'
+        }
+        this.timeSelectedEnd = {
+          hour: '23',
+          min: '00'
+        }
+      } else {
         this.selected_date = null
-    }
-    this.$emit('clearDates')
-},
-    clickCancel() {
-      this.$emit('onCancel')
+      }
+      this.btnActive = null
+      this.eventStore.dateSelected = null
+      this.$emit('clearDates')
     },
     transformDateIntoMoment(dates) {
-    const transformDate = (d) => {
-        if (d instanceof Date) {
-            return date.startOfDate(d, 'day');
-        } else {
-            if (this.givenDateFormat && this.givenDateFormat.trim() !== '') {
-                const parsedDate = date.parseDate(d, this.givenDateFormat);
-                if (parsedDate) {
-                    return date.startOfDate(parsedDate, 'day');
-                } else {
-                    // Manejar el caso donde la fecha no se puede parsear
-                    return null; // O lanzar un error, dependiendo de tus necesidades
-                }
+      if (Array.isArray(dates)) {
+        return dates.map((d) => {
+          if (moment.isMoment(d)) {
+            return d.startOf('day')
+          } else {
+            if (
+              this.givenDateFormat &&
+              this.givenDateFormat !== null &&
+              this.givenDateFormat !== ''
+            ) {
+              return moment(d, this.givenDateFormat).startOf('day')
             } else {
-                const newDate = new Date(d);
-                return date.startOfDate(newDate, 'day');
+              return moment(d).startOf('day')
             }
+          }
+        })
+      } else {
+        if (moment.isMoment(dates)) {
+          return dates.startOf('day')
+        } else {
+          if (
+            this.givenDateFormat &&
+            this.givenDateFormat !== null &&
+            this.givenDateFormat !== ''
+          ) {
+            return moment(dates, this.givenDateFormat).startOf('day')
+          } else {
+            return moment(dates).startOf('day')
+          }
         }
-    };
-
-    if (Array.isArray(dates)) {
-        return dates.map(transformDate);
-    } else {
-        return transformDate(dates);
-    }
-},
-isInRangeFromTo(data, dt) {
-    let fromDate = null;
-    let toDate = null;
-
-    // Verificar si 'data' es un objeto con propiedades 'from' o 'to'
-    if (data && typeof data === 'object' && ('from' in data || 'to' in data)) {
+      }
+    },
+    isInRangeFromTo(data, dt) {
+      let fromDate = null
+      let toDate = null
+      if (data && typeof data == 'object' && ('from' in data || 'to' in data)) {
         if ('from' in data) {
-            fromDate = this.transformDateIntoMoment(data.from);
+          fromDate = this.transformDateIntoMoment(data.from)
         }
         if ('to' in data) {
-            toDate = this.transformDateIntoMoment(data.to);
+          toDate = this.transformDateIntoMoment(data.to)
         }
-    }
+      }
 
-    // Comparar las fechas
-    if (fromDate && toDate) {
-        // Comparación utilizando el método isSameOrAfter y isSameOrBefore
-        if (dt.getTime() >= fromDate.getTime() && dt.getTime() <= toDate.getTime()) {
-            return true;
+      if (fromDate && toDate) {
+        if (dt.isSameOrAfter(fromDate) && dt.isSameOrBefore(toDate)) {
+          return true
         }
-    } else {
-        if (fromDate && dt.getTime() >= fromDate.getTime()) {
-            return true;
+      } else {
+        if (fromDate && dt.isSameOrAfter(fromDate)) {
+          return true
         }
-        if (toDate && dt.getTime() <= toDate.getTime()) {
-            return true;
+        if (toDate && dt.isSameOrBefore(toDate)) {
+          return true
         }
-    }
-    return false;
-},
-isDisabledDate(dt) {
-    // Verificar si la fecha está en la lista de fechas deshabilitadas
-    if (
+      }
+      return false
+    },
+    isDisabledDate(dt) {
+      if (
         this._disabledDates &&
         this._disabledDates.length &&
-        this._disabledDates.includes(date.formatDate(dt, 'D-M-YYYY'))
-    ) {
-        return true;
-    }
+        this._disabledDates.includes(dt.format('D-M-YYYY'))
+      ) {
+        return true
+      }
+      if (this.isInRangeFromTo(this.disabledFromTo, dt)) {
+        return true
+      }
 
-    // Verificar si la fecha está dentro del rango de fechas deshabilitadas
-    if (this.isInRangeFromTo(this.disabledFromTo, dt)) {
-        return true;
-    }
-
-    // Verificar si estamos en un rango
-    if (this.isRange) {
-        // Si no se ha seleccionado la fecha de inicio
+      if (this.isRange) {
         if (!this.start_date_selected) {
-            // Verificar si la fecha está dentro de las fechas de inicio deshabilitadas
-            if (this.isInRangeFromTo(this.disabledStartDates, dt)) {
-                return true;
-            }
+          if (this.isInRangeFromTo(this.disabledStartDates, dt)) {
+            return true
+          }
         } else {
-            // Verificar si la fecha está dentro de las fechas de fin deshabilitadas
-            if (this.isInRangeFromTo(this.disabledEndDates, dt)) {
-                return true;
-            }
+          if (this.isInRangeFromTo(this.disabledEndDates, dt)) {
+            return true
+          }
         }
-    }
+      }
+      return false
+    },
+    selectDateByBtn(selected) {
+      this.btnActive = selected
+      let date = new Date()
+      let endDate = moment().startOf('day')
+      switch (selected) {
+        case 'today':
+          date = moment(new Date())
+          break
+        case 'yesterday':
+          date = moment((new Date())).subtract(1, 'days').startOf('day')
+          endDate = moment().subtract(1, 'days').endOf('day')
+          break
+        case 'week':
+          date = moment(new Date()).startOf('week').add(1, 'days')
+          endDate = moment(new Date()).endOf('week').add(1, 'days')
+          break
+        case 'month':
+          date = moment(new Date()).startOf('month')
+          endDate = moment(new Date()).endOf('month')
 
-    // Si ninguna condición se cumple, devolver false
-    return false;
-}
+          break
+        case 'year':
+          date =moment(new Date()).startOf('year')
+          endDate = moment(new Date())
+          break
+      }
+
+      if (this.isRange) {
+        this.selected.start_date = date
+        this.selected.end_date = endDate
+      } else {
+        this.selected_date = date
+      }
+      this.emitRangeDate()
+    }
   }
 }
 </script>
 
 <style lang="scss">
 .datepicker-container {
-  background-color: white; 
+  background-color: white;
   width: fit-content;
-   border: 1px solid red;
-   position: absolute;
-   left: -350px
+  position: absolute;
+  left: -350px;
 }
-.border-right-line {
-  border-right: 1px solid blue;
-}
+
 .g-calendar {
   width: 100%;
   z-index: 100;
@@ -827,12 +972,12 @@ isDisabledDate(dt) {
       flex: 1;
     }
     .current-calendar {
-      padding-right: 5px;
+      padding-right: 15px;
       border-right: #999 1px solid;
     }
     .next-calendar {
-      margin-left: 2px;
-      padding-left: 2px;
+      margin-left: 20px;
+      padding-left: 20px;
     }
     .next-icon {
       width: 0;
@@ -903,19 +1048,20 @@ isDisabledDate(dt) {
           border-bottom-right-radius: 8px;
         }
         &.date-disabled {
-          background: #7a7575;
-          color: #a19c9cf0;
+          color: #e3e3e3;
         }
         &.date-today {
-          background: rgb(67, 237, 182);
-          color: rgb(45, 45, 45);
+          color: #363636;
+          // background-color: #005cff4d;
+          background-color: #ffc4b1;
+          border-radius: 8px;
         }
         &.date-highlighted {
-          background: #478f8b9c !important;
+          background: #c5d0f0 !important;
           color: #fff;
         }
         &.date-selected {
-          background: #4fa5a1 !important;
+          background: #374eaf !important;
           color: #fff;
         }
       }
