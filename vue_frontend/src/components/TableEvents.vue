@@ -2,7 +2,7 @@
   <div class="fit">
     <div class="fit column no-wrap justify-between items-start  content-start">
       <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
-        <q-btn no-caps :disable="!displayRows.lenght > 0" color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
+        <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" />
     </div>
       <div class="gt-sm fit col-12">
         <q-table
