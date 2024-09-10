@@ -462,4 +462,7 @@ export default defineComponent({
     background-color: #fafafa; // Add your desired color here
   }
 }
+.q-focus-helper{
+  display: none !important
+}
 </style>
