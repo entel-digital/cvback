@@ -84,7 +84,7 @@
         <q-card-section class="bg-white">
           <div class="barlow-bold fs-16-19 text-dark q-pb-md">
             Total Etiquetas
-            <span
+            <span class="q-px-sm"
               ><q-icon size="22px" :name="isFiltered ? 'filter_list_off' : 'filter_list_'"
             /></span>
           </div>
