@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.conf import settings
 import pandas as pd
 from cvback.alerts.models import Alert, SubscribedEvent, Subscription
 from cvback.events.models import ExportedFile
@@ -6,7 +7,7 @@ from cvback.users.adapters import AccountAdapter
 from cvback.utils.telegram_sender import TelegramSender
 from cvback.utils.whatsapp_sender import WhatsappSender
 from django.utils import timezone
-
+from cvback.utils.storages import MediaGoogleCloudStorage
 from io import BytesIO as IO
 
 
@@ -111,7 +112,31 @@ def save_file(qs,field_names, cls, request, format ):
         format = "CSV"
     return_file = IO()
 
+
+    EXPORT_GROUP_BY = list(set(settings.EXPORT_GROUP_BY).intersection(set(field_names)))
+
+    EXPORT_TO_AGGREGATE_FIELD = list(set(settings.EXPORT_TO_AGGREGATE).intersection(set(field_names)))
+    field_names = [f if "*" not in f else f.split("*")[0] for f in field_names]
     df = pd.DataFrame(qs.values(*field_names).iterator())
+    aggregation_fields = {}
+    for_get_url = []
+    for field in EXPORT_TO_AGGREGATE_FIELD:
+        if not "*" in field:
+            key = field
+        else:
+            key = field.split("*")[0]
+            
+            for_get_url.append(key)
+        aggregation_fields[key] = list
+    
+    df = df.groupby(EXPORT_GROUP_BY, as_index = False).agg(aggregation_fields)  
+    
+    for col in for_get_url:
+        storage = MediaGoogleCloudStorage()
+        print(df[col].apply(lambda x:" , ".join([storage.url(name=y) for y in x])))
+        
+
+
     filename = cls.get_filename(qs)
     if format == "XLSX":
         filename = filename.replace(".csv","")
@@ -122,10 +147,11 @@ def save_file(qs,field_names, cls, request, format ):
         date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
         for date_column in date_columns:
             df[date_column] = df[date_column].dt.date
-        mime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        #xmime_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
         df.to_excel(writer, 'EVENTS', index=False)
 
+    
         
     elif format == "CSV":
         mime_type="text/csv"

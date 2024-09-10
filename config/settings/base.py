@@ -419,3 +419,5 @@ LOGIN_REDIRECT_URL = "/"
 
 EXPORT_SUMMARY_CSV_FIELDS = env("EXPORT_SUMMARY_CSV_FIELDS", default="").split()
 EXPORT_FULL_CSV_FIELDS = env("EXPORT_FULL_CSV_FIELDS", default="").split()
+EXPORT_GROUP_BY = env("EXPORT_GROUP_BY", default="").split()
+EXPORT_TO_AGGREGATE = env("EXPORT_TO_AGGREGATE", default="").split()
