@@ -15,6 +15,7 @@
         </div>
       </div>
       <div class="col-6">
+        {{  styleBg }}
         <div class="flex flex-center column" :style="styleBg">
           <div v-if="!showRequestPassword">
             <SingIn />
@@ -49,8 +50,11 @@
       </div>
     </div>
 
-    <div class="lt-md fit">
-      <q-page-container class="container-img flex column justify-evenly" style="height: 100vh">
+    <div class="lt-md fit" :style="styleBg">
+      <q-page-container class="container-img flex column justify-evenly" style="height: 100vh" >
+        <div> 
+
+        </div>
         <div class="q-pt-xl flex justify-center">
           <img :src="logoVisionWhite" alt="vision-logo" style="width: 70%" />
         </div>
@@ -96,6 +100,8 @@ export default defineComponent({
       height: 100vh;
       width: 100%;
     `
+
+    console.log("pathImageBg", pathImageBg)
 
     const router = useRouter()
 
