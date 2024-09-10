@@ -5,7 +5,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 import environ
-
+import json
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
 # cvback/
@@ -421,3 +421,5 @@ EXPORT_SUMMARY_CSV_FIELDS = env("EXPORT_SUMMARY_CSV_FIELDS", default="").split()
 EXPORT_FULL_CSV_FIELDS = env("EXPORT_FULL_CSV_FIELDS", default="").split()
 EXPORT_GROUP_BY = env("EXPORT_GROUP_BY", default="").split()
 EXPORT_TO_AGGREGATE = env("EXPORT_TO_AGGREGATE", default="").split()
+EXPORT_DICTS_TO_TRANSFORM_COLUMNS = json.loads(env("EXPORT_DICTS_TO_TRANSFORM_COLUMNS",default="[]"))
+XLSX_SHEET_NAME = env("XLSX_SHEET_NAME",default="hoja1")
