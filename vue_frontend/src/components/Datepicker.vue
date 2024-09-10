@@ -1,14 +1,44 @@
 <template>
   <div class="datepicker-container">
-    <q-card class="my-card" bordered style="width: fit-content">
+    <q-card class="my-card " bordered style="width: fit-content">
       <q-card-section horizontal class="q-px-xs">
         <q-card-section class="col-3">
           <div class="q-px-xs q-gutter-y-sm column no-warp">
-            <q-btn :outline="btnActive !== 'today'" no-caps color="primary" label="Hoy" @click="selectDateByBtn('today')"/>
-            <q-btn :outline="btnActive !== 'yesterday'" no-caps color="primary" label="Ayer" @click="selectDateByBtn('yesterday')"/>
-            <q-btn :outline="btnActive !== 'week'" no-caps color="primary" label="Semana" @click="selectDateByBtn('week')"/>
-            <q-btn :outline="btnActive !== 'month'" no-caps color="primary" label="Mes" @click="selectDateByBtn('month')"/>
-            <q-btn :outline="btnActive !== 'year'" no-caps color="primary" label="Año" @click="selectDateByBtn('year')"/>
+            <q-btn
+              :outline="btnActive !== 'today'"
+              no-caps
+              color="primary"
+              label="Hoy"
+              @click="selectDateByBtn('today')"
+            />
+            <q-btn
+              :outline="btnActive !== 'yesterday'"
+              no-caps
+              color="primary"
+              label="Ayer"
+              @click="selectDateByBtn('yesterday')"
+            />
+            <q-btn
+              :outline="btnActive !== 'week'"
+              no-caps
+              color="primary"
+              label="Semana"
+              @click="selectDateByBtn('week')"
+            />
+            <q-btn
+              :outline="btnActive !== 'month'"
+              no-caps
+              color="primary"
+              label="Mes"
+              @click="selectDateByBtn('month')"
+            />
+            <q-btn
+              :outline="btnActive !== 'year'"
+              no-caps
+              color="primary"
+              label="Año"
+              @click="selectDateByBtn('year')"
+            />
           </div>
         </q-card-section>
 
@@ -166,7 +196,8 @@
   </div>
 </template>
 <script>
-import { useEventsStore } from '@/stores/events';
+import { useEventsStore } from '@/stores/events'
+import { watch } from 'vue';
 export default {
   name: 'Datepicker2',
   props: {
@@ -273,11 +304,15 @@ export default {
       default: true
     },
     lastMonth: {
-      type: String,
+      type: [String, Object],
       default: null
     },
     firstMonth: {
-      type: String,
+      type: [String, Object],
+      default: null
+    },
+    dateFromStore: {
+      type: [String, Object],
       default: null
     }
   },
@@ -360,15 +395,21 @@ export default {
     }
   },
   created() {
-    moment.locale('es', {
-      months:
-        'Enero_Febrero_Marzo_Abril_Mayo_Junio_Julio_Agosto_Septiembre_Octubre_Noviembre_Diciembre'.split(
-          '_'
-        ),
-      monthsShort: 'Ene_Feb_Mar_Abr_May_Jun_Jul_Ago_Sep_Oct_Nov_Dec'.split('_')
-    })
     this.init()
+    if(this.dateFromStore){
+      this.selected.start_date = this.dateFromStore.start_date
+      this.selected.end_date = this.dateFromStore.end_date
+    }
   },
+//   watch:{
+// handle:{
+//   deep: true,
+//   dateFromStore: function (newValue, oldValue) {
+//     if (newValue !== oldValue) {
+//       this.init()
+//     }
+// }
+//   },    
   computed: {
     currentMonth() {
       return moment(this.current_date)
@@ -616,27 +657,30 @@ export default {
       }
     },
     onSelectDate(dt) {
+      this.btnActive = null
+
       if (dt.isDisabled) {
-        return;
+        return
       }
       if (this.isRange) {
         if (!this.start_date_selected) {
-          this.start_date_selected = true;
-          this.selected.end_date = null;
-          this.selected.start_date = dt.date.clone();
+          this.start_date_selected = true
+          this.selected.end_date = null
+          this.selected.start_date = dt.date.clone()
         } else {
-          this.start_date_selected = false;
+          this.start_date_selected = false
           if (this.selected.start_date.isAfter(dt.date)) {
-            this.selected.end_date = this.selected.start_date;
-            this.selected.start_date = dt.date;
+            this.selected.end_date = this.selected.start_date
+            this.selected.start_date = dt.date
           } else {
-            this.selected.end_date = dt.date.clone();
+            this.selected.end_date = dt.date.clone()
           }
-          this.emitRangeDate();
+
+          this.emitRangeDate()
         }
       } else {
-        this.selected_date = dt.date;
-        this.emitRangeDate();
+        this.selected_date = dt.date
+        this.emitRangeDate()
       }
     },
     hoverDate(dt) {
@@ -651,7 +695,11 @@ export default {
       }
     },
     isStartDate(dt) {
-      if (this.isRange && this.selected.start_date && this.selected.start_date.isSame(dt)) {
+      if (
+        this.isRange &&
+        this.selected.start_date &&
+        this.selected.start_date.format('MM-DD-YYYY') === moment(dt).format('MM-DD-YYYY')
+      ) {
         return true
       }
       return false
@@ -661,7 +709,7 @@ export default {
         this.isRange &&
         !this.start_date_selected &&
         this.selected.end_date &&
-        this.selected.end_date.isSame(dt)
+        this.selected.end_date.format('MM-DD-YYYY') === moment(dt).format('MM-DD-YYYY')
       ) {
         return true
       }
@@ -687,11 +735,15 @@ export default {
       let dates = []
       while (startDate.isBefore(lastDate)) {
         var isHighlighted = this.isHighlightedDate(startDate)
-        var isToday = this.isTodayHighlight && moment().startOf('day').isSame(startDate)
+        var isToday =
+          this.isTodayHighlight &&
+          moment().startOf('day').format('DD-MM-YYYY') ===
+            moment(startDate).startOf('day').format('DD-MM-YYYY')
         var isStartDate = this.isStartDate(startDate)
         var isEndDate = this.isEndDate(startDate)
         var isSelected = this.isSelectedDate(startDate) || isStartDate || isEndDate
         var isDisabled = this.isDisabledDate(startDate)
+
         let tmpDt = {
           date: startDate.clone(),
           dateNumber: startDate.format('D'),
@@ -703,15 +755,14 @@ export default {
           startDateSelected: isStartDate,
           endDateSelected: isEndDate
         }
+
         dates.push(tmpDt)
         startDate = startDate.add(1, 'day')
       }
       return dates
     },
     moveNextMonth() {
-      console.log("this.isNextMonthDisabled", this.isNextMonthDisabled)
       if (this.isNextMonthDisabled) {
-      
         return
       }
       this.current_date = moment(this.current_date).add(1, 'M').toDate()
@@ -730,7 +781,6 @@ export default {
         selected = this.selected_date
       }
       // this.$emit('onSelect', selected)
-      console.log("selected", selected)
       this.$emit('update:modelValue', selected)
     },
     goToFilter() {
@@ -746,14 +796,14 @@ export default {
             time: this.timeSelectedEnd
           }
         }
-      } else {        
+      } else {
         selected = {
           start: {
-            date:  moment(this.selected).format('DD/MM/YYYY'),
+            date: moment(this.selected).format('DD/MM/YYYY'),
             timeStart: this.timeSelectedStart
           },
           end: {
-            date:  moment(this.selected).format('DD/MM/YYYY'),
+            date: moment(this.selected).format('DD/MM/YYYY'),
             timeEnd: this.timeSelectedEnd
           }
         }
@@ -776,8 +826,8 @@ export default {
       } else {
         this.selected_date = null
       }
-      this.btnActive = null;
-      useEventsStore.dateToFilter = null
+      this.btnActive = null
+      this.eventStore.dateSelected = null
       this.$emit('clearDates')
     },
     transformDateIntoMoment(dates) {
@@ -824,6 +874,7 @@ export default {
           toDate = this.transformDateIntoMoment(data.to)
         }
       }
+
       if (fromDate && toDate) {
         if (dt.isSameOrAfter(fromDate) && dt.isSameOrBefore(toDate)) {
           return true
@@ -863,38 +914,38 @@ export default {
       }
       return false
     },
-    selectDateByBtn(selected){
-      this.btnActive = selected;
-      let date = moment().startOf('day')
+    selectDateByBtn(selected) {
+      this.btnActive = selected
+      let date = new Date()
       let endDate = moment().startOf('day')
       switch (selected) {
         case 'today':
-          date = moment().startOf('day')
-          endDate = moment().endOf('day')
+          date = moment(new Date())
           break
         case 'yesterday':
-          date = moment().subtract(1, 'days').startOf('day')
+          date = moment((new Date())).subtract(1, 'days').startOf('day')
           endDate = moment().subtract(1, 'days').endOf('day')
           break
         case 'week':
-          date = moment().subtract(7, 'days').startOf('day')
-          endDate = moment().endOf('day')
+          date = moment(new Date()).startOf('week').add(1, 'days')
+          endDate = moment(new Date()).endOf('week').add(1, 'days')
           break
         case 'month':
-          date = moment().subtract(1, 'months').startOf('day')
-          endDate = moment().endOf('day')
+          date = moment(new Date()).startOf('month')
+          endDate = moment(new Date()).endOf('month')
+
           break
         case 'year':
-          date = moment().subtract(1, 'years').startOf('day')
-          endDate = moment().endOf('day')
+          date =moment(new Date()).startOf('year')
+          endDate = moment(new Date())
           break
       }
+
       if (this.isRange) {
         this.selected.start_date = date
         this.selected.end_date = endDate
       } else {
         this.selected_date = date
-
       }
       this.emitRangeDate()
     }
@@ -997,11 +1048,13 @@ export default {
           border-bottom-right-radius: 8px;
         }
         &.date-disabled {
-          background: #fafafa;
           color: #e3e3e3;
         }
         &.date-today {
-          color: #ff8660;
+          color: #363636;
+          // background-color: #005cff4d;
+          background-color: #ffc4b1;
+          border-radius: 8px;
         }
         &.date-highlighted {
           background: #c5d0f0 !important;
