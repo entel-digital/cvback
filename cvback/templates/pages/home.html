@@ -14,6 +14,8 @@
 {% endblock content %}
 
 {% block inline_javascript %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
+
   <script type="module" crossorigin src="{% vue_bundle_url 'main' %}"></script>
 {% endblock inline_javascript %}
 

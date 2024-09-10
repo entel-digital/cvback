@@ -1,6 +1,6 @@
 <template>
-  <div class="datepicker-container">
-    <q-card class="my-card " bordered style="width: fit-content">
+  <div class="gt-md datepicker-container">
+    <q-card class="my-card" bordered style="width: fit-content">
       <q-card-section horizontal class="q-px-xs">
         <q-card-section class="col-3">
           <div class="q-px-xs q-gutter-y-sm column no-warp">
@@ -117,7 +117,6 @@
                           </div>
                         </template>
                         <div v-else :key="'blank_days' + dateRowIdx + index" class="blank-day">
-                          <!-- <span ></span> -->
                         </div>
                       </template>
                     </div>
@@ -194,10 +193,207 @@
       </q-card-actions>
     </q-card>
   </div>
+
+  <!-- MOBILE VERSION-->
+  <div class="lt-lg bg-white">
+    <q-card flat class="my-card bg-whites">
+   
+      <q-card-section class="bg-white">
+        <div class="q-gutter-sm row q-pb-sm">
+          <q-btn
+            :outline="btnActive !== 'today'"
+            no-caps
+            dense
+            color="primary"
+            label="Hoy"
+            class="q-px-sm"
+            @click="selectDateByBtn('today')"
+          />
+          <q-btn
+            :outline="btnActive !== 'yesterday'"
+            no-caps
+            dense
+            color="primary"
+            label="Ayer"
+            class="q-px-sm"
+            @click="selectDateByBtn('yesterday')"
+          />
+          <q-btn
+            :outline="btnActive !== 'week'"
+            no-caps
+            dense
+            color="primary"
+            label="Semana"
+            class="q-px-sm"
+            @click="selectDateByBtn('week')"
+          />
+          <q-btn
+            :outline="btnActive !== 'month'"
+            no-caps
+            dense
+            color="primary"
+            label="Mes"
+            class="q-px-sm"
+            @click="selectDateByBtn('month')"
+          />
+          <q-btn
+            :outline="btnActive !== 'year'"
+            no-caps
+            dense
+            color="primary"
+            label="Año"
+            class="q-px-sm"
+            @click="selectDateByBtn('year')"
+          />
+        </div>
+        <q-separator />
+        <div :class="calendarClass">
+          <div :class="calendarContainerClass">
+            <div
+              :class="data.classes"
+              v-for="(data, dataIdx) in monthsData"
+              :key="'month_data' + dataIdx"
+            >
+              <div class="calendar-header">
+                <div class="month-name">
+                  <template v-if="dataIdx == 0">
+                    <q-btn
+                      round
+                      flat
+                      color="primary"
+                      icon="chevron_left"
+                      :disable="isPrevMonthDisabled"
+                      @click="movePrevMonth()"
+                    />
+                  </template>
+
+                  <span class="month-text"> {{ data.monthName }} </span>
+                  <template v-if="(!enableSecondCalendar && dataIdx == 0) || dataIdx == 1">
+                    <q-btn
+                      round
+                      flat
+                      color="primary"
+                      icon="chevron_right"
+                      :disable="isNextMonthDisabled"
+                      @click="moveNextMonth()"
+                    />
+                  </template>
+                </div>
+                <div class="day-name">
+                  <span v-for="(day, index) in daysName" :key="'date_name' + index">
+                    {{ day }}
+                  </span>
+                </div>
+              </div>
+              <div class="calendar-dates" style="height: 220px">
+                <template
+                  v-for="dateRowIdx in data.calendarRows"
+                  :key="'date_row_' + dataIdx + dateRowIdx"
+                >
+                  <div class="date-row">
+                    <template
+                      v-for="(dt, index) in data.dates.slice(7 * (dateRowIdx - 1), 7 * dateRowIdx)"
+                    >
+                      <template v-if="typeof dt === 'object'">
+                        <div
+                          class="date"
+                          :class="{
+                            'date-highlighted': dt.highlighted,
+                            'date-selected': dt.selected,
+                            'date-disabled': dt.isDisabled,
+                            'date-today': dt.isToday,
+                            'date-selected-start': dt.startDateSelected,
+                            'date-selected-end': dt.endDateSelected
+                          }"
+                          :key="'calendar_dates' + dateRowIdx + index"
+                          @click="onSelectDate(dt)"
+                          @mouseover="hoverDate(dt)"
+                        >
+                          <span>
+                            {{ dt.dateNumber }}
+                          </span>
+                        </div>
+                      </template>
+                      <div v-else :key="'blank_days' + dateRowIdx + index" class="blank-day"></div>
+                    </template>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+          <q-card-section class="row">
+            <div class="fit row inline justify-around">
+              <span>Fecha de inicio</span>
+              <div style="width: fit-content">
+                <select v-model="timeSelectedStart.hour" style="max-width: 50px">
+                  <option disabled value="">Seleccione un elemento</option>
+                  <option v-for="(option, index) in optionsHours" :key="index" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+                :
+                <select v-model="timeSelectedStart.min" style="max-width: 50px">
+                  <option disabled value="">Seleccione un elemento</option>
+                  <option v-for="(option, index) in optionsMinutes" :key="index" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+              </div>
+              <span class="q-pt-lg">Fecha de final</span>
+              <div style="width: fit-content">
+                <select v-model="timeSelectedEnd.hour" style="max-width: 50px">
+                  <option v-for="(option, index) in optionsHours" :key="index" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+                :
+                <select v-model="timeSelectedEnd.min" style="max-width: 50px">
+                  <option
+                    v-for="(option, index) in optionsMinutes"
+                    :key="index"
+                    :value="option"
+                    :label="option"
+                  >
+                    {{ option }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </q-card-section>
+        </div>
+      </q-card-section>
+      <q-separator />
+      <q-card-actions align="right">
+        <div :class="calendarFooterClass" class="fit q-px-none">
+          <div class="fit row justify-end calendar-actions q-gutter-x-sm" style="width: 0">
+            <q-btn
+              no-caps
+              color="dark"
+              dense
+              outline
+              label="Limpiar"
+              class="q-px-md"
+              style="width: fit-content; min-width: 70px"
+              @click="clickClear"
+            >
+            </q-btn>
+            <q-btn
+              no-caps
+              color="primary"
+              label="Filtrar"
+              class="q-px-md"
+              style="width: fit-content; min-width: 70px"
+              @click="goToFilter"
+            >
+            </q-btn>
+          </div>
+        </div>
+      </q-card-actions>
+    </q-card>
+  </div>
 </template>
 <script>
 import { useEventsStore } from '@/stores/events'
-import { watch } from 'vue';
 export default {
   name: 'Datepicker2',
   props: {
@@ -396,20 +592,11 @@ export default {
   },
   created() {
     this.init()
-    if(this.dateFromStore){
+    if (this.dateFromStore) {
       this.selected.start_date = this.dateFromStore.start_date
       this.selected.end_date = this.dateFromStore.end_date
     }
   },
-//   watch:{
-// handle:{
-//   deep: true,
-//   dateFromStore: function (newValue, oldValue) {
-//     if (newValue !== oldValue) {
-//       this.init()
-//     }
-// }
-//   },    
   computed: {
     currentMonth() {
       return moment(this.current_date)
@@ -808,6 +995,8 @@ export default {
           }
         }
       }
+      this.$emit('onSelect', selected)
+
       this.$emit('filterByDate', selected)
     },
     clickClear() {
@@ -828,6 +1017,8 @@ export default {
       }
       this.btnActive = null
       this.eventStore.dateSelected = null
+      this.$emit('onSelect')
+
       this.$emit('clearDates')
     },
     transformDateIntoMoment(dates) {
@@ -923,7 +1114,7 @@ export default {
           date = moment(new Date())
           break
         case 'yesterday':
-          date = moment((new Date())).subtract(1, 'days').startOf('day')
+          date = moment(new Date()).subtract(1, 'days').startOf('day')
           endDate = moment().subtract(1, 'days').endOf('day')
           break
         case 'week':
@@ -936,7 +1127,7 @@ export default {
 
           break
         case 'year':
-          date =moment(new Date()).startOf('year')
+          date = moment(new Date()).startOf('year')
           endDate = moment(new Date())
           break
       }
@@ -959,6 +1150,12 @@ export default {
   width: fit-content;
   position: absolute;
   left: -350px;
+}
+.datepicker-container-mobile {
+  background-color: white;
+  width: fit-content;
+  position: absolute;
+  left: 0px;
 }
 
 .g-calendar {
@@ -1064,6 +1261,16 @@ export default {
           background: #374eaf !important;
           color: #fff;
         }
+      }
+    }
+  }
+}
+@media screen and (max-width: 1024px) {
+  .g-calendar {
+    .calendar-container {
+      display: block;
+      .current-calendar {
+        border-right: none;
       }
     }
   }
