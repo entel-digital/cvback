@@ -69,9 +69,7 @@ export default defineComponent({
     ]
     
     const sortTable = (sort) => {
-      eventStore.sortAsc = sort
-      console.log("eventSort", eventStore.sortAsc);
-      
+      eventStore.sortAsc = sort      
       updateData(eventStore.dateSelected, eventStore.labelsSelected)
     }
 

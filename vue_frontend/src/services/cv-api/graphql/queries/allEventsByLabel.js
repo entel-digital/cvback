@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelIdFilter: String,$sortBy: String, $asc: Boolean ) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage,  labelIdFilter: $labelIdFilter, sortBy: $sortBy, asc: $asc) {
+query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int,$labelIdFilter: String, $sortedBy: String, $asc: Boolean ) {
+  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage,  labelIdFilter: $labelIdFilter, sortedBy: $sortedBy, asc: $asc) {
     filtered
        events {
       id

@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterThanEqual: DateTime, $dateLowerThan: DateTime, $sortBy: String, $asc: Boolean) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage, dateGreaterThanEqual: $dateGreaterThanEqual, dateLowerThan: $dateLowerThan, sortBy: $sortBy, asc: $asc) {
+query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterThanEqual: DateTime, $dateLowerThan: DateTime, $sortedBy: String, $asc: Boolean) {
+  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage, dateGreaterThanEqual: $dateGreaterThanEqual, dateLowerThan: $dateLowerThan, sortedBy: $sortedBy, asc: $asc) {
     filtered
       events {
       id

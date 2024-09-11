@@ -564,7 +564,6 @@ export default defineComponent({
 
       // Formato deseado con el timezone dinámico
       const finalDateTime = dateTimeLocal.toISOString().slice(0, -1) + timezoneOffset
-      console.log("finalDateTime", finalDateTime)
       return finalDateTime
     }
 
