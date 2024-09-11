@@ -49,7 +49,7 @@ export const useEventsStore = defineStore('events', {
       this.allEvents = []
 
       try {
-        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "addedDate", this.sortAsc)
+        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "added_date", this.sortAsc)
 
         // data.filteredAndPaginatedEvents.events.sort((a, b) => {
         //   return new Date(b.addedDate) - new Date(a.addedDate)
@@ -96,7 +96,7 @@ export const useEventsStore = defineStore('events', {
           this.pagination.rowsPerPage,
           this.dateSelected.from,
           this.dateSelected.to,
-          "addedDate",
+          "added_date",
           this.sortAsc
         )
 
@@ -141,7 +141,7 @@ export const useEventsStore = defineStore('events', {
           this.pagination.offset,
           this.pagination.rowsPerPage,
           this.labelsSelected,
-          "addedDate",
+          "added_date",
           this.sortAsc
         )
 
@@ -188,7 +188,7 @@ export const useEventsStore = defineStore('events', {
           this.dateSelected.from,
           this.dateSelected.to,
           this.labelsSelected,
-          "addedDate",
+          "added_date",
           this.sortAsc
         )
 
