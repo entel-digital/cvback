@@ -39,15 +39,17 @@ export const useEventsStore = defineStore('events', {
     funtionToUse: 'allevents',
     labelTypesList: null,
     loadingEvents: false,
-    loadingExport: false
+    loadingExport: false,
+    sortAsc: true, 
   }),
   actions: {
-    async FETCH_EVENTS(ascSelected) {
+    async FETCH_EVENTS() {
+      
       this.loadingEvents = true
       this.allEvents = []
 
       try {
-        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "addedDate", true)
+        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "addedDate", this.sortAsc)
 
         // data.filteredAndPaginatedEvents.events.sort((a, b) => {
         //   return new Date(b.addedDate) - new Date(a.addedDate)
@@ -84,7 +86,7 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_DATE(ascSelected) {
+    async FETCH_EVENTS_BY_DATE() {
       this.loadingEvents = true
       this.allEvents = []
 
@@ -95,7 +97,7 @@ export const useEventsStore = defineStore('events', {
           this.dateSelected.from,
           this.dateSelected.to,
           "addedDate",
-          true
+          this.sortAsc
         )
 
         // data.filteredAndPaginatedEvents.events.sort((a, b) => {
@@ -131,7 +133,7 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_LABEL(ascSelected) {
+    async FETCH_EVENTS_BY_LABEL() {
       this.allEvents = []
       this.loadingEvents = true
       try {
@@ -140,7 +142,7 @@ export const useEventsStore = defineStore('events', {
           this.pagination.rowsPerPage,
           this.labelsSelected,
           "addedDate",
-          true
+          this.sortAsc
         )
 
         // data.filteredAndPaginatedEvents.events.sort((a, b) => {
@@ -176,7 +178,7 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_DATE_BY_LABEL(ascSelected) {
+    async FETCH_EVENTS_BY_DATE_BY_LABEL() {
       this.allEvents = []
       this.loadingEvents = true
       try {
@@ -186,7 +188,8 @@ export const useEventsStore = defineStore('events', {
           this.dateSelected.from,
           this.dateSelected.to,
           this.labelsSelected,
-          true
+          "addedDate",
+          this.sortAsc
         )
 
         // data.filteredAndPaginatedEvents.events.sort((a, b) => {

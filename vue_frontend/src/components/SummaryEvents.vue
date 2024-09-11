@@ -553,7 +553,7 @@ export default defineComponent({
       const [day, month, year] = mydate.date.split('/')
 
       const dateTimeLocal = new Date(
-        Date.UTC(year, month - 1, day, mydate.time.hour, mydate.time.min, 0)
+        Date.UTC(year, month - 1, day, mydate.time.hour, mydate.time.min, 59, 999)
       )
 
       // Obtiene la diferencia de zona horaria del browser
@@ -564,7 +564,7 @@ export default defineComponent({
 
       // Formato deseado con el timezone dinámico
       const finalDateTime = dateTimeLocal.toISOString().slice(0, -1) + timezoneOffset
-
+      console.log("finalDateTime", finalDateTime)
       return finalDateTime
     }
 
