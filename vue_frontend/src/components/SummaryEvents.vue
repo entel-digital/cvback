@@ -5,14 +5,12 @@
         <q-item dense class="q-pb-sm text-center" style="width: 100%; max-width: 300px">
           <q-item-section>
             <q-item-label class="barlow-semibold q-px-sm text-primary fs-23-28">
-              {{
-              hasValue(date.queryName)
-            }}
+              {{ hasValue(date.queryName) }}
             </q-item-label>
             <q-item-label class="q-mt-none barlow-bold text-dark">{{ date.label }}</q-item-label>
-            <q-item-label caption class="q-mt-none barlow-bold text-dark">{{
-              date.value
-            }}</q-item-label>
+            <q-item-label caption class="q-mt-none barlow-bold text-dark">
+              {{ date.value }}
+            </q-item-label>
           </q-item-section>
         </q-item>
       </q-card>
@@ -118,7 +116,6 @@
                     style="width: auto; padding: 0 15px"
                   >
                     {{ label.value }}
-                      
                   </q-avatar>
                   {{ label.key }}
                 </q-chip>
@@ -229,6 +226,9 @@
             <q-item-section>
               <q-item-label class="barlow-semibold q-px-sm text-primary fs-18-23 ellipsis">
                 {{ hasValue(date.queryName) }}
+                <q-tooltip>
+                  {{ hasValue(date.queryName) }}
+                </q-tooltip>
               </q-item-label>
             </q-item-section>
           </q-item>

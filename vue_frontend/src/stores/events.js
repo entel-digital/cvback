@@ -42,16 +42,16 @@ export const useEventsStore = defineStore('events', {
     loadingExport: false
   }),
   actions: {
-    async FETCH_EVENTS() {
+    async FETCH_EVENTS(ascSelected) {
       this.loadingEvents = true
       this.allEvents = []
 
       try {
-        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage)
+        const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "addedDate", true)
 
-        data.filteredAndPaginatedEvents.events.sort((a, b) => {
-          return new Date(b.addedDate) - new Date(a.addedDate)
-        })
+        // data.filteredAndPaginatedEvents.events.sort((a, b) => {
+        //   return new Date(b.addedDate) - new Date(a.addedDate)
+        // })
 
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
@@ -84,7 +84,7 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_DATE() {
+    async FETCH_EVENTS_BY_DATE(ascSelected) {
       this.loadingEvents = true
       this.allEvents = []
 
@@ -93,12 +93,14 @@ export const useEventsStore = defineStore('events', {
           this.pagination.offset,
           this.pagination.rowsPerPage,
           this.dateSelected.from,
-          this.dateSelected.to
+          this.dateSelected.to,
+          "addedDate",
+          true
         )
 
-        data.filteredAndPaginatedEvents.events.sort((a, b) => {
-          return new Date(b.addedDate) - new Date(a.addedDate)
-        })
+        // data.filteredAndPaginatedEvents.events.sort((a, b) => {
+        //   return new Date(b.addedDate) - new Date(a.addedDate)
+        // })
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
@@ -129,19 +131,21 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_LABEL() {
+    async FETCH_EVENTS_BY_LABEL(ascSelected) {
       this.allEvents = []
       this.loadingEvents = true
       try {
         const data = await getAllEventsByLabel(
           this.pagination.offset,
           this.pagination.rowsPerPage,
-          this.labelsSelected
+          this.labelsSelected,
+          "addedDate",
+          true
         )
 
-        data.filteredAndPaginatedEvents.events.sort((a, b) => {
-          return new Date(b.addedDate) - new Date(a.addedDate)
-        })
+        // data.filteredAndPaginatedEvents.events.sort((a, b) => {
+        //   return new Date(b.addedDate) - new Date(a.addedDate)
+        // })
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
@@ -172,7 +176,7 @@ export const useEventsStore = defineStore('events', {
         return
       }
     },
-    async FETCH_EVENTS_BY_DATE_BY_LABEL() {
+    async FETCH_EVENTS_BY_DATE_BY_LABEL(ascSelected) {
       this.allEvents = []
       this.loadingEvents = true
       try {
@@ -181,12 +185,13 @@ export const useEventsStore = defineStore('events', {
           this.pagination.rowsPerPage,
           this.dateSelected.from,
           this.dateSelected.to,
-          this.labelsSelected
+          this.labelsSelected,
+          true
         )
 
-        data.filteredAndPaginatedEvents.events.sort((a, b) => {
-          return new Date(b.addedDate) - new Date(a.addedDate)
-        })
+        // data.filteredAndPaginatedEvents.events.sort((a, b) => {
+        //   return new Date(b.addedDate) - new Date(a.addedDate)
+        // })
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,

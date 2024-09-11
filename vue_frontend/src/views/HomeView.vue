@@ -11,6 +11,7 @@
         :rows="eventStore.allEvents"
         :columns="columns"
         :loading="eventStore.loadingEvents"
+        :sort-asc="sortTable"
       />
     </div>
   </div>
@@ -65,6 +66,10 @@ export default defineComponent({
         align: 'rigth'
       }
     ]
+    
+    const sortTable = (sort) => {
+      console.log('sortTable', sort)
+    }
 
     const userStore = useUserStore()
     const eventStore = useEventsStore()
@@ -84,19 +89,19 @@ export default defineComponent({
         fetchAllEvents()
     })
 
-    const updateData = async (date, label) => {
+    const updateData = async (date, label, sortAsc) => {
       eventStore.loadingEvents = true
       if (date !== null && label !== null) {
-        await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
+        await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL(sortAsc)
         eventStore.loadingEvents = false
       } else if (date !== null && label === null) {
-        await eventStore.FETCH_EVENTS_BY_DATE()
+        await eventStore.FETCH_EVENTS_BY_DATE(sortAsc)
         eventStore.loadingEvents = false
       } else if (date === null && label !== null) {
-        await eventStore.FETCH_EVENTS_BY_LABEL()
+        await eventStore.FETCH_EVENTS_BY_LABEL(sortAsc)
         eventStore.loadingEvents = false
       } else if (date === null && label === null) {
-        await fetchAllEvents()
+        await fetchAllEvents(sortAsc)
       }
     }
 
@@ -106,7 +111,7 @@ export default defineComponent({
        () => eventStore.pagination.page,
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
-         await  updateData(eventStore.dateSelected, eventStore.labelsSelected)
+         await  updateData(eventStore.dateSelected, eventStore.labelsSelected, sortAsc)
         }
       }
     )
@@ -115,7 +120,7 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
           eventStore.pagination.page = 1
-            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
+            await updateData(eventStore.dateSelected, eventStore.labelsSelected, sortAsc)
         }
       },
       { immediate: true }
@@ -126,7 +131,7 @@ export default defineComponent({
       async (newValue, oldValue) => {
         if (newValue !== oldValue) {
           eventStore.pagination.page = 1
-            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
+            await updateData(eventStore.dateSelected, eventStore.labelsSelected, sortAsc)
         }
       },
       { immediate: true }
@@ -144,7 +149,8 @@ export default defineComponent({
     return {
       columns,
       signOut,
-      eventStore
+      eventStore,
+      sortTable
     }
   }
 })

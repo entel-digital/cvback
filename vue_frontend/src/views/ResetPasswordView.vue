@@ -19,7 +19,7 @@ const styleBg = `background-image: url(${pathImageBg}); background-size: cover; 
 const router = useRouter()
 
 const goHome = () => {
-  router.push({ path: '/login' })
+  router.push({ path: '/' })
 }
 onMounted(() => {
   if (!router.currentRoute.value.params.key) {

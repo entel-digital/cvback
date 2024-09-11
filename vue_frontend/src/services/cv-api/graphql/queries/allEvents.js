@@ -1,6 +1,6 @@
 export default `
-query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int) {
-  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage) {
+query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $sortBy: String, $asc: Boolean) {
+  filteredAndPaginatedEvents(offset: $offset, rowsPerPage: $rowsPerPage, sortBy: $sortBy, asc: $asc) {
     filtered
     typesSummary
     globalTotalNumber

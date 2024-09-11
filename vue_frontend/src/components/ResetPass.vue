@@ -99,7 +99,7 @@ export default defineComponent({
         if (regexPassword.test(password.value) || regexPassword.test(password2.value)) {
           loading.value = true
           response = await userStore.RESET_PASSWORD(key.value, password.value)
-          if (response?.status !== 400) {
+          if (response?.status === 400) {
             $q.notify({
               color: 'red-5',
               textColor: 'white',
