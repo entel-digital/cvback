@@ -83,6 +83,8 @@ class EventFilterAndPaginationType(graphene.ObjectType):
     query_total_events_month = graphene.Int()
     query_total_events_day = graphene.Int()
     query_total_events_week = graphene.Int()
+    sorted_by= graphene.String()
+    asc= graphene.Boolean()
 
 class Query(graphene.ObjectType):
     all_events = graphene.List(OptimizedEventType)
@@ -119,6 +121,8 @@ class Query(graphene.ObjectType):
         date_lower_than=graphene.DateTime(default_value=None),
         date_greater_than_equal=graphene.DateTime(default_value=None),
         label_id_filter=graphene.String(),
+        sorted_by=graphene.String(),
+        asc=graphene.Boolean()
     )
 
     @optional_query
@@ -135,7 +139,18 @@ class Query(graphene.ObjectType):
         date_lower_than = kwargs.get('date_lower_than')
         date_greater_than_equal = kwargs.get('date_greater_than_equal')
         label_id_filter = kwargs.get('label_id_filter')
-
+        sorted_by = kwargs.get('sorted_by')
+        asc = kwargs.get("asc")
+        print("asc",asc)
+        print("sorted_by",sorted_by)
+        
+        if sorted_by:
+            print("sorting")
+            sort_param=sorted_by
+            if not asc:
+                sort_param="-"+sort_param
+            print(sort_param)
+            qs = qs.order_by(sort_param)  
 
         # Calculate time-based totals
         now = datetime.now()

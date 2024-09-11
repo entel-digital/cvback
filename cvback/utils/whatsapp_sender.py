@@ -1,6 +1,6 @@
 import requests
 from django.conf import settings
-
+from datetime import datetime
 
 class WhatsappSender():
 
@@ -41,7 +41,9 @@ class WhatsappSender():
                                     "elementos_faltantes": ','.join(event_data["missing_labels"]),
                                     "link_detalles": event_data["details_link"],
                                     "imagenes": event_data["images"],
-                                    "videos": event_data["videos"]
+                                    "videos": event_data["videos"],
+                                    "evento": event_data["event_label"],
+                                    "hora_envio": datetime.now().strftime("%H:%M:%S")
                                 } for user_data in users_data
                             ]
                     }
