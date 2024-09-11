@@ -1,8 +1,9 @@
+from datetime import datetime
 from celery import shared_task
 from django.conf import settings
 import pandas as pd
 from cvback.alerts.models import Alert, SubscribedEvent, Subscription
-from cvback.events.models import ExportedFile
+from cvback.events.models import Event, ExportedFile
 from cvback.users.adapters import AccountAdapter
 from cvback.utils.telegram_sender import TelegramSender
 from cvback.utils.whatsapp_sender import WhatsappSender
@@ -95,23 +96,45 @@ def create_alert(event):
             alert_types = [alert_type.channel for alert_type in subscription.alert_type.all()]
             if subscription.user.telegram_chat_id and "telegram" in alert_types:
                 chat_id = subscription.user.telegram_chat_id
-                send_telegram(chat_id, event_data)
+                send_telegram.delay(chat_id, event_data)
             if subscription.user.phone_number and "whatsapp" in alert_types:
                 users_data.append(get_user_info(subscription.user))
             if subscription.user.phone_number and subscription.alert_type.name == "sms":
                 pass
         if users_data:
-            send_whatsapp(users_data, event_data)
+            send_whatsapp.delay(users_data, event_data)
 
 
 @shared_task(rate_limit='4/m')
-def save_file(qs,field_names, cls, request, format ):
+def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter):
+    
+    qs = Event.objects.all()
 
-    filename = cls.get_filename(qs)
+    FORMATS = ["CSV", "XLSX"]
+    if not format in FORMATS:
+        format = "CSV"
+
+
+    if label_id_filter:
+        qs = qs.filter(event_label__id=label_id_filter)
+    if id_equals_to:
+        qs = qs.filter(id=id_equals_to)
+    if date_equals_to:
+        qs = qs.filter(informed_date=date_equals_to)
+    if date_lower_than:
+        qs = qs.filter(informed_date__lt=date_lower_than)
+    if date_greater_than_equal:
+        qs = qs.filter(informed_date__gte=date_greater_than_equal)
+
+    if full_data:
+        field_names = settings.EXPORT_FULL_CSV_FIELDS
+    else:
+        field_names = settings.EXPORT_SUMMARY_CSV_FIELDS
+
     if not format in ["CSV", "XLSX"]:
         format = "CSV"
-    return_file = IO()
 
+    return_file = IO()
 
 
     EXPORT_GROUP_BY = [c for c in field_names if c in settings.EXPORT_GROUP_BY]
@@ -135,20 +158,19 @@ def save_file(qs,field_names, cls, request, format ):
     storage = MediaGoogleCloudStorage()
     for col in for_get_url:
         df[col] = df[col].apply(lambda x:" , ".join(list({storage.url(name=y) if y else "" for y in x})))
-
-    for trans_parameters in settings.EXPORT_DICTS_TO_TRANSFORM_COLUMNS:
-        t_dict =  trans_parameters["transformations"]
-        if trans_parameters["type_transform"] == "in":
-            df[trans_parameters["column_name"]] = df[trans_parameters["column_base"]].apply(lambda x: in_transformation(x,t_dict))
-        elif trans_parameters["type_transform"] == "replace":
-            df[trans_parameters["column_name"]] = df[trans_parameters["column_base"]].apply(lambda x: replace_transformation(x,t_dict))
-        if not trans_parameters["keep_base"]:
-            df = df.drop([trans_parameters["column_base"]], axis=1) 
-
-            
-    filename = cls.get_filename(qs)
-
-    df = df.rename(columns=settings.EXPORT_TRANSLATION_SUMMARY_FIELDS)
+    if not full_data:
+        for trans_parameters in settings.EXPORT_DICTS_TO_TRANSFORM_COLUMNS:
+            t_dict =  trans_parameters["transformations"]
+            if trans_parameters["type_transform"] == "in":
+                df[trans_parameters["column_base"]] = df[trans_parameters["column_base"]].apply(lambda x: in_transformation(x,t_dict))
+                df = df.rename(columns={trans_parameters["column_base"]:trans_parameters["column_name"]})
+            elif trans_parameters["type_transform"] == "replace":
+                df[trans_parameters["column_base"]] = df[trans_parameters["column_base"]].apply(lambda x: replace_transformation(x,t_dict))
+            if not trans_parameters["keep_base"]:
+                df = df.drop([trans_parameters["column_base"]], axis=1) 
+                
+        df = df.rename(columns=settings.EXPORT_TRANSLATION_SUMMARY_FIELDS)
+    filename = get_filename(qs)
 
     if format == "XLSX":
         filename = filename.replace(".csv","")
@@ -162,8 +184,6 @@ def save_file(qs,field_names, cls, request, format ):
         
         df.to_excel(return_file, settings.XLSX_SHEET_NAME, index=False)
 
-    
-        
     elif format == "CSV":
         mime_type="text/csv"
         filename = filename.replace(".xlsx","")
@@ -175,18 +195,18 @@ def save_file(qs,field_names, cls, request, format ):
     exported_file.exported_file.save("./"+filename, return_file)
     exported_file.save()
     public_uri = exported_file.exported_file.url
-    context = {"public_uri":public_uri, "username":request.user.username, "filename":filename }#, "mime_type":mime_type, "file":exported_file.exported_file.open().read()}
+    context = {"public_uri":public_uri, "username":request_username, "filename":filename }#, "mime_type":mime_type, "file":exported_file.exported_file.open().read()}
     if public_uri:
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_ready",
-                                        email=request.user.email,
+                                        email=request_email,
                                         context=context,
-                                        request=request)
+                                        request="request")
     else:
         
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_failed",
-                                        email=request.user.email,
+                                        email=reques_email,
                                         context=context,
-                                        request=request)
+                                        request="request")
 
 
 def in_transformation(x,t_dict):
@@ -197,3 +217,6 @@ def in_transformation(x,t_dict):
 
 def replace_transformation(x, t_dict):
     return t_dict.get(x,"-")
+
+def get_filename(queryset):
+        return "data-export-{!s}".format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))

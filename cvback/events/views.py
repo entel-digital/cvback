@@ -145,6 +145,7 @@ class CustomCSVExportView(View):
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponse("403 Forbidden",status=403)
+        
         id_equals_to = request.GET.get('id_equals_to')
         date_equals_to = request.GET.get('date_equals_to')
         date_lower_than = request.GET.get('date_lower_than')
@@ -152,32 +153,8 @@ class CustomCSVExportView(View):
         label_id_filter = request.GET.get('label_id_filter')
         format = request.GET.get('format')
         full_data = request.GET.get('full_data',False)
-        qs = Event.objects.all()
+        request_username = request.user.username
+        request_email = request.user.email
 
-        FORMATS = ["CSV", "XLSX"]
-        if not format in FORMATS:
-            format = "CSV"
-
-
-        if label_id_filter:
-            qs = qs.filter(event_label__id=label_id_filter)
-        if id_equals_to:
-            qs = qs.filter(id=id_equals_to)
-        if date_equals_to:
-            qs = qs.filter(informed_date=date_equals_to)
-        if date_lower_than:
-            qs = qs.filter(informed_date__lt=date_lower_than)
-        if date_greater_than_equal:
-            qs = qs.filter(informed_date__gte=date_greater_than_equal)
-
-        if full_data:
-            fields = settings.EXPORT_FULL_CSV_FIELDS
-        else:
-            fields = settings.EXPORT_SUMMARY_CSV_FIELDS
-
-        save_file(qs,fields, self, request, format )
+        save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter)
         return HttpResponse("YOUR REQUEST IS BEING PROCESSED", status=200)
-        
-    
-    def get_filename(self, queryset):
-        return "data-export-{!s}".format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
