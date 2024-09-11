@@ -2,7 +2,7 @@
   <div class="fit">
     <div class="fit column no-wrap justify-between items-start content-start">
       <div
-        class="fit row inline justify-end items-center barlow-bold"
+        class="fit row inline justify-between items-center barlow-bold"
         style="
           margin: 0;
           padding: 0;
@@ -10,6 +10,18 @@
           border-left: 1px solid rgba(0, 0, 0, 0.12);
         "
       >
+        <q-btn
+        id="btn-sort-sm"
+          class="lt-md"
+          dense
+          flat
+          color="primary"
+          label="Ordenar"
+          :icon-right="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
+          style=""
+          @click="eventSort(true)"
+        />
+
         <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
         <q-btn-dropdown
           no-caps
@@ -47,17 +59,19 @@
           header-class="text-dark"
           hide-pagination
         >
+          <template v-slot:header-cell-date="props">
+            <q-th :props="props" style="padding-left: 0px">
+              <q-btn
+                flat
+                round
+                color="primary"
+                :icon="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
+                @click="eventSort(true)"
+              />
+              {{ props.col.label }}
+            </q-th>
+          </template>
 
-        <template v-slot:header-cell-date="props">
-        <q-th :props="props" style="padding-left: 0px">
-            <!-- <q-btn flat round color="primary" icon="arrow_upward" @click="eventSort(true)" /> -->
-
-          <!-- <q-icon name="arrow_upward" size="1.5em" />< -->
-          
-          {{ props.col.label }}
-        </q-th>
-      </template>
-       
           <template v-slot:body="props">
             <q-tr
               :props="props"
@@ -335,32 +349,22 @@ import CarouselImages from '@/components/CarouselImages.vue'
 export default defineComponent({
   name: 'TableEvents',
   emits: ['sortAsc'],
-  props: ['rows', 'columns', 'loading',],
+  props: ['rows', 'columns', 'loading'],
   components: {
     CarouselImages
   },
-  setup(props, {emit}) {
+  setup(props, { emit }) {
     const rowSelected = ref(null)
     const slide = ref(1)
     const fullscreen = ref(false)
     const expanded = ref([])
     const eventStore = useEventsStore()
     const $q = useQuasar()
-    const sortAsc = ref(false)
+    const sortAsc = ref(true)
 
-    watch((sortAsc, newSortAsc) => {
-      console.log("sortAsc", sortAsc)
-      console.log("newSortAsc", newSortAsc)
-    
-      // if(sortAsc.value !== newSortAsc) {
-      //   emit('sortAsc', sortAsc)
-      // }
-    })
     const eventSort = () => {
-      sortAsc.value = !sortAsc.value;
-      console.log("sortAsc eventSort", sortAsc.value) ;
-      
-      emit('sortAsc', sortAsc.value);
+      sortAsc.value = !sortAsc.value
+      emit('sortAsc', sortAsc.value)
     }
 
     const pagesNumber = computed(() => {
@@ -381,7 +385,7 @@ export default defineComponent({
         expanded.value = [row.id]
       }
     }
-   
+
     const formatDateEvent = (date) => {
       const dateObj = new Date(date)
 
@@ -526,7 +530,13 @@ export default defineComponent({
 .q-focus-helper {
   display: none !important;
 }
-.q-field__control-container{
+.q-field__control-container {
   min-width: 200px !important;
+}
+#btn-sort-sm .q-btn__content{
+  padding-left: 20px
+}
+#btn-sort-sm span.block{
+ width: fit-content;
 }
 </style>

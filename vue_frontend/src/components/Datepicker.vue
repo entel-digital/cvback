@@ -530,7 +530,7 @@ export default {
       },
       timeSelectedEnd: {
         hour: '23',
-        min: '00'
+        min: '59'
       },
       optionsHours: [
         '00',
@@ -558,7 +558,7 @@ export default {
         '22',
         '23'
       ],
-      optionsMinutes: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'],
+      optionsMinutes: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '59'],
 
       months: [
         'Enero',
@@ -1010,7 +1010,7 @@ export default {
         }
         this.timeSelectedEnd = {
           hour: '23',
-          min: '00'
+          min: '59'
         }
       } else {
         this.selected_date = null
