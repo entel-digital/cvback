@@ -104,7 +104,7 @@ def create_alert(event):
             send_whatsapp(users_data, event_data)
 
 
-@shared_task(rate_limit='4/h')
+@shared_task(rate_limit='4/m')
 def save_file(qs,field_names, cls, request, format ):
 
     filename = cls.get_filename(qs)
