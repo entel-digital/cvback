@@ -91,7 +91,7 @@
 
 <script>
 import { defineComponent, ref, computed, watch } from 'vue'
-import { date, event } from 'quasar'
+import { date } from 'quasar'
 import { useEventsStore } from '@/stores/events.js'
 
 export default defineComponent({

@@ -1,24 +1,37 @@
 <template>
   <div class="fit">
-    <div class="fit column no-wrap justify-between items-start  content-start">
-      <div class="fit row inline justify-end items-center barlow-bold" style="margin: 0; padding: 0; border-top: 1px solid rgba(0, 0, 0, 0.12); border-left: 1px solid rgba(0, 0, 0, 0.12)" >
+    <div class="fit column no-wrap justify-between items-start content-start">
+      <div
+        class="fit row inline justify-end items-center barlow-bold"
+        style="
+          margin: 0;
+          padding: 0;
+          border-top: 1px solid rgba(0, 0, 0, 0.12);
+          border-left: 1px solid rgba(0, 0, 0, 0.12);
+        "
+      >
         <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
-        <q-btn-dropdown no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport">
-      <q-list separator class="fit">
-        <q-item clickable v-close-popup class="text-right fit" @click="exportData('csv')">
-          <q-item-section>
-            <q-item-label> Formato .csv</q-item-label>
-          </q-item-section>
-        </q-item>
+        <q-btn-dropdown
+          no-caps
+          color="primary"
+          label="Exportar data"
+          class="q-px-xl"
+          :loading="loadingExport"
+        >
+          <q-list separator class="fit">
+            <q-item clickable v-close-popup class="text-right fit" @click="exportData('csv')">
+              <q-item-section>
+                <q-item-label> Formato .csv</q-item-label>
+              </q-item-section>
+            </q-item>
 
-        <q-item clickable v-close-popup class="text-right fit" @click="exportData('xlsx')">
-          <q-item-section>
-            <q-item-label> Formato .xlsx</q-item-label>
-          </q-item-section>
-        </q-item>
-
-      </q-list>
-    </q-btn-dropdown>
+            <q-item clickable v-close-popup class="text-right fit" @click="exportData('xlsx')">
+              <q-item-section>
+                <q-item-label> Formato .xlsx</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </div>
       <div class="gt-sm fit col-12">
         <q-table
@@ -34,6 +47,17 @@
           header-class="text-dark"
           hide-pagination
         >
+
+        <template v-slot:header-cell-date="props">
+        <q-th :props="props" style="padding-left: 0px">
+            <!-- <q-btn flat round color="primary" icon="arrow_upward" @click="eventSort(true)" /> -->
+
+          <!-- <q-icon name="arrow_upward" size="1.5em" />< -->
+          
+          {{ props.col.label }}
+        </q-th>
+      </template>
+       
           <template v-slot:body="props">
             <q-tr
               :props="props"
@@ -191,12 +215,10 @@
     </div>
 
     <div class="lt-md">
-      <q-list bordered>
-       <q-item>
-        No hay datos para mostrar
-       </q-item>     
+      <q-list v-if="displayRows.length === 0" bordered>
+        <q-item> No hay datos para mostrar </q-item>
       </q-list>
-      <q-list bordered separator class="rounded-borders">
+      <q-list v-else bordered separator class="rounded-borders">
         <q-expansion-item group="events" bordered v-for="row in displayRows" :key="row.id">
           <template v-slot:header>
             <q-item-section class="column">
@@ -312,19 +334,34 @@ import CarouselImages from '@/components/CarouselImages.vue'
 
 export default defineComponent({
   name: 'TableEvents',
-
-  props: ['rows', 'columns', 'loading'],
+  emits: ['sortAsc'],
+  props: ['rows', 'columns', 'loading',],
   components: {
     CarouselImages
   },
-  setup(props) {
+  setup(props, {emit}) {
     const rowSelected = ref(null)
     const slide = ref(1)
     const fullscreen = ref(false)
     const expanded = ref([])
     const eventStore = useEventsStore()
     const $q = useQuasar()
+    const sortAsc = ref(false)
 
+    watch((sortAsc, newSortAsc) => {
+      console.log("sortAsc", sortAsc)
+      console.log("newSortAsc", newSortAsc)
+    
+      // if(sortAsc.value !== newSortAsc) {
+      //   emit('sortAsc', sortAsc)
+      // }
+    })
+    const eventSort = () => {
+      sortAsc.value = !sortAsc.value;
+      console.log("sortAsc eventSort", sortAsc.value) ;
+      
+      emit('sortAsc', sortAsc.value);
+    }
 
     const pagesNumber = computed(() => {
       const totalToUse = eventStore.summaryEvents?.totalQueryEvents
@@ -344,7 +381,7 @@ export default defineComponent({
         expanded.value = [row.id]
       }
     }
-
+   
     const formatDateEvent = (date) => {
       const dateObj = new Date(date)
 
@@ -396,23 +433,21 @@ export default defineComponent({
     }
 
     const exportData = async (format) => {
-      const response =  eventStore.EXPORT_DATA(format)
+      const response = eventStore.EXPORT_DATA(format)
 
       if (response) {
         $q.notify({
-          message: "Tu solicitud esta siendo procesada. Te enviaremos un correo en los próximos minutos con la confirmación",
+          message:
+            'Tu solicitud esta siendo procesada. Te enviaremos un correo en los próximos minutos con la confirmación',
           color: 'positive',
           position: 'bottom',
           timeout: 2000
         })
       }
-
-
-    };
+    }
     const loadingExport = computed(() => {
       return eventStore.loadingExport
     })
-
 
     return {
       rowSelected,
@@ -430,7 +465,8 @@ export default defineComponent({
       updatePagination,
       displayRows,
       exportData,
-      loadingExport
+      loadingExport,
+      eventSort
     }
   }
 })
@@ -468,7 +504,7 @@ export default defineComponent({
 
   thead tr:first-child th {
     top: 0;
-    padding-left: 50px;
+    padding-left: 30px;
   }
 
   /* prevent scrolling behind sticky top row on focus */
@@ -487,7 +523,10 @@ export default defineComponent({
     background-color: #fafafa; // Add your desired color here
   }
 }
-.q-focus-helper{
-  display: none !important
+.q-focus-helper {
+  display: none !important;
+}
+.q-field__control-container{
+  min-width: 200px !important;
 }
 </style>
