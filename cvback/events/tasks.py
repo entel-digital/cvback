@@ -128,13 +128,13 @@ def save_file(qs,field_names, cls, request, format ):
             key = field.split("*")[0]
             
             for_get_url.append(key)
-        aggregation_fields[key] = list
+        aggregation_fields[key] = set
     
     df = df.groupby(EXPORT_GROUP_BY, as_index = False).agg(aggregation_fields)  
     
     storage = MediaGoogleCloudStorage()
     for col in for_get_url:
-        df[col] = df[col].apply(lambda x:" , ".join([storage.url(name=y) if y else "" for y in x]))
+        df[col] = df[col].apply(lambda x:" , ".join(list({storage.url(name=y) if y else "" for y in x})))
 
     for trans_parameters in settings.EXPORT_DICTS_TO_TRANSFORM_COLUMNS:
         t_dict =  trans_parameters["transformations"]
@@ -147,6 +147,9 @@ def save_file(qs,field_names, cls, request, format ):
 
             
     filename = cls.get_filename(qs)
+
+    df = df.rename(columns=settings.EXPORT_TRANSLATION_SUMMARY_FIELDS)
+
     if format == "XLSX":
         filename = filename.replace(".csv","")
         if not filename.endswith(".xlsx"):
