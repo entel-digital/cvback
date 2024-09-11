@@ -2,23 +2,26 @@
   <div class="fit">
     <div class="fit column no-wrap justify-between items-start content-start">
       <div
-        class="fit row inline justify-between items-center barlow-bold"
+        class="fit row reverse wrap justify-between items-end content-between barlow-bold"
         style="
           margin: 0;
           padding: 0;
           border-top: 1px solid rgba(0, 0, 0, 0.12);
           border-left: 1px solid rgba(0, 0, 0, 0.12);
+          border-right: 1px solid rgba(0, 0, 0, 0.12);
+
         "
       >
         <q-btn
-        id="btn-sort-sm"
+          id="btn-sort-sm"
           class="lt-md"
           dense
           flat
+          no-caps
           color="primary"
           label="Ordenar"
+          style="width: 150px;"
           :icon-right="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
-          style=""
           @click="eventSort(true)"
         />
 
@@ -28,6 +31,7 @@
           color="primary"
           label="Exportar data"
           class="q-px-xl"
+          style="width:150px;"
           :loading="loadingExport"
         >
           <q-list separator class="fit">
@@ -533,10 +537,10 @@ export default defineComponent({
 .q-field__control-container {
   min-width: 200px !important;
 }
-#btn-sort-sm .q-btn__content{
-  padding-left: 20px
+#btn-sort-sm .q-btn__content {
+  padding-left: 20px;
 }
-#btn-sort-sm span.block{
- width: fit-content;
+#btn-sort-sm span.block {
+  width: fit-content;
 }
 </style>
