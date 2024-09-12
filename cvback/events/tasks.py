@@ -41,7 +41,7 @@ def get_event_info(event):
     event_data["id"] = event.id
     event_data["date"] = informed_date if event.informed_date else ""
     event_data["time"] = informed_time if event.informed_date else ""
-    event_data["event_label"] = event.event_label.name
+    event_data["event_label"] = event.event_label.name.capitalize() if event.event_label.name else ""
     if event.inference_ocr.all():
         if event.inference_ocr.all()[0].value:
             event_data["vehicle_license_plate"] = event.inference_ocr.all()[0].value
@@ -51,7 +51,7 @@ def get_event_info(event):
         event_data["vehicle_license_plate"] = ""
     missing_labels = event.labels_missing.all()
     event_data["missing_labels"] = [label.name for label in event.labels_missing.all()] if missing_labels else []
-    link = "https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/"
+    link = "https://app.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC42/"
     link += f"events/event/{event.id}/change/"
     event_data["details_link"] = link
 
