@@ -153,8 +153,11 @@ class CustomCSVExportView(View):
         label_id_filter = request.GET.get('label_id_filter')
         format = request.GET.get('format')
         full_data = request.GET.get('full_data',False)
+        sorted_by = request.GET.get('sorted_by',None)
+        asc = request.GET.get('asc')
+
         request_username = request.user.username
         request_email = request.user.email
 
-        save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter)
+        save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc)
         return HttpResponse("YOUR REQUEST IS BEING PROCESSED", status=200)
