@@ -106,7 +106,7 @@ def create_alert(event):
 
 
 @shared_task(rate_limit='100/m')
-def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter):
+def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc):
     
     qs = Event.objects.all()
 
@@ -114,7 +114,12 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     if not format in FORMATS:
         format = "CSV"
 
-
+    if sorted_by:
+        sort_param=sorted_by
+        if not asc:
+            sort_param="-"+sort_param
+        qs = qs.order_by(sort_param) 
+         
     if label_id_filter:
         qs = qs.filter(event_label__id=label_id_filter)
     if id_equals_to:
