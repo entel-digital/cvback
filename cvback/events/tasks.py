@@ -105,7 +105,7 @@ def create_alert(event):
             send_whatsapp.delay(users_data, event_data)
 
 
-@shared_task(rate_limit='4/m')
+@shared_task(rate_limit='100/m')
 def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter):
     
     qs = Event.objects.all()
