@@ -180,16 +180,19 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
 
         date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
         for date_column in date_columns:
-            df[date_column] = df[date_column].dt.date
-        
-        df.to_excel(return_file, settings.XLSX_SHEET_NAME, index=False)
+            df[date_column] = df[date_column].dt.tz_convert(settings.TIME_ZONE).dt.strftime('%Y-%m-%d %H:%M:%S')
+        with pd.ExcelWriter(return_file, engine='xlsxwriter', datetime_format= "dd-mm-yy hh:mm:ss") as writer:
+            df.to_excel(writer, sheet_name=settings.XLSX_SHEET_NAME, index=False)
 
     elif format == "CSV":
         mime_type="text/csv"
+        date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
+        for date_column in date_columns:
+            df[date_column] = df[date_column].dt.tz_convert(settings.TIME_ZONE)#.dt.to_timestamp()
         filename = filename.replace(".xlsx","")
         if not filename.endswith(".csv"):
             filename += ".csv"
-        df.to_csv(return_file, index=False)
+        df.to_csv(return_file, index=False, date_format='%Y-%m-%d %H:%M:%S')
         
     exported_file = ExportedFile()
     exported_file.exported_file.save("./"+filename, return_file)
@@ -204,7 +207,7 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     else:
         
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_failed",
-                                        email=reques_email,
+                                        email=request_email,
                                         context=context,
                                         request="request")
 
