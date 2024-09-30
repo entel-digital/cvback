@@ -231,4 +231,4 @@ def get_filename(queryset):
 def concat_urls(x,storage):
     urls_set =  {storage.url(name=y) if y else "" for y in x}
 
-    return '\r\n'.join(list(urls_set)+['https://www.google.com'])
+    return '\r\n'.join(list(urls_set))
