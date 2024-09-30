@@ -213,6 +213,11 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 def show_toolbar(request):
-    return request.user.is_authenticated and request.user.is_staff
+
+    patterns = [
+       "/#/"
+    ]
+    
+    return request.user.is_authenticated and request.user.is_staff and not any(p in request.path for p in patterns)
 CORS_ORIGIN_ALLOW_ALL = True
 
