@@ -65,6 +65,18 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $sortedBy: Str
         value
         confidence
       }
+      inferenceOcr {
+        id
+        name
+        value
+        confidence
+      }
+      inferenceClassification {
+        id
+        label{
+          name
+        }
+      }
     }
   }
 }

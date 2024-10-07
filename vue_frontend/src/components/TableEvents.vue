@@ -21,8 +21,8 @@
           color="primary"
           label="Ordenar"
           style="width: 150px;"
-          :icon-right="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
-          @click="eventSort(true)"
+          :icon-right="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+          @click="eventSort(false)"
         />
 
         <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
@@ -69,8 +69,8 @@
                 flat
                 round
                 color="primary"
-                :icon="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
-                @click="eventSort(true)"
+                :icon="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+                @click="eventSort(false)"
               />
               {{ props.col.label }}
             </q-th>
@@ -162,6 +162,25 @@
                               <div v-for="ocr in props.row.inferenceOcr" :key="ocr.id">
                                 <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
                                   >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                                </q-chip>
+                              </div>
+                            </div>
+                            <div v-else style="max-width: fit-content">
+                              <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs">
+                                No identificado
+                              </q-chip>
+                            </div>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item>
+                        <q-item-section>
+                          <q-item-label
+                            >Clasificación:
+                            <div v-if="props.row.inferenceOcr.length >= 1">
+                              <div v-for="inference in props.row.inferenceClassification" :key="inference.id">
+                                <q-chip dense outline checkLabel(inference.label).color class="barlow q-py-sm q-px-sm"
+                                  >{{ inference.label.name }} 
                                 </q-chip>
                               </div>
                             </div>
@@ -282,6 +301,14 @@
                 <div v-for="ocr in row.inferenceOcr" :key="ocr.id">
                   <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
                     >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
+                  </q-chip>
+                </div>
+              </q-item-label>
+              <q-item-label
+                >Clasificación:
+                <div v-for="inference in row.inferenceClassification" :key="inference.id">
+                  <q-chip dense outline :color="checkLabel(inference.label).color" class="barlow q-py-sm q-px-sm"
+                    >{{inference.label.name }}
                   </q-chip>
                 </div>
               </q-item-label>
@@ -457,6 +484,14 @@ export default defineComponent({
       return eventStore.loadingExport
     })
 
+    const checkLabel = (label) => {
+      if (label.toString() === '11') {
+        return { label: 'no_orange', color: 'blue-5'} 
+      } else {
+        return { label: 'orange', color: 'orange'} 
+      }
+    }
+
     return {
       rowSelected,
       pagesNumber,
@@ -474,7 +509,8 @@ export default defineComponent({
       displayRows,
       exportData,
       loadingExport,
-      eventSort
+      eventSort,
+      checkLabel
     }
   }
 })

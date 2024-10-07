@@ -40,7 +40,7 @@ export const useEventsStore = defineStore('events', {
     labelTypesList: null,
     loadingEvents: false,
     loadingExport: false,
-    sortAsc: true, 
+    sortAsc: false, 
   }),
   actions: {
     async FETCH_EVENTS() {

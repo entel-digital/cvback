@@ -88,6 +88,12 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterTh
         value
         confidence
       }
+      inferenceClassification {
+        id
+        label{
+          name
+        }
+      }
     }
     filtered
     typesSummary
