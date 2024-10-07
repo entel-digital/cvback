@@ -75,11 +75,11 @@ export default defineComponent({
 
     userStore
         .GET_SESSION()
-        .then((user) => {
+        .then((user) => {          
           userStore.user = user.data.user
         })
         .catch((error) => {
-          console.error('Error obteniendo la sesión del usuario')
+          console.error('Error obteniendo la sesión del usuario', error)
         });
 
 

@@ -40,7 +40,7 @@ export const useEventsStore = defineStore('events', {
     labelTypesList: null,
     loadingEvents: false,
     loadingExport: false,
-    sortAsc: false, 
+    sortAsc: true, 
   }),
   actions: {
     async FETCH_EVENTS() {
@@ -79,7 +79,7 @@ export const useEventsStore = defineStore('events', {
         this.loadingEvents = false
         return
       } catch (error) {
-        console.log('HERE IN ERROR FETCH EVENTS')
+        console.log('HERE IN ERROR FETCH EVENTS', error)
         this.allEvents = []
         this.summaryEvents = { error: 'error'}
         this.loadingEvents = false

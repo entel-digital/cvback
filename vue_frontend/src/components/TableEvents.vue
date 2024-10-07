@@ -22,7 +22,7 @@
           label="Ordenar"
           style="width: 150px;"
           :icon-right="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
-          @click="eventSort(false)"
+          @click="eventSort(true)"
         />
 
         <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
@@ -70,7 +70,7 @@
                 round
                 color="primary"
                 :icon="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
-                @click="eventSort(false)"
+                @click="eventSort(true)"
               />
               {{ props.col.label }}
             </q-th>
@@ -395,6 +395,8 @@ export default defineComponent({
 
     const eventSort = () => {
       sortAsc.value = !sortAsc.value
+      console.log("sort asc",sortAsc.value);
+      
       emit('sortAsc', sortAsc.value)
     }
 

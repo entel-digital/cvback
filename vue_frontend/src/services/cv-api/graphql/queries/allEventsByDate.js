@@ -88,7 +88,7 @@ query filteredAndPaginatedEvents($offset: Int, $rowsPerPage: Int, $dateGreaterTh
         value
         confidence
       }
-          inferenceClassification {
+      inferenceClassification {
         id
         label{
           name
