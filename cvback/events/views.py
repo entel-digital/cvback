@@ -8,10 +8,10 @@ from cvback.events.serializers import (BoundingBoxSerializer, FrameSerializer, I
                                        InferenceDetectionClassificationSerializer, VideoSerializer,
                                        InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer,
                                        EventSerializer, KeyFrameSerializer, LabelSerializer, KeyVideoSerializer,
-                                       LineOfInterestSerializer)
+                                       LineOfInterestSerializer, KeyInferenceClassificationSerializer)
 from cvback.events.models import (Frame, Label, KeyFrame, BoundingBox, InferenceClassification,
                                   InferenceDetectionClassification, InferenceDetectionClassificationTracker,
-                                  InferenceOCR, Event, Video, KeyVideo, LineOfInterest)
+                                  InferenceOCR, Event, Video, KeyVideo, LineOfInterest, KeyInferenceClassification)
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -73,6 +73,10 @@ class KeyFrameApiView(BaseListCreateAPIView):
 class InferenceClassificationApiView(BaseListCreateAPIView):
     model = InferenceClassification
     serializer_class = InferenceClassificationSerializer
+
+class KeyInferenceClassificationApiView(BaseListCreateAPIView):
+    model = KeyInferenceClassification
+    serializer_class = KeyInferenceClassificationSerializer
 
 
 class InferenceDetectionClassificationApiView(BaseListCreateAPIView):
