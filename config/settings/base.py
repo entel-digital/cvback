@@ -211,7 +211,7 @@ if GS_BUCKET_NAME:
     DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     STATICFILES_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
     COLLECTFAST_STRATEGY = "collectfast.strategies.gcloud.GoogleCloudStrategy"
-    GS_EXPIRATION = timedelta(seconds=12*3600)
+    GS_EXPIRATION = timedelta(seconds=48*3600)
     GS_DEFAULT_ACL = "publicRead"
     MEDIA_URL = "https://storage.googleapis.com/cbback-dev-sierra-gorda/"
 

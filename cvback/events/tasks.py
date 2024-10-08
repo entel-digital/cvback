@@ -162,7 +162,7 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     
     storage = MediaGoogleCloudStorage()
     for col in for_get_url:
-        df[col] = df[col].apply(lambda x:" , ".join(list({storage.url(name=y) if y else "" for y in x})))
+        df[col] = df[col].apply(lambda x: concat_urls(x,storage))
     if not full_data:
         for trans_parameters in settings.EXPORT_DICTS_TO_TRANSFORM_COLUMNS:
             t_dict =  trans_parameters["transformations"]
@@ -181,12 +181,10 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
         filename = filename.replace(".csv","")
         if not filename.endswith(".xlsx"):
             filename += ".xlsx"
-        #writer = pd.ExcelWriter(return_file, engine='xlsxwriter')
-
         date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
         for date_column in date_columns:
             df[date_column] = df[date_column].dt.tz_convert(settings.TIME_ZONE).dt.strftime('%Y-%m-%d %H:%M:%S')
-        with pd.ExcelWriter(return_file, engine='xlsxwriter', datetime_format= "dd-mm-yy hh:mm:ss") as writer:
+        with pd.ExcelWriter(return_file, engine='openpyxl', datetime_format= "dd-mm-yy hh:mm:ss") as writer:
             df.to_excel(writer, sheet_name=settings.XLSX_SHEET_NAME, index=False)
 
     elif format == "CSV":
@@ -228,3 +226,9 @@ def replace_transformation(x, t_dict):
 
 def get_filename(queryset):
         return "data-export-{!s}".format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+
+
+def concat_urls(x,storage):
+    urls_set =  {storage.url(name=y) if y else "" for y in x}
+
+    return '\r\n'.join(list(urls_set))
