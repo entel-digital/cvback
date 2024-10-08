@@ -88,6 +88,12 @@ query filteredAndPaginatedEvents( $idEqualsTo: String) {
         value
         confidence
       }
+           inferenceClassification {
+        id
+        label{
+        name
+        }
+      }
     }
     filtered
     typesSummary

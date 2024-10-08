@@ -175,6 +175,25 @@
                       </q-item>
                       <q-item>
                         <q-item-section>
+                          <q-item-label
+                            >Clasificación:
+                            <div v-if="props.row.inferenceClassification.length >= 1">
+                              <div v-for="inference in props.row.inferenceClassification" :key="inference.id">
+                                <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                                  >{{ inference.label.name }}
+                                </q-chip>
+                              </div>
+                            </div>
+                            <div v-else style="max-width: fit-content">
+                              <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs">
+                                No identificado
+                              </q-chip>
+                            </div>
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item>
+                        <q-item-section>
                           <q-item-label>Etiquetas: </q-item-label>
 
                           <q-chip
@@ -277,13 +296,29 @@
                 </span>
                 <span class="barlow"> | {{ formatDateEvent(row.informedDate).time }} </span>
               </q-item-label>
-              <q-item-label
+              <q-item-label v-if="row.inferenceOcr.length >= 1"
                 >OCR:
                 <div v-for="ocr in row.inferenceOcr" :key="ocr.id">
                   <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
                     >{{ ocr.name }}: <span class="barlow-bold">{{ ocr.value }} </span>
                   </q-chip>
                 </div>
+              </q-item-label>
+              <q-item-label v-else>
+                <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
+                  >No identificado </q-chip>
+              </q-item-label>
+              <q-item-label v-if="row.inferenceClassification.length >= 1"
+                >Clasificación:
+                <div v-for="inference in row.inferenceClassification" :key="inference.id">
+                  <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
+                    >{{ inference.label.name }}
+                  </q-chip>
+                </div>
+              </q-item-label>
+              <q-item-label v-else>
+                <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
+                  >No identificado </q-chip>
               </q-item-label>
               <q-item-label
                 >Etiquetas:
