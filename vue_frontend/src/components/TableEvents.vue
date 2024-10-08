@@ -180,7 +180,7 @@
                             <div v-if="props.row.inferenceClassification.length >= 1">
                               <div v-for="inference in props.row.inferenceClassification" :key="inference.id">
                                 <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
-                                  >{{ inference.label.name.includes('orange') ? Banderín: inference.label.name || inference.label.name   }}
+                                  >{{ addTextToClassification(inference.label.name) }}
                                 </q-chip>
                               </div>
                             </div>
@@ -305,19 +305,19 @@
                 </div>
               </q-item-label>
               <q-item-label v-else> OCR:
-                <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
+                <q-chip dense outline color="blue-5" class="barlow q-px-sm q-pt-xs"
                   >No identificado </q-chip>
               </q-item-label>
               <q-item-label v-if="row.inferenceClassification.length >= 1"
                 >Clasificación:
                 <div v-for="inference in row.inferenceClassification" :key="inference.id">
                   <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
-                    > {{ inference.label.name.includes('orange') ? Banderín: inference.label.name || inference.label.name   }}
+                    > {{ addTextToClassification(inference.label.name)  }}
                   </q-chip>
                 </div>
               </q-item-label>
               <q-item-label v-else> Clasificación:
-                <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
+                <q-chip dense outlinecolor="blue-5" class="barlow q-px-sm q-pt-xs"
                   > No identificado </q-chip>
               </q-item-label>
               <q-item-label
@@ -490,7 +490,15 @@ export default defineComponent({
     }
     const loadingExport = computed(() => {
       return eventStore.loadingExport
-    })
+    });
+
+    const addTextToClassification = (value) => {
+      if (value.includes('orange')) {
+        return 'Banderín:' + ' '+  value
+      } else {
+        return value
+      }
+    }
 
     return {
       rowSelected,
@@ -509,7 +517,8 @@ export default defineComponent({
       displayRows,
       exportData,
       loadingExport,
-      eventSort
+      eventSort,
+      addTextToClassification
     }
   }
 })
