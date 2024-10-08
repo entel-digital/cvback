@@ -21,8 +21,8 @@
           color="primary"
           label="Ordenar"
           style="width: 150px;"
-          :icon-right="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
-          @click="eventSort(true)"
+          :icon-right="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+          @click="eventSort(false)"
         />
 
         <!-- <q-btn no-caps color="primary" label="Exportar data" class="q-px-xl" :loading="loadingExport" @click="exportData()" /> -->
@@ -69,8 +69,8 @@
                 flat
                 round
                 color="primary"
-                :icon="eventStore.sortAsc ? 'arrow_upward' : 'arrow_downward'"
-                @click="eventSort(true)"
+                :icon="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+                @click="eventSort(false)"
               />
               {{ props.col.label }}
             </q-th>
@@ -166,7 +166,7 @@
                               </div>
                             </div>
                             <div v-else style="max-width: fit-content">
-                              <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs">
+                              <q-chip dense outline color="blue-5" class="barlow q-px-sm q-pt-xs">
                                 No identificado
                               </q-chip>
                             </div>
@@ -180,12 +180,12 @@
                             <div v-if="props.row.inferenceClassification.length >= 1">
                               <div v-for="inference in props.row.inferenceClassification" :key="inference.id">
                                 <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
-                                  >{{ inference.label.name }}
+                                  >{{ inference.label.name.includes('orange') ? Banderín: inference.label.name || inference.label.name   }}
                                 </q-chip>
                               </div>
                             </div>
                             <div v-else style="max-width: fit-content">
-                              <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs">
+                              <q-chip dense outline color="blue-5" class="barlow q-px-sm q-pt-xs">
                                 No identificado
                               </q-chip>
                             </div>
@@ -304,7 +304,7 @@
                   </q-chip>
                 </div>
               </q-item-label>
-              <q-item-label v-else>
+              <q-item-label v-else> OCR:
                 <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
                   >No identificado </q-chip>
               </q-item-label>
@@ -312,13 +312,13 @@
                 >Clasificación:
                 <div v-for="inference in row.inferenceClassification" :key="inference.id">
                   <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
-                    >{{ inference.label.name }}
+                    > {{ inference.label.name.includes('orange') ? Banderín: inference.label.name || inference.label.name   }}
                   </q-chip>
                 </div>
               </q-item-label>
-              <q-item-label v-else>
+              <q-item-label v-else> Clasificación:
                 <q-chip dense outline color="primary" class="barlow q-px-sm q-pt-xs"
-                  >No identificado </q-chip>
+                  > No identificado </q-chip>
               </q-item-label>
               <q-item-label
                 >Etiquetas:

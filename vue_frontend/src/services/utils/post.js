@@ -25,7 +25,7 @@ export const Post = async (body) => {
 
     return data
   } catch (err) {
-    console.log('HERE IN ERROR POST', err)
+    console.log('HERE IN ERROR POST',)
     throw err
   }
 }
