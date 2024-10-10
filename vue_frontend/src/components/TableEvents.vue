@@ -9,7 +9,6 @@
           border-top: 1px solid rgba(0, 0, 0, 0.12);
           border-left: 1px solid rgba(0, 0, 0, 0.12);
           border-right: 1px solid rgba(0, 0, 0, 0.12);
-
         "
       >
         <q-btn
@@ -20,8 +19,8 @@
           no-caps
           color="primary"
           label="Ordenar"
-          style="width: 150px;"
-          :icon-right="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+          style="width: 150px"
+          :icon-right="eventStore.sortAsc ? 'arrow_downward' : 'arrow_upward'"
           @click="eventSort(false)"
         />
 
@@ -31,7 +30,7 @@
           color="primary"
           label="Exportar data"
           class="q-px-xl"
-          style="width:150px;"
+          style="width: 150px"
           :loading="loadingExport"
         >
           <q-list separator class="fit">
@@ -69,7 +68,7 @@
                 flat
                 round
                 color="primary"
-                :icon="eventStore.sortAsc ? 'arrow_downward': 'arrow_upward'"
+                :icon="eventStore.sortAsc ? 'arrow_downward' : 'arrow_upward'"
                 @click="eventSort(false)"
               />
               {{ props.col.label }}
@@ -178,7 +177,10 @@
                           <q-item-label
                             >Clasificación:
                             <div v-if="props.row.inferenceClassification.length >= 1">
-                              <div v-for="inference in props.row.inferenceClassification" :key="inference.id">
+                              <div
+                                v-for="inference in props.row.inferenceClassification"
+                                :key="inference.id"
+                              >
                                 <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
                                   >{{ addTextToClassification(inference.label.name) }}
                                 </q-chip>
@@ -304,21 +306,25 @@
                   </q-chip>
                 </div>
               </q-item-label>
-              <q-item-label v-else> OCR:
+              <q-item-label v-else>
+                OCR:
                 <q-chip dense outline color="blue-5" class="barlow q-px-sm q-pt-xs"
-                  >No identificado </q-chip>
+                  >No identificado
+                </q-chip>
               </q-item-label>
               <q-item-label v-if="row.inferenceClassification.length >= 1"
                 >Clasificación:
                 <div v-for="inference in row.inferenceClassification" :key="inference.id">
-                  <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm"
-                    > {{ addTextToClassification(inference.label.name)  }}
+                  <q-chip dense outline color="blue-5" class="barlow q-py-sm q-px-sm">
+                    {{ addTextToClassification(inference.label.name) }}
                   </q-chip>
                 </div>
               </q-item-label>
-              <q-item-label v-else> Clasificación:
-                <q-chip dense outlinecolor="blue-5" class="barlow q-px-sm q-pt-xs"
-                  > No identificado </q-chip>
+              <q-item-label v-else>
+                Clasificación:
+                <q-chip dense outlinecolor="blue-5" class="barlow q-px-sm q-pt-xs">
+                  No identificado
+                </q-chip>
               </q-item-label>
               <q-item-label
                 >Etiquetas:
@@ -490,11 +496,13 @@ export default defineComponent({
     }
     const loadingExport = computed(() => {
       return eventStore.loadingExport
-    });
+    })
 
     const addTextToClassification = (value) => {
-      if (value.includes('orange')) {
-        return 'Banderín:' + ' '+  value
+      if (value === 'orange') {
+        return 'Banderín en buen estado'
+      } else if (value === 'not_orange') {
+        return 'Banderín en mal estado'
       } else {
         return value
       }
