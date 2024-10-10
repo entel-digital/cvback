@@ -105,7 +105,7 @@ def create_alert(event):
             send_whatsapp.delay(users_data, event_data)
 
 
-@shared_task(rate_limit='100/m')
+@shared_task(rate_limit='100/m', time_limit=3600)
 def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc):
     
     qs = Event.objects.all()
@@ -222,6 +222,11 @@ def in_transformation(x,t_dict):
     return "-"
 
 def replace_transformation(x, t_dict):
+    if isinstance(x,set):
+        nx = list(x)
+        nx = ",".join([ t_dict.get(y,"-") for y in nx ])
+        return nx
+    print("the x", x)
     return t_dict.get(x,"-")
 
 def get_filename(queryset):
