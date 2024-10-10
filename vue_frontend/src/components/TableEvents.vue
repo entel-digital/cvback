@@ -496,7 +496,7 @@ export default defineComponent({
     }
     const loadingExport = computed(() => {
       return eventStore.loadingExport
-    })
+    });
 
     const addTextToClassification = (value) => {
       if (value === 'orange') {
