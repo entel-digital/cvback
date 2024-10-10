@@ -41,7 +41,7 @@ def get_event_info(event):
     event_data["id"] = event.id
     event_data["date"] = informed_date if event.informed_date else ""
     event_data["time"] = informed_time if event.informed_date else ""
-    event_data["event_label"] = event.event_label.name
+    event_data["event_label"] = event.event_label.name.capitalize() if event.event_label.name else ""
     if event.inference_ocr.all():
         if event.inference_ocr.all()[0].value:
             event_data["vehicle_license_plate"] = event.inference_ocr.all()[0].value
@@ -51,7 +51,7 @@ def get_event_info(event):
         event_data["vehicle_license_plate"] = ""
     missing_labels = event.labels_missing.all()
     event_data["missing_labels"] = [label.name for label in event.labels_missing.all()] if missing_labels else []
-    link = "https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/"
+    link = "https://app.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC42/"
     link += f"events/event/{event.id}/change/"
     event_data["details_link"] = link
 
@@ -105,8 +105,8 @@ def create_alert(event):
             send_whatsapp.delay(users_data, event_data)
 
 
-@shared_task(rate_limit='4/m')
-def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter):
+@shared_task(rate_limit='100/m')
+def save_file(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc):
     
     qs = Event.objects.all()
 
@@ -114,7 +114,12 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     if not format in FORMATS:
         format = "CSV"
 
-
+    if sorted_by:
+        sort_param=sorted_by
+        if not asc:
+            sort_param="-"+sort_param
+        qs = qs.order_by(sort_param) 
+         
     if label_id_filter:
         qs = qs.filter(event_label__id=label_id_filter)
     if id_equals_to:
@@ -157,7 +162,7 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     
     storage = MediaGoogleCloudStorage()
     for col in for_get_url:
-        df[col] = df[col].apply(lambda x:" , ".join(list({storage.url(name=y) if y else "" for y in x})))
+        df[col] = df[col].apply(lambda x: concat_urls(x,storage))
     if not full_data:
         for trans_parameters in settings.EXPORT_DICTS_TO_TRANSFORM_COLUMNS:
             t_dict =  trans_parameters["transformations"]
@@ -176,20 +181,21 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
         filename = filename.replace(".csv","")
         if not filename.endswith(".xlsx"):
             filename += ".xlsx"
-        #writer = pd.ExcelWriter(return_file, engine='xlsxwriter')
-
         date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
         for date_column in date_columns:
-            df[date_column] = df[date_column].dt.date
-        
-        df.to_excel(return_file, settings.XLSX_SHEET_NAME, index=False)
+            df[date_column] = df[date_column].dt.tz_convert(settings.TIME_ZONE).dt.strftime('%Y-%m-%d %H:%M:%S')
+        with pd.ExcelWriter(return_file, engine='openpyxl', datetime_format= "dd-mm-yy hh:mm:ss") as writer:
+            df.to_excel(writer, sheet_name=settings.XLSX_SHEET_NAME, index=False)
 
     elif format == "CSV":
         mime_type="text/csv"
+        date_columns = df.select_dtypes(include=['datetime64[ns, UTC]']).columns
+        for date_column in date_columns:
+            df[date_column] = df[date_column].dt.tz_convert(settings.TIME_ZONE)#.dt.to_timestamp()
         filename = filename.replace(".xlsx","")
         if not filename.endswith(".csv"):
             filename += ".csv"
-        df.to_csv(return_file, index=False)
+        df.to_csv(return_file, index=False, date_format='%Y-%m-%d %H:%M:%S')
         
     exported_file = ExportedFile()
     exported_file.exported_file.save("./"+filename, return_file)
@@ -204,7 +210,7 @@ def save_file(request_username, request_email, full_data, format, id_equals_to, 
     else:
         
         r = AccountAdapter().send_mail_( template_prefix="account/custom_email/email_csv_failed",
-                                        email=reques_email,
+                                        email=request_email,
                                         context=context,
                                         request="request")
 
@@ -220,3 +226,9 @@ def replace_transformation(x, t_dict):
 
 def get_filename(queryset):
         return "data-export-{!s}".format(datetime.now().strftime("%Y-%m-%dT%H:%M:%S"))
+
+
+def concat_urls(x,storage):
+    urls_set =  {storage.url(name=y) if y else "" for y in x}
+
+    return '\r\n'.join(list(urls_set))

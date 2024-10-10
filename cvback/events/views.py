@@ -8,10 +8,10 @@ from cvback.events.serializers import (BoundingBoxSerializer, FrameSerializer, I
                                        InferenceDetectionClassificationSerializer, VideoSerializer,
                                        InferenceDetectionClassificationTrackerSerializer, InferenceOCRSerializer,
                                        EventSerializer, KeyFrameSerializer, LabelSerializer, KeyVideoSerializer,
-                                       LineOfInterestSerializer)
+                                       LineOfInterestSerializer, KeyInferenceClassificationSerializer)
 from cvback.events.models import (Frame, Label, KeyFrame, BoundingBox, InferenceClassification,
                                   InferenceDetectionClassification, InferenceDetectionClassificationTracker,
-                                  InferenceOCR, Event, Video, KeyVideo, LineOfInterest)
+                                  InferenceOCR, Event, Video, KeyVideo, LineOfInterest, KeyInferenceClassification)
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -73,6 +73,10 @@ class KeyFrameApiView(BaseListCreateAPIView):
 class InferenceClassificationApiView(BaseListCreateAPIView):
     model = InferenceClassification
     serializer_class = InferenceClassificationSerializer
+
+class KeyInferenceClassificationApiView(BaseListCreateAPIView):
+    model = KeyInferenceClassification
+    serializer_class = KeyInferenceClassificationSerializer
 
 
 class InferenceDetectionClassificationApiView(BaseListCreateAPIView):
@@ -153,8 +157,11 @@ class CustomCSVExportView(View):
         label_id_filter = request.GET.get('label_id_filter')
         format = request.GET.get('format')
         full_data = request.GET.get('full_data',False)
+        sorted_by = request.GET.get('sorted_by',None)
+        asc = request.GET.get('asc')
+
         request_username = request.user.username
         request_email = request.user.email
 
-        save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter)
+        save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc)
         return HttpResponse("YOUR REQUEST IS BEING PROCESSED", status=200)

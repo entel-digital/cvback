@@ -40,7 +40,7 @@ export const useEventsStore = defineStore('events', {
     labelTypesList: null,
     loadingEvents: false,
     loadingExport: false,
-    sortAsc: true, 
+    sortAsc: false, 
   }),
   actions: {
     async FETCH_EVENTS() {
@@ -50,10 +50,6 @@ export const useEventsStore = defineStore('events', {
 
       try {
         const data = await getAllEvents(this.pagination.offset, this.pagination.rowsPerPage, "added_date", this.sortAsc)
-
-        // data.filteredAndPaginatedEvents.events.sort((a, b) => {
-        //   return new Date(b.addedDate) - new Date(a.addedDate)
-        // })
 
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
@@ -235,10 +231,7 @@ export const useEventsStore = defineStore('events', {
         data.filteredAndPaginatedEvents.events.sort((a, b) => {
           return new Date(b.addedDate) - new Date(a.addedDate)
         })
-        console.log(
-          'data.filteredAndPaginatedEvents by date y label',
-          data.filteredAndPaginatedEvents.filtered
-        )
+  
         this.summaryEvents = {
           filtered: data.filteredAndPaginatedEvents.filtered,
           totalEvents: data.filteredAndPaginatedEvents.globalTotalNumber,
