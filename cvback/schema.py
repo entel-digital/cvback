@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.filter import DjangoFilterConnectionField
 import graphene_django_optimizer as gql_optimizer
-from cvback.events.models import Event, EventType, Label, InferenceDetectionClassification
+from cvback.events.models import Event, EventType, Label, InferenceDetectionClassification, InferenceClassification
 import json
 from asyncio import iscoroutinefunction
 from cvback.events.schema import FrameType
@@ -38,6 +38,8 @@ class OptimizedEventType(gql_optimizer.OptimizedDjangoObjectType):
             'labels_detected', 
             'labels_missing',
             'inference_ocr',
+            Prefetch('inference_classification', 
+                    queryset=InferenceClassification.objects.select_related('label')),
             Prefetch('inference_detection_classification', 
                     queryset=InferenceDetectionClassification.objects.select_related('frame')
                                                                     .prefetch_related('labels', 'bounding_boxes'))
