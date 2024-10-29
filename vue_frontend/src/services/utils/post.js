@@ -1,12 +1,13 @@
 import { api } from '@/services/utils/axios'
 
-export const Post = async (body) => {
+export const Post = async (body, token) => {
   try {
     const url = `events/graphql/`
 
     const { data, status } = await api.post(url, JSON.stringify(body), {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     })
     if (Array.isArray(data.errors) && data.errors.length > 0) {
@@ -29,4 +30,7 @@ export const Post = async (body) => {
     throw err
   }
 }
+
+
+
 

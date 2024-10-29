@@ -1,17 +1,13 @@
 <template>
   <div>
-    <Toolbar :homeView="true"/>
+    <Toolbar :homeView="false"/>
 
-    <div class="fit row wrap justify-center items-center q-py-md " >
-      <SummaryEvents  />
-    </div>
-
-    <div class="q-py-sm">
+    <div class="q-py-sm q-pt-md">
       <TableEvents
-        :rows="eventStore.allEvents"
+        :rows="eventStore.eventById"
         :columns="columns"
         :loading="eventStore.loadingEvents"
-        :homeView="true"
+        :homeView="false"
         @sortAsc="sortTable"
       />
     </div>
@@ -26,21 +22,16 @@ import { useEventsStore } from '@/stores/events.js'
 import { useRouter } from 'vue-router'
 
 import Toolbar from '@/components/Toolbar.vue'
-import SummaryEvents from '@/components/SummaryEvents.vue'
-// import FilterEvents from '@/components/FilterEvents.vue'
 import TableEvents from '@/components/TableEvents.vue'
 
 export default defineComponent({
-  name: 'HomeView',
+  name: 'EventView',
   components: {
     Toolbar,
-    SummaryEvents,
-    // FilterEvents,
     TableEvents
   },
   setup() {
     const routes = useRouter();
-    const sortAsc = ref(true)
     const columns = [
       {
         name: 'name',
@@ -70,6 +61,8 @@ export default defineComponent({
       }
     ]
     
+    const eventId = routes.currentRoute.value.params.eventid
+
     const sortTable = (sort) => {
       eventStore.sortAsc = sort      
       updateData(eventStore.dateSelected, eventStore.labelsSelected)
@@ -84,65 +77,14 @@ export default defineComponent({
       router.push({ name: 'login' })
     }
 
-    const fetchAllEvents = async () => {
-
-      await eventStore.FETCH_EVENTS(sortAsc.value)
+    const fetchEventByID = async () => {
+      await eventStore.FETCH_EVENTS_BY_ID( routes.currentRoute.value.params.token, eventId)
     }
 
     onMounted(async () => {
-        fetchAllEvents()
+      fetchEventByID()
     })
 
-    const updateData = async (date, label, sortAsc) => {
-      eventStore.loadingEvents = true
-      if (date !== null && label !== null) {
-        await eventStore.FETCH_EVENTS_BY_DATE_BY_LABEL()
-        eventStore.loadingEvents = false
-      } else if (date !== null && label === null) {
-        await eventStore.FETCH_EVENTS_BY_DATE()
-        eventStore.loadingEvents = false
-      } else if (date === null && label !== null) {
-        await eventStore.FETCH_EVENTS_BY_LABEL()
-        eventStore.loadingEvents = false
-      } else if (date === null && label === null) {
-        await fetchAllEvents()
-      }
-    }
-
- 
-
-    watch(
-       () => eventStore.pagination.page,
-      async (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-         await  updateData(eventStore.dateSelected, eventStore.labelsSelected)
-        }
-      }
-    )
-    watch(
-      () => eventStore.labelsSelected,
-      async (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-          eventStore.pagination.page = 1
-          eventStore.pagination.offset = 0
-            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
-        }
-      },
-      { immediate: true }
-
-    )
-    watch(
-      () => eventStore.dateSelected,
-      async (newValue, oldValue) => {
-        if (newValue !== oldValue) {
-          eventStore.pagination.page = 1
-          eventStore.pagination.offset = 0
-            await updateData(eventStore.dateSelected, eventStore.labelsSelected)
-        }
-      },
-      { immediate: true }
-
-    )
 
     watch(
       () => router.currentRoute.value.query,
@@ -156,7 +98,8 @@ export default defineComponent({
       columns,
       signOut,
       eventStore,
-      sortTable
+      sortTable,
+      eventId
     }
   }
 })

@@ -185,10 +185,10 @@ class LoginByLinkView(APIView):
             response = None
         print("DARESPONSE", response)
         if response:
-            login(request, response[0], backend='allauth.account.auth_backends.AuthenticationBackend')  # Inicia la sesión y crea una cookie de sesión
-            return Response({"message": "Inicio de sesión exitoso"})
+            login(request, response[0], backend='django.contrib.auth.backends.ModelBackend')  # Inicia la sesión y crea una cookie de sesión
+            return Response({"message": "Inicio de sesión exitoso", "status":200}, status=200)
         
-        return Response({"error": "Credenciales inválidas o expiradas"}, status=401)
+        return Response({"error": "Credenciales inválidas o expiradas", "status":401}, status=401)
     
     
 

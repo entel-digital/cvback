@@ -8,6 +8,7 @@
       </div>
     </q-toolbar-title>
     <q-btn-dropdown
+    v-if="homeView"
       flat
       width="auto"
       class="gt-sm text-grey-6 text-bold"
@@ -58,8 +59,10 @@ import { defineComponent , computed} from 'vue'
 import { useUserStore } from '@/stores/user.js'
 import { useRouter } from 'vue-router'
 import { baseStorageUrl } from '@/services/utils/globals.js'
+import HomeView from '@/views/HomeView.vue';
 
 export default defineComponent({
+  props: ['homeView'],
   setup() {
     const logoVision = `${baseStorageUrl}/images/logo_vision_azul.png`
     const userStore = useUserStore()
@@ -72,8 +75,8 @@ export default defineComponent({
     const goHome = () => {
       router.push({ name: 'home' })
     };
-
-    userStore
+    if(!router.currentRoute.value.params.token){
+      userStore
         .GET_SESSION()
         .then((user) => {
           userStore.user = user.data.user
@@ -81,6 +84,8 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error obteniendo la sesión del usuario')
         });
+
+    }
 
 
       const getUserName = computed(() => {

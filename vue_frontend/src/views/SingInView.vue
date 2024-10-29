@@ -50,10 +50,8 @@
     </div>
 
     <div class="lt-md fit" :style="styleBg">
-      <q-page-container class="container-img flex column justify-evenly" style="height: 100vh" >
-        <div> 
-
-        </div>
+      <q-page-container class="container-img flex column justify-evenly" style="height: 100vh">
+        <div></div>
         <div class="q-pt-xl flex justify-center">
           <img :src="logoVisionWhite" alt="vision-logo" style="width: 70%" />
         </div>
@@ -78,11 +76,20 @@ import RequestResetPassword from '@/components/RequestResetPassword.vue'
 
 export default defineComponent({
   name: 'SingInView',
-  components:{
+  components: {
     SingIn,
     RequestResetPassword
   },
   setup() {
+    const router = useRouter()
+    const currentRoute = router.currentRoute.value
+    console.log(currentRoute)
+    if (currentRoute.query.token) {
+      router.push({
+        name: 'event',
+        params: { token: currentRoute.query.token, eventid: currentRoute.query.eventid }
+      })
+    }
     const logoVisionBlue = `${baseStorageUrl}/images/logo_vision_azul.png`
     const logoEntelDigitalBlue = `${baseStorageUrl}/images/entel_digital_azul.png`
 
@@ -99,14 +106,16 @@ export default defineComponent({
       height: 100vh;
       width: 100%;
     `
-
-
-    const router = useRouter()
-
     onMounted(async () => {
       const statusSession = await useUserStore().GET_SESSION()
       if (statusSession?.meta.is_authenticated) {
+        console.log('tiene cuenta')
+        console.log('current route onmount', currentRoute.query.token)
+        if(currentRoute.query.token){
+          router.push({ name: 'event' })
+        }else {
         router.push({ name: 'home' })
+        }
       }
     })
 

@@ -12,6 +12,7 @@
         "
       >
         <q-btn
+          v-if="homeView"
           id="btn-sort-sm"
           class="lt-md"
           dense
@@ -65,6 +66,7 @@
           <template v-slot:header-cell-date="props">
             <q-th :props="props" style="padding-left: 0px">
               <q-btn
+                v-if="homeView"
                 flat
                 round
                 color="primary"
@@ -237,6 +239,7 @@
         </q-table>
         <div class="q-pa-lg flex flex-center">
           <q-pagination
+          v-if="homeView"
             :model-value="eventStore.pagination.page"
             direction-links
             ellipses
@@ -258,7 +261,7 @@
         <q-item> No hay datos para mostrar </q-item>
       </q-list>
       <q-list v-else bordered separator class="rounded-borders">
-        <q-expansion-item group="events" bordered v-for="row in displayRows" :key="row.id">
+        <q-expansion-item :default-opened="!homeView" group="events" bordered v-for="row in displayRows" :key="row.id">
           <template v-slot:header>
             <q-item-section class="column">
               <q-item-label class="barlow-bold text-dark fs-21-25 q-py-sm">
@@ -367,6 +370,7 @@
       </q-list>
       <div class="q-pa-lg flex flex-center">
         <q-pagination
+        v-if="homeView"
           :model-value="eventStore.pagination.page"
           direction-links
           ellipses
@@ -388,30 +392,43 @@ import { defineComponent, ref, computed, watch, onMounted } from 'vue'
 import { types } from '@/utils/colors'
 import { useEventsStore } from '@/stores/events'
 import { useQuasar } from 'quasar'
+import { useRouter } from 'vue-router'
+
 
 import CarouselImages from '@/components/CarouselImages.vue'
 
 export default defineComponent({
   name: 'TableEvents',
   emits: ['sortAsc'],
-  props: ['rows', 'columns', 'loading'],
+  props: ['rows', 'columns', 'loading', 'homeView'],
   components: {
     CarouselImages
   },
   setup(props, { emit }) {
+    const routes = useRouter()
+    const eventIdFromURL = routes.currentRoute.value.params.eventid
+  
     const rowSelected = ref(null)
     const slide = ref(1)
     const fullscreen = ref(false)
     const expanded = ref([])
+
     const eventStore = useEventsStore()
     const $q = useQuasar()
     const sortAsc = ref(true)
+
+    if(eventIdFromURL){
+      expanded.value = [eventIdFromURL]
+      rowSelected.value = props.rows.find(row => row.id === eventIdFromURL)
+    }
+
 
     const eventSort = () => {
       sortAsc.value = !sortAsc.value
       emit('sortAsc', sortAsc.value)
     }
 
+  
     const pagesNumber = computed(() => {
       const totalToUse = eventStore.summaryEvents?.totalQueryEvents
       return totalToUse ? Math.ceil(totalToUse / eventStore.pagination.rowsPerPage) : 1
@@ -422,6 +439,7 @@ export default defineComponent({
     })
 
     const getRowSelected = (row, column, event) => {
+      console.log("row", row)
       if (rowSelected.value?.id === row.id) {
         rowSelected.value = null
         expanded.value = []

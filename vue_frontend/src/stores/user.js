@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { api } from '@/services/utils/axios'
+import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -57,6 +58,20 @@ export const useUserStore = defineStore('user', {
       } catch (error) {
         console.log('HERE IN ERROR RESET PASSWORD')
         return error.response.data
+      }
+    },
+    async TOKEN_SESSION(token) {
+      try {
+   
+        const response = await api.get('events/login_by_link/',{
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+      })
+        return response
+      } catch (error) {
+        console.log('HERE IN ERROR TOKEN SESSION', error)
+        return error
       }
     }
   }

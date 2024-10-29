@@ -52,12 +52,12 @@ export const getAllEventsByLabel = async (offset, rowsPerPage, labelIdFilter, so
   return data
 }
 
-export const getAllEventsById = async (idEqualsTo) => {
+export const getAllEventsById = async (token, idEqualsTo) => {
   const body = {
     query: queries.allEventsById,
     variables: { idEqualsTo }
   }
-  const { data } = await Post(body)
+  const { data } = await Post(body, token)
   return data
 }
 

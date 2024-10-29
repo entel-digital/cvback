@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+console.log("router axios", router)
 // Crear una instancia de Axios con la configuración deseada
 const api = axios.create({
   baseURL: '/',
@@ -14,13 +17,13 @@ function getCookie(name) {
   if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
   return null;
 }
-
 // Interceptor para agregar el CSRF token a las solicitudes POST y PUT
 api.interceptors.request.use((config) => {
   if (
       config.method?.toLowerCase() === 'post' ||
       config.method?.toLowerCase() === 'put' ||
         config.method?.toLowerCase() === 'delete'
+
   ) {
       const csrfToken = getCookie('csrftoken');
       if (csrfToken) {
