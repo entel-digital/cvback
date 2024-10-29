@@ -83,7 +83,6 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const currentRoute = router.currentRoute.value
-    console.log(currentRoute)
     if (currentRoute.query.token) {
       router.push({
         name: 'event',
@@ -109,8 +108,6 @@ export default defineComponent({
     onMounted(async () => {
       const statusSession = await useUserStore().GET_SESSION()
       if (statusSession?.meta.is_authenticated) {
-        console.log('tiene cuenta')
-        console.log('current route onmount', currentRoute.query.token)
         if(currentRoute.query.token){
           router.push({ name: 'event' })
         }else {

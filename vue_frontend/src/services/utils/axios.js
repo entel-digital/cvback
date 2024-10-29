@@ -2,7 +2,6 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-console.log("router axios", router)
 // Crear una instancia de Axios con la configuración deseada
 const api = axios.create({
   baseURL: '/',
