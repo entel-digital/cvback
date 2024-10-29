@@ -4,14 +4,16 @@ from cvback.events.views import (BoundingBoxApiView, FrameApiView, InferenceClas
                                  InferenceDetectionClassificationApiView, EventApiView,
                                  InferenceDetectionClassificationTrackerApiView, InferenceOCRApiView,
                                  VideoApiView, KeyFrameApiView, LabelApiView, KeyVideoApiView,
-                                 LineOfInterestApiView, CustomCSVExportView)
-from graphene_django.views import GraphQLView
+                                 LineOfInterestApiView, CustomCSVExportView, LoginByLinkView,
+                                 AuthenticatedGraphQlView)
+
 from cvback.schema import schema
 # from django.views.decorators.csrf import csrf_exempt
 
 
+
 urlpatterns = [
-    path('graphql/', GraphQLView.as_view(graphiql=settings.GRAPHIQL_GRAPHIC_INTERFACE, schema=schema)),
+    path('graphql/', AuthenticatedGraphQlView.as_view(graphiql=settings.GRAPHIQL_GRAPHIC_INTERFACE, schema=schema)),
     path('labels/', LabelApiView.as_view(), name="events_label"),
     path('bounding_box/', BoundingBoxApiView.as_view(), name='events_bounding_box'),
     path('frames/', FrameApiView.as_view(), name='events_frames'),
@@ -27,5 +29,7 @@ urlpatterns = [
     path('videos/', VideoApiView.as_view(), name='events_videos'),
     path('key_videos/', KeyVideoApiView.as_view(), name='events_key_videos'),
     path('line_of_interest/', LineOfInterestApiView.as_view(), name='events_line_of_interest'),
-    path('csv_events/', CustomCSVExportView.as_view(), name = 'events_csv2')
+    path('csv_events/', CustomCSVExportView.as_view(), name = 'events_csv2'),
+    path('login_by_link/', LoginByLinkView.as_view(), name='events_login_by_link'),
 ]
+     

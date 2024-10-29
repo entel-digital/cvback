@@ -106,6 +106,7 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "rest_framework",
+    'rest_framework.authtoken',
     "django_jsonform",
     "drf_spectacular",
     "graphene_django",
@@ -424,3 +425,5 @@ EXPORT_TO_AGGREGATE = env("EXPORT_TO_AGGREGATE", default="").split()
 EXPORT_DICTS_TO_TRANSFORM_COLUMNS = json.loads(env("EXPORT_DICTS_TO_TRANSFORM_COLUMNS",default="[]"))
 EXPORT_TRANSLATION_SUMMARY_FIELDS = json.loads(env("EXPORT_TRANSLATION_SUMMARY_FIELDS",default="{}"))
 XLSX_SHEET_NAME = env("XLSX_SHEET_NAME",default="hoja1")
+
+FRONTEND_URL_EVENT = env("FRONTEND_URL_EVENT",default="localhost:8000")

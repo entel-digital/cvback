@@ -9,6 +9,7 @@ from cvback.utils.telegram_sender import TelegramSender
 from cvback.utils.whatsapp_sender import WhatsappSender
 from django.utils import timezone
 from cvback.utils.storages import MediaGoogleCloudStorage
+from cvback.utils.generate_auth_link import generate_auth_link_for_events
 from io import BytesIO as IO
 
 
@@ -29,7 +30,8 @@ def send_whatsapp(users_data, event_data):
 
 
 def get_user_info(user):
-    user_data = {"username": user.username,
+    user_data = {"id":user.id,
+                 "username": user.username,
                  "phone_number": str(user.phone_number.country_code)+str(user.phone_number.national_number)}
     return user_data
 
@@ -51,9 +53,6 @@ def get_event_info(event):
         event_data["vehicle_license_plate"] = ""
     missing_labels = event.labels_missing.all()
     event_data["missing_labels"] = [label.name for label in event.labels_missing.all()] if missing_labels else []
-    link = "https://app.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC42/"
-    link += f"events/event/{event.id}/change/"
-    event_data["details_link"] = link
 
     aux_images = [[frame.image for frame in kframe.frames.all()]
                   for kframe in event.key_frames.all()] if event.key_frames.all() else []
@@ -96,6 +95,8 @@ def create_alert(event):
             alert_types = [alert_type.channel for alert_type in subscription.alert_type.all()]
             if subscription.user.telegram_chat_id and "telegram" in alert_types:
                 chat_id = subscription.user.telegram_chat_id
+                link = generate_auth_link_for_events(subscription.user.id,event_data["id"])
+                event_data["details_link"] = link
                 send_telegram.delay(chat_id, event_data)
             if subscription.user.phone_number and "whatsapp" in alert_types:
                 users_data.append(get_user_info(subscription.user))

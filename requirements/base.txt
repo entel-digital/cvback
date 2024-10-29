@@ -43,6 +43,7 @@ openpyxl
 
 #apikeytesting
 djangorestframework-api-key
+djangorestframework-simplejwt
 
 # phone number
 django-phonenumber-field[phonenumbers]

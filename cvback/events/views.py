@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib.auth import get_user_model, login
 from django.views import View
 from django.conf import settings
 from cvback.events.tasks import create_alert, save_file
@@ -13,11 +14,16 @@ from cvback.events.models import (Frame, Label, KeyFrame, BoundingBox, Inference
                                   InferenceDetectionClassification, InferenceDetectionClassificationTracker,
                                   InferenceOCR, Event, Video, KeyVideo, LineOfInterest, KeyInferenceClassification)
 from rest_framework.generics import ListCreateAPIView
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 import logging
 from rest_framework_api_key.permissions import HasAPIKey
 from datetime import datetime 
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
 # TODO: filter by camera
 
 logger = logging.getLogger(__name__)
@@ -165,3 +171,28 @@ class CustomCSVExportView(View):
 
         save_file.delay(request_username, request_email, full_data, format, id_equals_to, date_equals_to, date_lower_than, date_greater_than_equal, label_id_filter, sorted_by, asc)
         return HttpResponse("YOUR REQUEST IS BEING PROCESSED", status=200)
+    
+
+class LoginByLinkView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request):
+        print("LOGIN BY LINK")
+        JWT_authenticator = JWTAuthentication()
+        try:
+            response = JWT_authenticator.authenticate(request)
+        except:
+            response = None
+        print("DARESPONSE", response)
+        if response:
+            login(request, response[0], backend='allauth.account.auth_backends.AuthenticationBackend')  # Inicia la sesión y crea una cookie de sesión
+            return Response({"message": "Inicio de sesión exitoso"})
+        
+        return Response({"error": "Credenciales inválidas o expiradas"}, status=401)
+    
+    
+
+from graphene_django.views import GraphQLView
+
+class AuthenticatedGraphQlView(LoginRequiredMixin,GraphQLView):
+    pass

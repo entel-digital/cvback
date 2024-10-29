@@ -1,7 +1,7 @@
 import requests
 from django.conf import settings
 from datetime import datetime
-
+from cvback.utils.generate_auth_link import generate_auth_link_for_events
 class WhatsappSender():
 
     def get_access_token(self, url, client_id, client_secret):
@@ -39,7 +39,7 @@ class WhatsappSender():
                                     "hora": event_data["time"],
                                     "placa_vehiculo": event_data["vehicle_license_plate"],
                                     "elementos_faltantes": ','.join(event_data["missing_labels"]),
-                                    "link_detalles": event_data["details_link"],
+                                    "link_detalles": event_data["details_link"]+"  "+generate_auth_link_for_events(user_data['id'],event_data['id']),
                                     "imagenes": event_data["images"],
                                     "videos": event_data["videos"],
                                     "evento": event_data["event_label"],
