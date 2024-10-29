@@ -15,7 +15,7 @@ class TelegramSender():
 {event_data['event_label']}
 Elementos faltantes: {','.join(event_data['missing_labels'])}
 🔗 Para más detalles, visite:
-https://app-beta.sgscm.vision.enteldigital.cl/kTdTNssbOrlOBTyv4gYWZeaYqY06K5IC/events/event/{event_data['id']}/change/
+{event_data['details_link']}
 Hora de envío: {datetime.now().strftime("%H:%M:%S")}
 """
         url = f"https://api.telegram.org/bot{self.token}/sendMessage?chat_id={chat_id}&text={text}"
