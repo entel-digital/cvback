@@ -265,3 +265,4 @@ class Event(models.Model):
 
 class ExportedFile(models.Model):
     exported_file = models.FileField(upload_to='exported_files/', null=True, blank=True, storage=MediaGoogleCloudStorage)
+
