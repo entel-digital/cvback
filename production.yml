@@ -17,8 +17,8 @@ services:
       - postgres
     volumes:
       - ./.gcp_credentials:/.gcp_credentials:z
-      - "../files/.envs/.production/.django:./.envs/.production/.django"
-      - "../files/.envs/.production/.postgres:./.envs/.production/.postgres"
+      - ../files/.envs/.production/.django:./.envs/.production/.django
+      - ../files/.envs/.production/.postgres:./.envs/.production/.postgres
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
