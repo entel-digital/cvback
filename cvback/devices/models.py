@@ -43,4 +43,4 @@ class InferenceComputer(models.Model):
 
     def __str__(self):
         return self.name
-    # TODO: agregar tokens
+    # TODO: agregar tokenss
