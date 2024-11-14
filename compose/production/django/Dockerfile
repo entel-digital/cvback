@@ -83,7 +83,7 @@ RUN chmod +x /start-flower
 
 
 # copy application code to WORKDIR
-COPY --chown=django:django /home/dokku/.env_to_copy/.django ${APP_HOME}/.envs/.production/.django
+COPY /home/dokku/.env_to_copy/.django ${APP_HOME}/.envs/.production/.django
 COPY --chown=django:django . ${APP_HOME}
 
 # make django owner of the WORKDIR directory as well.
