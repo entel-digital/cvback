@@ -1,4 +1,17 @@
+FROM node:20.15-bullseye-slim AS vue_frontend
 
+WORKDIR /app/vue_frontend
+
+# Copiar los archivos necesarios para el build de Vite
+COPY ./vue_frontend/package.json /app/vue_frontend/
+COPY ./vue_frontend/ ./
+
+# Instalar dependencias y hacer el build de Vite
+RUN npm install && npm run build
+
+
+
+#################
 # define an alias for the specific python version used in this file.
 FROM docker.io/python:3.12.4-slim-bookworm AS python
 
@@ -92,11 +105,8 @@ COPY --chown=django:django . ${APP_HOME}
 # make django owner of the WORKDIR directory as well.
 RUN chown -R django:django ${APP_HOME}
 
+COPY --from=vue_frontend /app/vue_frontend/dist /app/vue_frontend
 
-
-WORKDIR ${APP_HOME}/vue_frontend
-RUN npm install
-RUN vite build
 
 WORKDIR ${APP_HOME}
 
