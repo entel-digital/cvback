@@ -96,7 +96,7 @@ RUN chown -R django:django ${APP_HOME}
 
 WORKDIR ${APP_HOME}/vue_frontend
 RUN npm install
-RUN npm vite build
+RUN vite build
 
 WORKDIR ${APP_HOME}
 
