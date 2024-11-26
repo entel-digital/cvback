@@ -12,7 +12,7 @@ from .base import env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["enteldigital.cl", "http://34.55.32.240:41010", "http://34.55.32.240", "34.55.32.240"])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["enteldigital.cl"])
 
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN", None)
 WHATSAPP_CLIENT_ID = env("WHATSAPP_CLIENT_ID", None)

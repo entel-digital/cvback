@@ -46,9 +46,14 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   gdal-bin libgdal-dev \
   # Translations dependencies
   gettext \
+  #Curl to download node
+  curl \
+  && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+  && apt-get install -y nodejs \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
+
 
 # All absolute dir copies ignore workdir instruction. All relative dir copies are wrt to the workdir instruction
 # copy python dependency wheels from python-build-stage
@@ -84,12 +89,23 @@ RUN chmod +x /start-flower
 
 # copy application code to WORKDIR
 COPY --chown=django:django . ${APP_HOME}
-
 # make django owner of the WORKDIR directory as well.
 RUN chown -R django:django ${APP_HOME}
 
+
+
+WORKDIR ${APP_HOME}/vue_frontend
+RUN npm install
+RUN npm run build
+
+WORKDIR ${APP_HOME}
+
+
+
 RUN python generate_env_var.py
 USER django
+RUN python manage.py collectstatic --noinput
+
 
 RUN DATABASE_URL="" \
   CELERY_BROKER_URL="" \
