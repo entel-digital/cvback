@@ -18,7 +18,6 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve('./src/main.js'),
-        reward: resolve('./src/reward.js'),
       },
       output: {
         dir: '../cvback/static/vue/',
