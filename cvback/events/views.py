@@ -126,10 +126,13 @@ class EventApiView(ListCreateAPIView):
         self.queryset = self.model.objects.all()
 
     def create(self, request, *args, **kwargs):
+        data = request.data
         if isinstance(request.data, list):
-            serializer = self.get_serializer(data=request.data, many=True)
+            [d.update({"informed_date":d["timestamp"]}) for d in data]
+            serializer = self.get_serializer(data=data, many=True)
         else:
-            serializer = self.get_serializer(data=request.data)
+            data.update({"informed_date":data["timestamp"]})
+            serializer = self.get_serializer(data=data)
 
         if serializer.is_valid():
             serializer.save()
